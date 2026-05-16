@@ -24,7 +24,9 @@ public class Tower : MonoBehaviour
             if(cooldown >= fireRate)
             {
                 transform.right = target.transform.position - transform.position;
-                target.GetComponent<Enemy>().damage(damage);
+                Debug.Log("防禦塔攻擊了：" + target.name); 
+
+                target.GetComponent<EnemyLocalData>().damage(damage); // 注意：確認你的敵人腳本名稱是 EnemyLocalData 還是 Enemy
                 cooldown = 0f;
             }
             else
@@ -33,4 +35,5 @@ public class Tower : MonoBehaviour
             }
         }
     }
+    
 }

@@ -19,30 +19,13 @@ public class Enemy : MonoBehaviour
         checkpoint = EnemyManager.main.checkpoints[index];
     }
 
-    void Update()
-    {
-        checkpoint = EnemyManager.main.checkpoints[index];
-
-        if(Vector2.Distance(checkpoint.transform.position,transform.position) <= 0.1f) 
-        {
-            index++;
-            if(index >= EnemyManager.main.checkpoints.Length)
-            {
-                Destroy(gameObject);
-            }
-            //Debug.Log("Checkpoint Reached");
-        }
-        if(health <= 0)
-        {
-            Destroy(gameObject);
-        }
-    }
     void FixedUpdate()
     {
         Vector2 direction = (checkpoint.position - transform.position).normalized;
         transform.right = checkpoint.position - transform.position;
         rb.velocity = direction * movespeed;
     }
+    
     public void damage(int damage)
     {
         health = damage;

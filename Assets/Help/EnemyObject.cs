@@ -10,11 +10,21 @@ public class EnemyLocalData : MonoBehaviour
     private int endpoint;
     private int p = 1;
     private Vector2 pos;
+
+    private int health = 8;
     private void Awake()
     {
         transform.position = Path.path.point[0].position;
         endpoint = Path.path.point.Count();
         pos = transform.position;
+    }
+
+    void Update()
+    {
+        if(health <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     // Update is called once per frame
@@ -32,5 +42,12 @@ public class EnemyLocalData : MonoBehaviour
         Vector3 tr = Vector3.zero;
         tr.z = Mathf.Atan2(dp.y, dp.x) * Mathf.Rad2Deg + 90;
         transform.SetPositionAndRotation(pos, Quaternion.Euler(tr));
+
     }
+    
+    public void damage(int damage)
+    {
+        health -= damage; //  正確：扣減血量
+    }
+
 }
