@@ -19,35 +19,57 @@ public class EnemyLocalData : MonoBehaviour
         pos = transform.position;
     }
 
-    void Update()
-    {
-        if(health <= 0)
-        {
-            Destroy(gameObject);
-        }
-    }
+    
 
     // Update is called once per frame
     private void FixedUpdate()
-    {
-        Transform[] point = Path.path.point;
-        if(Vector2.Distance(pos, point[p].position) <= 0.01f) p++;
-        if(p >= endpoint)
-        {
-            SpawnManager.enemy_list.Remove(gameObject);
-            Destroy(gameObject);
-        }
-        pos = Vector2.MoveTowards(pos, point[p].position, speed * Time.fixedDeltaTime);
-        Vector2 dp = (Vector2)point[p].position - pos;
-        Vector3 tr = Vector3.zero;
-        tr.z = Mathf.Atan2(dp.y, dp.x) * Mathf.Rad2Deg + 90;
-        transform.SetPositionAndRotation(pos, Quaternion.Euler(tr));
+{
+    Transform[] point = Path.path.point;
 
-    }
-    
-    public void damage(int damage)
+    if (p >= endpoint)
     {
-        health -= damage; //  正確：扣減血量
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.LoseLife(1);
+        }
+
+        SpawnManager.enemy_list.Remove(gameObject);
+        Destroy(gameObject);
+        return;
     }
+
+    if (Vector2.Distance(pos, point[p].position) <= 0.01f)
+        p++;
+
+    if (p >= endpoint) return;
+
+    pos = Vector2.MoveTowards(pos, point[p].position, speed * Time.fixedDeltaTime);
+
+    Vector2 dp = (Vector2)point[p].position - pos;
+
+    Vector3 tr = Vector3.zero;
+    tr.z = Mathf.Atan2(dp.y, dp.x) * Mathf.Rad2Deg + 90;
+
+    transform.SetPositionAndRotation(pos, Quaternion.Euler(tr));
+}
+
+    public void TakeDamage(int amount)
+{
+    health -= amount;
+
+    if (health <= 0)
+    {
+        Die();
+    }
+}
+
+private void Die()
+{
+    SpawnManager.enemy_list.Remove(gameObject);
+    Destroy(gameObject);
+    GameManager.instance.playerMoney += 50;
+    GameManager.instance.UpdateMoneyUI();
+
+}
 
 }
