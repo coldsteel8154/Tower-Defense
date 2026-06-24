@@ -11,6 +11,9 @@ public class TowerPlacementManager : MonoBehaviour
     [SerializeField] private GameObject towerPrefab;
     [SerializeField] private int towerCost = 100;
 
+    public GameObject TowerPrefab => towerPrefab;
+    public int TowerCost => towerCost;
+
     [Header("Placement Rules")]
     [SerializeField] private float mapMinX = -11.5f;
     [SerializeField] private float mapMaxX = 11.5f;
@@ -31,6 +34,9 @@ public class TowerPlacementManager : MonoBehaviour
     private TowerRange previewTowerRange;
     private bool isPlacing = false;
     public bool IsPlacing => isPlacing;
+
+    private GameObject currentTowerPrefab;
+    private int currentTowerCost;
 
     private void Awake()
     {
@@ -72,7 +78,7 @@ public class TowerPlacementManager : MonoBehaviour
         bool isOverUI = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
 
         // Check placement validity
-        bool isValid = !isOverUI && IsValidPlacement(mouseWorldPos) && GameManager.instance.playerMoney >= towerCost;
+        bool isValid = !isOverUI && IsValidPlacement(mouseWorldPos) && GameManager.instance.playerMoney >= currentTowerCost;
 
         // Update preview colors
         UpdatePreviewColors(isValid);
@@ -104,18 +110,31 @@ public class TowerPlacementManager : MonoBehaviour
 
     public void StartPlacement()
     {
+        StartPlacement(towerPrefab, towerCost);
+    }
+
+    public void StartPlacement(GameObject prefab, int cost)
+    {
         if (isPlacing) return;
 
-        if (GameManager.instance.playerMoney < towerCost)
+        if (prefab == null)
+        {
+            Debug.LogError("Cannot start placement: tower prefab is null!");
+            return;
+        }
+
+        if (GameManager.instance.playerMoney < cost)
         {
             Debug.LogWarning("Insufficient money to buy a tower!");
             return;
         }
 
+        currentTowerPrefab = prefab;
+        currentTowerCost = cost;
         isPlacing = true;
 
         // Instantiate tower as preview
-        previewInstance = Instantiate(towerPrefab);
+        previewInstance = Instantiate(currentTowerPrefab);
         previewInstance.name = "Tower_Preview";
 
         // Disable logic components so it doesn't act as a real tower
@@ -163,11 +182,11 @@ public class TowerPlacementManager : MonoBehaviour
         isPlacing = false;
 
         // Deduct money
-        GameManager.instance.playerMoney -= towerCost;
+        GameManager.instance.playerMoney -= currentTowerCost;
         GameManager.instance.UpdateMoneyUI();
 
         // Spawn actual tower
-        GameObject realTower = Instantiate(towerPrefab, position, Quaternion.identity);
+        GameObject realTower = Instantiate(currentTowerPrefab, position, Quaternion.identity);
         realTower.name = "Tower_" + System.DateTime.Now.Ticks;
 
         // Clean up preview
