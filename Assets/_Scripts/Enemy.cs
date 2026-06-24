@@ -75,7 +75,7 @@ public class Enemy : MonoBehaviour
     {
         if (GameManager.instance != null)
         {
-            GameManager.instance.playerMoney += 50;
+            GameManager.instance.playerMoney += 25;
             GameManager.instance.UpdateMoneyUI();
         }
         if (SpawnManager.enemy_list != null)

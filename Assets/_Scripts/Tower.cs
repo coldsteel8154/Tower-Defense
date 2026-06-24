@@ -9,16 +9,29 @@ public class Tower : MonoBehaviour
     public float fireRate = 1f;
     public float turnSpeed = 360f; // Turn speed in degrees per second
 
+    [Header("Visual Settings")]
+    public Sprite normalSprite;
+    public Sprite fireSprite;
+    public float fireSpriteDuration = 0.15f;
+
     public GameObject target;
     private float cooldown = 0f;
 
+    private SpriteRenderer spriteRenderer;
     private SpriteRenderer rangeRenderer;
     private bool isHovered = false;
     private bool lastIsPlacing = false;
     private bool lastIsHovered = false;
+    private Coroutine flashCoroutine;
 
     void Awake()
     {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null && normalSprite == null)
+        {
+            normalSprite = spriteRenderer.sprite;
+        }
+
         Transform rangeChild = transform.Find("Range");
         if (rangeChild != null)
         {
@@ -75,6 +88,8 @@ public class Tower : MonoBehaviour
             {
                 Debug.Log("防禦塔攻擊了：" + target.name); 
 
+                TriggerFireFlash();
+
                 EnemyLocalData enemyLocal = target.GetComponent<EnemyLocalData>();
                 if (enemyLocal != null)
                 {
@@ -95,6 +110,29 @@ public class Tower : MonoBehaviour
                 cooldown += 1 * Time.deltaTime;
             }
         }
+    }
+
+    private void TriggerFireFlash()
+    {
+        if (flashCoroutine != null)
+        {
+            StopCoroutine(flashCoroutine);
+        }
+        flashCoroutine = StartCoroutine(FlashFireSprite());
+    }
+
+    private IEnumerator FlashFireSprite()
+    {
+        if (spriteRenderer != null && fireSprite != null)
+        {
+            spriteRenderer.sprite = fireSprite;
+        }
+        yield return new WaitForSeconds(fireSpriteDuration);
+        if (spriteRenderer != null && normalSprite != null)
+        {
+            spriteRenderer.sprite = normalSprite;
+        }
+        flashCoroutine = null;
     }
 
     public void UpdateRangeVisibility()

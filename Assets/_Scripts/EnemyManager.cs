@@ -119,7 +119,7 @@ public class EnemyManager : MonoBehaviour
                 GameObject enemyInstance = Instantiate(waveset[i], spawnpoint.position, Quaternion.identity);
                 enemyInstance.SetActive(true);
             }
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(Random.Range(spawnDelayMix, spawnDelayMax));
         }
     }
 }
