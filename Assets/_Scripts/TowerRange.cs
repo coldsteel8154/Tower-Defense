@@ -14,6 +14,7 @@ public class TowerRange : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Tower == null) return;
         while (targets.Count > 0 && targets[0] == null)
         {
             targets.RemoveAt(0);

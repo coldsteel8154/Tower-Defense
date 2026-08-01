@@ -37,6 +37,22 @@ public class TowerSidebarUI : MonoBehaviour
 
     private void Start()
     {
+        // Ensure there is an EventSystem and a Canvas so tooltips and UI events work
+        if (UnityEngine.EventSystems.EventSystem.current == null)
+        {
+            GameObject es = new GameObject("EventSystem");
+            es.AddComponent<UnityEngine.EventSystems.EventSystem>();
+            es.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+        }
+
+        if (Object.FindObjectOfType<Canvas>() == null)
+        {
+            GameObject canvasGo = new GameObject("Canvas");
+            var canvas = canvasGo.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvasGo.AddComponent<UnityEngine.UI.CanvasScaler>();
+            canvasGo.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+        }
         if (sidebarPanel != null)
         {
             sidebarWidth = sidebarPanel.rect.width;
@@ -99,6 +115,10 @@ public class TowerSidebarUI : MonoBehaviour
                         TowerPlacementManager.instance.StartPlacement(option.towerPrefab, option.cost);
                     }
                 });
+
+                // Attach hover tooltip trigger dynamically
+                TowerTooltipTrigger tooltip = btnObj.AddComponent<TowerTooltipTrigger>();
+                tooltip.Setup(option.towerPrefab);
             }
         }
     }

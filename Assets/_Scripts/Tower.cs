@@ -4,10 +4,17 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour
 {
+    public enum TowerClass { Unknown, Soldier, Assault, Sniper }
+
     public float range = 8f;
-    public int damage = 8;
+    public int damage = 20;
     public float fireRate = 1f;
     public float turnSpeed = 360f; // Turn speed in degrees per second
+    public int cost = 100;
+    public bool isSniper = false;
+
+    [Header("Type")]
+    public TowerClass towerClass = TowerClass.Unknown;
 
     [Header("Visual Settings")]
     public Sprite normalSprite;
@@ -23,6 +30,7 @@ public class Tower : MonoBehaviour
     private bool lastIsPlacing = false;
     private bool lastIsHovered = false;
     private Coroutine flashCoroutine;
+    private Coroutine pushCoroutine;
 
     void Awake()
     {
@@ -41,12 +49,53 @@ public class Tower : MonoBehaviour
     
     void Start()
     {
+        // Ensure tower damage reflects chosen tower class or prefab name
+        ApplyClassDamage();
+
         UpdateRangeVisibility();
+    }
+
+    private void ApplyClassDamage()
+    {
+        if (towerClass != TowerClass.Unknown)
+        {
+            switch (towerClass)
+            {
+                case TowerClass.Soldier:
+                    damage = 25;
+                    break;
+                case TowerClass.Assault:
+                    damage = 40;
+                    break;
+                case TowerClass.Sniper:
+                    damage = 80;
+                    break;
+            }
+            return;
+        }
+
+        // Fallback: infer from flags or GameObject name
+        string nm = gameObject.name.ToLower();
+        if (isSniper || nm.Contains("sniper"))
+        {
+            damage = 80;
+        }
+        else if (nm.Contains("assault"))
+        {
+            damage = 40;
+        }
+        else if (nm.Contains("soldier"))
+        {
+            damage = 25;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        // If game is frozen (via cheat command), stop everything
+        if (CheatCommandSystem.isFrozen) return;
+
         // Robust manual mouse hover detection (independent of Unity physics raycasting/input issues)
         bool currentIsHovered = false;
         if (Camera.main != null)
@@ -90,6 +139,12 @@ public class Tower : MonoBehaviour
 
                 TriggerFireFlash();
 
+                // Increment shots fired in GameManager
+                if (GameManager.instance != null)
+                {
+                    GameManager.instance.shotsFired++;
+                }
+
                 EnemyLocalData enemyLocal = target.GetComponent<EnemyLocalData>();
                 if (enemyLocal != null)
                 {
@@ -101,6 +156,12 @@ public class Tower : MonoBehaviour
                     if (enemy != null)
                     {
                         enemy.TakeDamage(damage);
+                        
+                        // If Sniper, apply push!
+                        if (isSniper || gameObject.name.Contains("Sniper"))
+                        {
+                            enemy.ApplyPush(transform.position);
+                        }
                     }
                 }
                 cooldown = 0f;
@@ -146,3 +207,4 @@ public class Tower : MonoBehaviour
         }
     }
 }
+

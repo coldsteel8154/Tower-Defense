@@ -4,18 +4,30 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private int health = 50;
-    [SerializeField] private float movespeed = 2.0f;
+    public int health = 50;
+    public float movespeed = 2.0f;
+    [HideInInspector] public int maxHealth = 50;
 
     private Rigidbody2D rb;
     private Transform checkpoint;
     private int index = 0;
+    private Coroutine pushCoroutine;
+    
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
     }
+    
     void Start()
     {
+        maxHealth = health;
+        gameObject.AddComponent<EnemyHealthBar>();
+
+        if (gameObject.name.ToLower().Contains("simon"))
+        {
+            movespeed *= 0.75f;
+        }
+
         if (EnemyManager.main != null && EnemyManager.main.checkpoints != null && EnemyManager.main.checkpoints.Length > 0)
         {
             checkpoint = EnemyManager.main.checkpoints[index];
@@ -25,6 +37,13 @@ public class Enemy : MonoBehaviour
     void FixedUpdate()
     {
         if (checkpoint == null) return;
+
+        // If game is frozen (via cheat command), stop moving
+        if (CheatCommandSystem.isFrozen)
+        {
+            if (rb != null) rb.linearVelocity = Vector2.zero;
+            return;
+        }
 
         if (Vector2.Distance(transform.position, checkpoint.position) <= 0.1f)
         {
@@ -50,7 +69,23 @@ public class Enemy : MonoBehaviour
         }
 
         Vector2 direction = (checkpoint.position - transform.position).normalized;
-        transform.right = checkpoint.position - transform.position;
+        // Fix: Some enemy sprites face the opposite direction; flip Simons by 180 degrees
+        if (gameObject.name.ToLower().Contains("simon"))
+        {
+            transform.up = -direction; // face the other way for Simon-type enemies
+        }
+        else
+        {
+            transform.up = direction;
+        }
+
+        // Flip sprite to face movement
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        if (sr != null && direction.x != 0f)
+        {
+            sr.flipX = direction.x < 0f;
+        }
+
         if (rb != null)
         {
             rb.linearVelocity = direction * movespeed;
@@ -64,20 +99,143 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
+        if (health <= 0) return;
+
         health -= amount;
+
+        // Register damage dealt
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.damageDealt += amount;
+        }
+
+        // Show floating hit indicator
+        FloatingText.Create(transform.position, "-" + amount, Color.red);
+
         if (health <= 0)
         {
             Die();
         }
     }
 
+    public void ApplyPush(Vector3 sniperPosition)
+    {
+        Vector3 pushDirection = (transform.position - sniperPosition).normalized;
+        float pushDistance = 0.8f;
+        float pushDuration = 0.2f;
+
+        if (pushCoroutine != null)
+        {
+            StopCoroutine(pushCoroutine);
+        }
+        pushCoroutine = StartCoroutine(SlidePush(pushDirection, pushDistance, pushDuration));
+    }
+
+    private IEnumerator SlidePush(Vector3 direction, float distance, float duration)
+    {
+        Vector3 startPos = transform.position;
+        Vector3 targetPos = startPos + direction * distance;
+        float elapsed = 0f;
+        bool hasRb = rb != null;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.SmoothStep(0f, 1f, Mathf.Min(elapsed / duration, 1f));
+            Vector3 newPos = Vector3.Lerp(startPos, targetPos, t);
+
+            if (hasRb)
+            {
+                rb.MovePosition(newPos);
+            }
+            else
+            {
+                transform.position = newPos;
+            }
+
+            yield return null;
+        }
+
+        if (hasRb)
+        {
+            rb.MovePosition(targetPos);
+        }
+        else
+        {
+            transform.position = targetPos;
+        }
+
+        pushCoroutine = null;
+    }
+
     private void Die()
     {
         if (GameManager.instance != null)
         {
-            GameManager.instance.playerMoney += 25;
+            int reward = 20;
+            if (gameObject.name.Contains("simonking"))
+            {
+                reward = 80;
+                GameManager.instance.simonKingKills++;
+            }
+            else if (gameObject.name.Contains("ultrasimon"))
+            {
+                reward = 50;
+                GameManager.instance.ultraSimonKills++;
+            }
+            else
+            {
+                reward = 20;
+                GameManager.instance.regularSimonKills++;
+            }
+
+            // In hardcore mode, gives only half the money they normally would
+            if (DifficultySettings.selectedDifficulty == DifficultySettings.Difficulty.Hardcore)
+            {
+                reward /= 2;
+            }
+
+            GameManager.instance.playerMoney += reward;
             GameManager.instance.UpdateMoneyUI();
         }
+
+        // Explode death particles!
+        if (GameManager.instance != null && GameManager.instance.deathParticlePrefab != null)
+        {
+            GameObject particles = Instantiate(GameManager.instance.deathParticlePrefab, transform.position, Quaternion.identity);
+            
+            // Apply particle density option
+            var ps = particles.GetComponent<ParticleSystem>();
+            if (ps != null)
+            {
+                var emission = ps.emission;
+                if (DifficultySettings.particleSetting == "Less")
+                {
+                    emission.rateOverTimeMultiplier = 0.5f;
+                    ParticleSystem.Burst[] bursts = new ParticleSystem.Burst[emission.burstCount];
+                    emission.GetBursts(bursts);
+                    for (int i = 0; i < bursts.Length; i++)
+                    {
+                        bursts[i].count = new ParticleSystem.MinMaxCurve(bursts[i].count.constant * 0.5f);
+                    }
+                    emission.SetBursts(bursts);
+                }
+                else if (DifficultySettings.particleSetting == "Least")
+                {
+                    emission.rateOverTimeMultiplier = 0.1f;
+                    ParticleSystem.Burst[] bursts = new ParticleSystem.Burst[emission.burstCount];
+                    emission.GetBursts(bursts);
+                    for (int i = 0; i < bursts.Length; i++)
+                    {
+                        bursts[i].count = new ParticleSystem.MinMaxCurve(bursts[i].count.constant * 0.1f);
+                    }
+                    emission.SetBursts(bursts);
+                }
+            }
+
+            Destroy(particles, 3f); // Clean up particles
+        }
+
         if (SpawnManager.enemy_list != null)
         {
             SpawnManager.enemy_list.Remove(gameObject);
@@ -85,3 +243,4 @@ public class Enemy : MonoBehaviour
         Destroy(gameObject);
     }
 }
+

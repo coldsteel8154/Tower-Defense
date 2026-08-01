@@ -78,7 +78,8 @@ public class TowerPlacementManager : MonoBehaviour
         bool isOverUI = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
 
         // Check placement validity
-        bool isValid = !isOverUI && IsValidPlacement(mouseWorldPos) && GameManager.instance.playerMoney >= currentTowerCost;
+        bool hasMoney = GameManager.instance != null ? GameManager.instance.playerMoney >= currentTowerCost : false;
+        bool isValid = !isOverUI && IsValidPlacement(mouseWorldPos) && hasMoney;
 
         // Update preview colors
         UpdatePreviewColors(isValid);
@@ -120,6 +121,12 @@ public class TowerPlacementManager : MonoBehaviour
         if (prefab == null)
         {
             Debug.LogError("Cannot start placement: tower prefab is null!");
+            return;
+        }
+
+        if (GameManager.instance == null)
+        {
+            Debug.LogError("Cannot start placement: GameManager.instance is null.");
             return;
         }
 
@@ -182,12 +189,26 @@ public class TowerPlacementManager : MonoBehaviour
         isPlacing = false;
 
         // Deduct money
-        GameManager.instance.playerMoney -= currentTowerCost;
-        GameManager.instance.UpdateMoneyUI();
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.playerMoney -= currentTowerCost;
+            GameManager.instance.UpdateMoneyUI();
+        }
+        else
+        {
+            Debug.LogError("PlaceTower: GameManager.instance is null; cannot deduct money.");
+        }
 
         // Spawn actual tower
         GameObject realTower = Instantiate(currentTowerPrefab, position, Quaternion.identity);
-        realTower.name = "Tower_" + System.DateTime.Now.Ticks;
+        realTower.name = currentTowerPrefab.name + "_" + System.DateTime.Now.Ticks;
+        
+        Tower towerComp = realTower.GetComponent<Tower>();
+        if (towerComp != null)
+        {
+            towerComp.cost = currentTowerCost;
+        }
+
 
         // Clean up preview
         Destroy(previewInstance);

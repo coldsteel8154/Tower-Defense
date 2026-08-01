@@ -110,6 +110,8 @@ MonoBehaviour:
   damage: 25
   fireRate: 3
   turnSpeed: 360
+  cost: 100
+  isSniper: 1
   normalSprite: {fileID: -4113342818379277879, guid: a3e704711cd217141a8006168c976213, type: 3}
   fireSprite: {fileID: 6802293868107920993, guid: 631237bf4eca9914697785dde7c7ed07, type: 3}
   fireSpriteDuration: 0.15
