@@ -43,6 +43,9 @@ public class EnemyManager : MonoBehaviour
         spawnDelayMinMultiplier = 0.1f;
         spawnDelayMaxMultiplier = 2.5f;
 
+        AudioListener.volume = DifficultySettings.gameVolume / 100f;
+        DifficultySettings.OnVolumeChanged += OnGlobalVolumeChanged;
+
         // Ensure EventSystem and Canvas exist
         if (UnityEngine.EventSystems.EventSystem.current == null)
         {
@@ -478,8 +481,17 @@ public class EnemyManager : MonoBehaviour
         if (canvas == null) return;
 
         AudioSource audioSource = canvas.GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = canvas.gameObject.AddComponent<AudioSource>();
+            audioSource.loop = true;
+            audioSource.playOnAwake = false;
+            Debug.Log("Created gameplay BGM AudioSource on Canvas.");
+        }
+
         if (audioSource != null)
         {
+            audioSource.volume = DifficultySettings.gameVolume / 100f;
             AudioClip targetClip = wave < 15 ? horizonDefendersClip : unprecedentedEnemyClip;
             if (audioSource.clip != targetClip)
             {
@@ -488,6 +500,23 @@ public class EnemyManager : MonoBehaviour
                 Debug.Log("Swapped gameplay BGM dynamically to: " + (targetClip != null ? targetClip.name : "null"));
             }
         }
+    }
+
+    private void OnGlobalVolumeChanged(float normalizedVolume)
+    {
+        Canvas canvas = Object.FindAnyObjectByType<Canvas>();
+        if (canvas == null) return;
+
+        AudioSource audioSource = canvas.GetComponent<AudioSource>();
+        if (audioSource != null)
+        {
+            audioSource.volume = normalizedVolume;
+        }
+    }
+
+    private void OnDisable()
+    {
+        DifficultySettings.OnVolumeChanged -= OnGlobalVolumeChanged;
     }
 }
 

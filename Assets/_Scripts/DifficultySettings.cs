@@ -14,6 +14,14 @@ public static class DifficultySettings
     public static bool isTutorial = false;
 
     public static event Action OnLanguageChanged;
+    public static event Action<float> OnVolumeChanged;
+
+    public static void SetVolume(float volume)
+    {
+        gameVolume = Mathf.Clamp(volume, 0f, 100f);
+        AudioListener.volume = gameVolume / 100f;
+        OnVolumeChanged?.Invoke(gameVolume / 100f);
+    }
 
     public static void SetLanguage(Language lang)
     {

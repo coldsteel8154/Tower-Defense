@@ -94,6 +94,8 @@ public class MainMenuManager : MonoBehaviour
             bgmSource.Play();
         }
 
+        AudioListener.volume = DifficultySettings.gameVolume / 100f;
+
         // Initialize panels: only Main Menu active at start!
         ShowPanel(mainMenuPanel);
 
@@ -376,6 +378,7 @@ public class MainMenuManager : MonoBehaviour
         {
             volumeSlider.minValue = 0f;
             volumeSlider.maxValue = 100f;
+            volumeSlider.onValueChanged.RemoveAllListeners();
             volumeSlider.value = DifficultySettings.gameVolume;
             volumeSlider.onValueChanged.AddListener(OnVolumeSliderChanged);
         }
@@ -414,7 +417,7 @@ public class MainMenuManager : MonoBehaviour
 
     private void OnVolumeSliderChanged(float val)
     {
-        DifficultySettings.gameVolume = val;
+        DifficultySettings.SetVolume(val);
         if (bgmSource != null)
         {
             bgmSource.volume = val / 100f;

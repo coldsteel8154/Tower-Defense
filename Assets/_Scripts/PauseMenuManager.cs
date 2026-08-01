@@ -28,6 +28,16 @@ public class PauseMenuManager : MonoBehaviour
         instance = this;
     }
 
+    private void OnEnable()
+    {
+        DifficultySettings.OnVolumeChanged += OnGlobalVolumeChanged;
+    }
+
+    private void OnDisable()
+    {
+        DifficultySettings.OnVolumeChanged -= OnGlobalVolumeChanged;
+    }
+
     private void Start()
     {
         // Ensure EventSystem and Canvas exist
@@ -49,6 +59,9 @@ public class PauseMenuManager : MonoBehaviour
             Debug.Log("Created fallback Canvas in PauseMenuManager.");
         }
 
+        AudioListener.volume = DifficultySettings.gameVolume / 100f;
+        OnGlobalVolumeChanged(DifficultySettings.gameVolume / 100f);
+
         // Fallback UI bindings for null variables
         if (pausePanel == null) pausePanel = FindGameObjectInScene("PausePanel");
         if (optionsPanel == null) optionsPanel = FindGameObjectInScene("OptionsPanel");
@@ -59,6 +72,23 @@ public class PauseMenuManager : MonoBehaviour
         {
             var sliderGo = FindGameObjectInScene("VolumeSlider");
             if (sliderGo != null) volumeSlider = sliderGo.GetComponent<Slider>();
+        }
+
+        if (volumeSlider == null && optionsPanel != null)
+        {
+            Slider[] sliders = optionsPanel.GetComponentsInChildren<Slider>(true);
+            foreach (var slider in sliders)
+            {
+                if (slider.gameObject.name == "VolumeSlider")
+                {
+                    volumeSlider = slider;
+                    break;
+                }
+            }
+            if (volumeSlider == null && sliders.Length > 0)
+            {
+                volumeSlider = sliders[0];
+            }
         }
 
         pausePanel = ResolvePanelWithNamedChildren(pausePanel, "PausePanel", "PauseResumeButton", "PauseOptionsButton", "PauseEndGameButton");
@@ -370,6 +400,7 @@ public class PauseMenuManager : MonoBehaviour
     {
         if (pausePanel != null) pausePanel.SetActive(false);
         if (optionsPanel != null) optionsPanel.SetActive(true);
+        SetupOptionsUI();
     }
 
     public void CloseOptions()
@@ -422,8 +453,14 @@ public class PauseMenuManager : MonoBehaviour
         {
             volumeSlider.minValue = 0f;
             volumeSlider.maxValue = 100f;
+            volumeSlider.onValueChanged.RemoveAllListeners();
             volumeSlider.value = DifficultySettings.gameVolume;
             volumeSlider.onValueChanged.AddListener(OnVolumeSliderChanged);
+            Debug.Log("PauseMenuManager bound VolumeSlider with current value " + DifficultySettings.gameVolume);
+        }
+        else
+        {
+            Debug.LogWarning("PauseMenuManager could not find VolumeSlider");
         }
 
         // Particle toggle setup
@@ -460,7 +497,13 @@ public class PauseMenuManager : MonoBehaviour
 
     private void OnVolumeSliderChanged(float val)
     {
-        DifficultySettings.gameVolume = val;
+        DifficultySettings.SetVolume(val);
+        Debug.Log("PauseMenuManager volume slider changed to " + val);
+    }
+
+    private void OnGlobalVolumeChanged(float normalizedVolume)
+    {
+        AudioListener.volume = normalizedVolume;
     }
 
     private void OnParticleTogglePressed()
