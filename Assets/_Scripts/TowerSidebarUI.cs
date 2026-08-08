@@ -118,7 +118,37 @@ public class TowerSidebarUI : MonoBehaviour
 
                 // Attach hover tooltip trigger dynamically
                 TowerTooltipTrigger tooltip = btnObj.AddComponent<TowerTooltipTrigger>();
-                tooltip.Setup(option.towerPrefab);
+                Tower.TowerClass towerClass = Tower.TowerClass.Unknown;
+
+                // Prefer explicit class on the prefab component
+                if (option.towerPrefab != null)
+                {
+                    Tower towerComp = option.towerPrefab.GetComponent<Tower>();
+                    if (towerComp != null && towerComp.towerClass != Tower.TowerClass.Unknown)
+                    {
+                        towerClass = towerComp.towerClass;
+                    }
+                }
+
+                // If prefab doesn't declare a class, try the displayName (sidebar label)
+                if (towerClass == Tower.TowerClass.Unknown && !string.IsNullOrEmpty(option.displayName))
+                {
+                    string dn = option.displayName.ToLowerInvariant();
+                    if (dn.Contains("soldier")) towerClass = Tower.TowerClass.Soldier;
+                    else if (dn.Contains("assault")) towerClass = Tower.TowerClass.Assault;
+                    else if (dn.Contains("sniper")) towerClass = Tower.TowerClass.Sniper;
+                }
+
+                // As a last resort, infer from the prefab asset name
+                if (towerClass == Tower.TowerClass.Unknown && option.towerPrefab != null)
+                {
+                    string pn = option.towerPrefab.name.ToLowerInvariant();
+                    if (pn.Contains("soldier")) towerClass = Tower.TowerClass.Soldier;
+                    else if (pn.Contains("assault")) towerClass = Tower.TowerClass.Assault;
+                    else if (pn.Contains("sniper")) towerClass = Tower.TowerClass.Sniper;
+                }
+
+                tooltip.Setup(option.towerPrefab, towerClass);
             }
         }
     }

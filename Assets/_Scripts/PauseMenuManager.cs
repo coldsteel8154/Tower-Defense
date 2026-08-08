@@ -64,7 +64,7 @@ public class PauseMenuManager : MonoBehaviour
 
         // Fallback UI bindings for null variables
         if (pausePanel == null) pausePanel = FindGameObjectInScene("PausePanel");
-        if (optionsPanel == null) optionsPanel = FindGameObjectInScene("OptionsPanel");
+        if (optionsPanel == null) optionsPanel = FindGameObjectInScene("OptionsPanel") ?? FindGameObjectInScene("PauseOptionsPanel");
         if (confirmEndPanel == null) confirmEndPanel = FindGameObjectInScene("ConfirmEndPanel");
         if (languageToggleButton == null) languageToggleButton = FindButtonInScene("LanguageToggleButton");
         if (particleToggleButton == null) particleToggleButton = FindButtonInScene("ParticleToggleButton");
@@ -434,8 +434,26 @@ public class PauseMenuManager : MonoBehaviour
         Debug.Log("ConfirmEndGame called");
         HideEndGameConfirmation();
         if (pausePanel != null) pausePanel.SetActive(false);
-        Time.timeScale = 1f;
-        SceneManager.LoadScene("MainMenu");
+        if (optionsPanel != null) optionsPanel.SetActive(false);
+
+        // Show defeat or victory panels instead of returning straight to the main menu.
+        if (GameManager.instance != null && EnemyManager.main != null)
+        {
+            int currentWave = EnemyManager.main.wave;
+            if (currentWave > 20)
+            {
+                GameManager.instance.TriggerVictory();
+            }
+            else
+            {
+                GameManager.instance.Defeat();
+            }
+        }
+        else
+        {
+            Time.timeScale = 1f;
+            SceneManager.LoadScene("MainMenu");
+        }
     }
 
     private void SetupOptionsUI()
@@ -454,7 +472,7 @@ public class PauseMenuManager : MonoBehaviour
             volumeSlider.minValue = 0f;
             volumeSlider.maxValue = 100f;
             volumeSlider.onValueChanged.RemoveAllListeners();
-            volumeSlider.value = DifficultySettings.gameVolume;
+            volumeSlider.SetValueWithoutNotify(DifficultySettings.gameVolume);
             volumeSlider.onValueChanged.AddListener(OnVolumeSliderChanged);
             Debug.Log("PauseMenuManager bound VolumeSlider with current value " + DifficultySettings.gameVolume);
         }

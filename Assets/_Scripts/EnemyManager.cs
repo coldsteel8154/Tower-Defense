@@ -131,7 +131,17 @@ public class EnemyManager : MonoBehaviour
             if (waveText != null)
             {
                 int secondsLeft = Mathf.CeilToInt(Mathf.Max(0f, autoStartDelay - clearTimer));
-                waveText.text = $"Wave {wave} Cleared!\nStarting in {secondsLeft}s — Press [Enter] to start now";
+                string englishText = $"Wave {wave} Cleared!\nStarting in {secondsLeft}s — Press [Enter] to start now";
+                string chineseText = $"第 {wave} 波已清空！\n{secondsLeft} 秒後開始 — 按 [Enter] 立即開始";
+                var localized = waveText.GetComponent<LocalizedText>();
+                if (localized != null)
+                {
+                    localized.SetContent(englishText, chineseText);
+                }
+                else
+                {
+                    waveText.text = DifficultySettings.selectedLanguage == DifficultySettings.Language.TraditionalChinese ? chineseText : englishText;
+                }
             }
 
             // Immediate start via Enter
@@ -353,7 +363,17 @@ public class EnemyManager : MonoBehaviour
     {
         if (waveText != null)
         {
-            waveText.text = $"Wave: {wave}";
+            string englishText = $"Wave: {wave}";
+            string chineseText = $"波次：{wave}";
+            var localized = waveText.GetComponent<LocalizedText>();
+            if (localized != null)
+            {
+                localized.SetContent(englishText, chineseText);
+            }
+            else
+            {
+                waveText.text = DifficultySettings.selectedLanguage == DifficultySettings.Language.TraditionalChinese ? chineseText : englishText;
+            }
         }
     }
 
@@ -376,10 +396,12 @@ public class EnemyManager : MonoBehaviour
         rect.anchorMin = new Vector2(0.5f, 1f); // Top Middle
         rect.anchorMax = new Vector2(0.5f, 1f);
         rect.pivot = new Vector2(0.5f, 1f);
-        rect.anchoredPosition = new Vector2(0f, -40f);
+        rect.anchoredPosition = new Vector2(0f, -20f);
         rect.sizeDelta = new Vector2(400f, 100f);
 
         TextMeshProUGUI tmp = go.AddComponent<TextMeshProUGUI>();
+        var localizedText = go.AddComponent<LocalizedText>();
+        localizedText.SetContent("Wave: 1", "波次：1");
         
         // Copy font from any existing TMP text in the scene!
         var existingTmp = Object.FindAnyObjectByType<TextMeshProUGUI>();

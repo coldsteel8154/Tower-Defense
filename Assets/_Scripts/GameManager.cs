@@ -250,7 +250,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void Defeat()
+    public void Defeat()
     {
         if (defeatPanel != null)
         {
@@ -291,25 +291,56 @@ public class GameManager : MonoBehaviour
             damageDealt,
             DifficultySettings.GetBalanceDifficulty());
 
+        bool useChinese = DifficultySettings.selectedLanguage == DifficultySettings.Language.TraditionalChinese;
+
         foreach (var text in textComponents)
         {
             string name = text.gameObject.name.ToLower();
             if (name.Contains("kill"))
             {
-                text.text = "kills: " + totalKills;
+                string englishText = "kills: " + totalKills;
+                string chineseText = "擊殺：" + totalKills;
+                ApplyLocalizedText(text, englishText, chineseText);
             }
             else if (name.Contains("damage"))
             {
-                text.text = "damage dealt: " + Mathf.RoundToInt(damageDealt);
+                string englishText = "damage dealt: " + Mathf.RoundToInt(damageDealt);
+                string chineseText = "傷害：" + Mathf.RoundToInt(damageDealt);
+                ApplyLocalizedText(text, englishText, chineseText);
             }
             else if (name.Contains("shot"))
             {
-                text.text = "shots fired: " + shotsFired;
+                string englishText = "shots fired: " + shotsFired;
+                string chineseText = "發射次數：" + shotsFired;
+                ApplyLocalizedText(text, englishText, chineseText);
             }
             else if (name.Contains("score"))
             {
-                text.text = "overall score: " + finalScore;
+                string englishText = "overall score: " + finalScore;
+                string chineseText = "總分：" + finalScore;
+                ApplyLocalizedText(text, englishText, chineseText);
             }
+            else if (name.Contains("title") || name.Contains("victory") || name.Contains("defeat"))
+            {
+                string englishText = panelType == "Victory" ? "Victory" : "Defeat";
+                string chineseText = panelType == "Victory" ? "勝利" : "失敗";
+                ApplyLocalizedText(text, englishText, chineseText);
+            }
+        }
+    }
+
+    private void ApplyLocalizedText(TMP_Text text, string englishText, string chineseText)
+    {
+        if (text == null) return;
+
+        var localized = text.GetComponent<LocalizedText>();
+        if (localized != null)
+        {
+            localized.SetContent(englishText, chineseText);
+        }
+        else
+        {
+            text.text = DifficultySettings.selectedLanguage == DifficultySettings.Language.TraditionalChinese ? chineseText : englishText;
         }
     }
 

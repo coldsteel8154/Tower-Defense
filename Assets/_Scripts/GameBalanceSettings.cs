@@ -87,8 +87,8 @@ public static class GameBalanceSettings
     public static readonly EnemyTypeStats[] EnemyTypes = new EnemyTypeStats[]
     {
         new EnemyTypeStats("simon", 50, 4.0f, 20),
-        new EnemyTypeStats("simonking", 150, 2.0f, 80),
-        new EnemyTypeStats("ultrasimon", 100, 6.0f, 50)
+        new EnemyTypeStats("simonking", 150, 2.0f, 50),
+        new EnemyTypeStats("ultrasimon", 100, 7.0f, 80)
     };
 
     public struct TowerStats

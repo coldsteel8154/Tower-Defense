@@ -49,13 +49,17 @@ public class Tower : MonoBehaviour
     
     void Start()
     {
-        // Ensure tower damage reflects chosen tower class or prefab name
-        ApplyClassDamage();
-
+        // Update range visibility on start
         UpdateRangeVisibility();
     }
 
-    private void ApplyClassDamage()
+    void OnEnable()
+    {
+        // Ensure that whenever the component becomes enabled at runtime it has correct stats
+        ApplyClassDamage();
+    }
+
+    public void ApplyClassDamage()
     {
         if (towerClass != TowerClass.Unknown)
         {
@@ -64,6 +68,7 @@ public class Tower : MonoBehaviour
             range = stats.range;
             fireRate = stats.fireRate;
             cost = stats.cost;
+            Debug.Log($"[Tower] Applied preset for {towerClass}: dmg={damage}, range={range}, rate={fireRate}");
             return;
         }
 

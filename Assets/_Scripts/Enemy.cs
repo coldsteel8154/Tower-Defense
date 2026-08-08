@@ -199,6 +199,20 @@ public class Enemy : MonoBehaviour
             var ps = particles.GetComponent<ParticleSystem>();
             if (ps != null)
             {
+                var main = ps.main;
+                float alpha = 0.95f;
+                if (DifficultySettings.particleSetting == "Less")
+                {
+                    alpha = 0.55f;
+                }
+                else if (DifficultySettings.particleSetting == "Least")
+                {
+                    alpha = 0.2f;
+                }
+                
+                // Slightly bright green color matching Simon's skin/body
+                main.startColor = new Color(0.25f, 0.8f, 0.35f, alpha);
+
                 var emission = ps.emission;
                 if (DifficultySettings.particleSetting == "Less")
                 {
@@ -207,7 +221,8 @@ public class Enemy : MonoBehaviour
                     emission.GetBursts(bursts);
                     for (int i = 0; i < bursts.Length; i++)
                     {
-                        bursts[i].count = new ParticleSystem.MinMaxCurve(bursts[i].count.constant * 0.5f);
+                        float count = Mathf.Max(1f, bursts[i].count.constant * 0.5f);
+                        bursts[i].count = new ParticleSystem.MinMaxCurve(count);
                     }
                     emission.SetBursts(bursts);
                 }
@@ -218,7 +233,8 @@ public class Enemy : MonoBehaviour
                     emission.GetBursts(bursts);
                     for (int i = 0; i < bursts.Length; i++)
                     {
-                        bursts[i].count = new ParticleSystem.MinMaxCurve(bursts[i].count.constant * 0.1f);
+                        float count = Mathf.Max(1f, bursts[i].count.constant * 0.1f);
+                        bursts[i].count = new ParticleSystem.MinMaxCurve(count);
                     }
                     emission.SetBursts(bursts);
                 }

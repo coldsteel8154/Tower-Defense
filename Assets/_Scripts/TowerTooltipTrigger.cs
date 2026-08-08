@@ -5,11 +5,13 @@ using TMPro;
 public class TowerTooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     private GameObject towerPrefab;
+    private Tower.TowerClass tooltipTowerClass = Tower.TowerClass.Unknown;
     private static GameObject tooltipInstance;
 
-    public void Setup(GameObject prefab)
+    public void Setup(GameObject prefab, Tower.TowerClass towerClass = Tower.TowerClass.Unknown)
     {
         towerPrefab = prefab;
+        tooltipTowerClass = towerClass;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -34,29 +36,39 @@ public class TowerTooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointer
             TMP_Text txt = tooltipInstance.GetComponentInChildren<TMP_Text>();
             if (txt != null)
             {
-                var stats = GetTooltipTowerStats(tower);
+                var stats = GetTooltipTowerStats(tower, tooltipTowerClass);
                 float attacksPerSec = stats.fireRate > 0 ? (1f / stats.fireRate) : 0f;
                 string prefabNameLower = towerPrefab.name.ToLowerInvariant();
-                string towerName = GetTooltipTowerName(towerPrefab.name, tower);
+                string towerName = GetTooltipTowerName(towerPrefab.name, tower, tooltipTowerClass);
 
-                if (DifficultySettings.selectedLanguage == DifficultySettings.Language.English)
+                string englishText = $"<b>{towerName} Tower</b>\n" +
+                                     $"Damage: {stats.damage}\n" +
+                                     $"Speed: {attacksPerSec:F1}/s\n" +
+                                     $"Range: {stats.range}";
+
+                string chineseText = $"<b>{towerName}塔</b>\n" +
+                                     $"傷害: {stats.damage}\n" +
+                                     $"攻速: {attacksPerSec:F1}/秒\n" +
+                                     $"範圍: {stats.range}";
+
+                string chineseType = "防禦塔";
+                if (prefabNameLower.Contains("soldier")) chineseType = "士兵";
+                else if (prefabNameLower.Contains("sniper")) chineseType = "狙擊";
+                else if (prefabNameLower.Contains("assault")) chineseType = "突擊";
+
+                chineseText = $"<b>{chineseType}塔</b>\n" +
+                              $"傷害: {stats.damage}\n" +
+                              $"攻速: {attacksPerSec:F1}/秒\n" +
+                              $"範圍: {stats.range}";
+
+                var localized = txt.GetComponent<LocalizedText>();
+                if (localized != null)
                 {
-                    txt.text = $"<b>{towerName} Tower</b>\n" +
-                               $"Damage: {stats.damage}\n" +
-                               $"Speed: {attacksPerSec:F1}/s\n" +
-                               $"Range: {stats.range}";
+                    localized.SetContent(englishText, chineseText);
                 }
                 else
                 {
-                    string chineseType = "防禦塔";
-                    if (prefabNameLower.Contains("soldier")) chineseType = "士兵";
-                    else if (prefabNameLower.Contains("sniper")) chineseType = "狙擊";
-                    else if (prefabNameLower.Contains("assault")) chineseType = "突擊";
-
-                    txt.text = $"<b>{chineseType}塔</b>\n" +
-                               $"傷害: {stats.damage}\n" +
-                               $"攻速: {attacksPerSec:F1}/秒\n" +
-                               $"範圍: {stats.range}";
+                    txt.text = DifficultySettings.selectedLanguage == DifficultySettings.Language.TraditionalChinese ? chineseText : englishText;
                 }
             }
 
@@ -121,8 +133,13 @@ public class TowerTooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointer
         tooltipInstance.transform.position = desired;
     }
 
-    private GameBalanceSettings.TowerStats GetTooltipTowerStats(Tower tower)
+    private GameBalanceSettings.TowerStats GetTooltipTowerStats(Tower tower, Tower.TowerClass overrideClass)
     {
+        if (overrideClass != Tower.TowerClass.Unknown)
+        {
+            return GameBalanceSettings.GetTowerStats(overrideClass);
+        }
+
         if (tower == null)
         {
             return new GameBalanceSettings.TowerStats(Tower.TowerClass.Unknown, 0, 0f, 0f, 0);
@@ -151,8 +168,13 @@ public class TowerTooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointer
         return new GameBalanceSettings.TowerStats(tower.towerClass, tower.damage, tower.range, tower.fireRate, tower.cost);
     }
 
-    private string GetTooltipTowerName(string prefabName, Tower tower)
+    private string GetTooltipTowerName(string prefabName, Tower tower, Tower.TowerClass overrideClass)
     {
+        if (overrideClass != Tower.TowerClass.Unknown)
+        {
+            return overrideClass.ToString();
+        }
+
         if (tower != null && tower.towerClass != Tower.TowerClass.Unknown)
         {
             return tower.towerClass.ToString();
@@ -207,6 +229,8 @@ public class TowerTooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointer
         tmp.color = Color.white;
         tmp.alignment = TextAlignmentOptions.TopLeft;
         tmp.raycastTarget = false;
+        var localizedText = textGo.AddComponent<LocalizedText>();
+        localizedText.SetContent("Tooltip", "提示" );
 
         return go;
     }
