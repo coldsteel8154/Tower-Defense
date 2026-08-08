@@ -114,8 +114,7 @@ public class TowerRemoveManager : MonoBehaviour
     {
         if (TowerPlacementManager.instance != null && TowerPlacementManager.instance.IsPlacing)
         {
-            // Cannot remove while placing
-            return;
+            TowerPlacementManager.instance.CancelPlacement();
         }
 
         isRemoveMode = !isRemoveMode;

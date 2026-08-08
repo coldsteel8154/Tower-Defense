@@ -111,12 +111,42 @@ public class TowerPlacementManager : MonoBehaviour
 
     public void StartPlacement()
     {
+        if (TowerRemoveManager.instance != null && TowerRemoveManager.instance.IsRemoveMode)
+        {
+            TowerRemoveManager.instance.ExitRemoveMode();
+        }
+
+        if (isPlacing)
+        {
+            CancelPlacement();
+            Debug.Log("Cancelled tower placement via BuyTowerButton.");
+            return;
+        }
+
         StartPlacement(towerPrefab, towerCost);
     }
 
     public void StartPlacement(GameObject prefab, int cost)
     {
-        if (isPlacing) return;
+        if (TowerRemoveManager.instance != null && TowerRemoveManager.instance.IsRemoveMode)
+        {
+            TowerRemoveManager.instance.ExitRemoveMode();
+        }
+
+        if (isPlacing)
+        {
+            // If the player presses a buy button again while already placing,
+            // cancel the current placement instead of silently ignoring.
+            if (currentTowerPrefab == prefab && currentTowerCost == cost)
+            {
+                CancelPlacement();
+                Debug.Log("Cancelled tower placement by pressing the same tower button again.");
+                return;
+            }
+
+            // Switch placement to the new tower prefab if a different tower is selected.
+            CancelPlacement();
+        }
 
         if (prefab == null)
         {
@@ -175,7 +205,7 @@ public class TowerPlacementManager : MonoBehaviour
         }
     }
 
-    private void CancelPlacement()
+    public void CancelPlacement()
     {
         isPlacing = false;
         if (previewInstance != null)

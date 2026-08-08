@@ -172,29 +172,20 @@ public class Enemy : MonoBehaviour
     {
         if (GameManager.instance != null)
         {
-            int reward = 20;
             if (gameObject.name.Contains("simonking"))
             {
-                reward = 80;
                 GameManager.instance.simonKingKills++;
             }
             else if (gameObject.name.Contains("ultrasimon"))
             {
-                reward = 50;
                 GameManager.instance.ultraSimonKills++;
             }
             else
             {
-                reward = 20;
                 GameManager.instance.regularSimonKills++;
             }
 
-            // In hardcore mode, gives only half the money they normally would
-            if (DifficultySettings.selectedDifficulty == DifficultySettings.Difficulty.Hardcore)
-            {
-                reward /= 2;
-            }
-
+            int reward = GameBalanceSettings.GetEnemyReward(gameObject.name, DifficultySettings.GetBalanceDifficulty());
             GameManager.instance.playerMoney += reward;
             GameManager.instance.UpdateMoneyUI();
         }

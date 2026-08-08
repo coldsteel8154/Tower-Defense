@@ -226,27 +226,9 @@ public class GameManager : MonoBehaviour
 
     private void ApplyDifficultySettings()
     {
-        switch (DifficultySettings.selectedDifficulty)
-        {
-            case DifficultySettings.Difficulty.Easy:
-                playerLives = 20;
-                break;
-            case DifficultySettings.Difficulty.Normal:
-                playerLives = 10;
-                break;
-            case DifficultySettings.Difficulty.Hard:
-                playerLives = 5;
-                break;
-            case DifficultySettings.Difficulty.Hardcore:
-                playerLives = 1;
-                playerMoney = 60;
-                break;
-        }
-
-        if (DifficultySettings.isTutorial)
-        {
-            playerLives = 20; // Tutorial uses Easy mode difficulty and 20 lives
-        }
+        var balanceDifficulty = DifficultySettings.GetBalanceDifficulty();
+        playerLives = GameBalanceSettings.GetPlayerLives(balanceDifficulty, DifficultySettings.isTutorial);
+        playerMoney = GameBalanceSettings.GetStartingMoney(balanceDifficulty);
     }
 
     public void LoseLife(int dmg)
@@ -301,20 +283,13 @@ public class GameManager : MonoBehaviour
         int completedWaves = EnemyManager.main != null ? EnemyManager.main.wave - 1 : 0;
         if (completedWaves < 0) completedWaves = 0;
 
-        // Calculate score
-        float baseScore = 50f + 10f * (regularSimonKills + 2f * simonKingKills + 4f * ultraSimonKills) + 
-                          50f * completedWaves * (completedWaves + 1) + (damageDealt / 50f);
-        
-        float difficultyMultiplier = 1.0f;
-        switch (DifficultySettings.selectedDifficulty)
-        {
-            case DifficultySettings.Difficulty.Easy: difficultyMultiplier = 0.8f; break;
-            case DifficultySettings.Difficulty.Normal: difficultyMultiplier = 1.0f; break;
-            case DifficultySettings.Difficulty.Hard: difficultyMultiplier = 1.25f; break;
-            case DifficultySettings.Difficulty.Hardcore: difficultyMultiplier = 2.0f; break;
-        }
-
-        int finalScore = Mathf.RoundToInt(baseScore * difficultyMultiplier);
+        int finalScore = GameBalanceSettings.CalculateScore(
+            regularSimonKills,
+            simonKingKills,
+            ultraSimonKills,
+            completedWaves,
+            damageDealt,
+            DifficultySettings.GetBalanceDifficulty());
 
         foreach (var text in textComponents)
         {

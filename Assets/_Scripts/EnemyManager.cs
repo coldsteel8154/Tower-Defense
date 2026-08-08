@@ -38,10 +38,10 @@ public class EnemyManager : MonoBehaviour
     
     void Start()
     {
-        // Enforce delay settings
-        autoStartDelay = 30f;
-        spawnDelayMinMultiplier = 0.1f;
-        spawnDelayMaxMultiplier = 2.5f;
+        // Enforce delay settings from balance configuration
+        autoStartDelay = GameBalanceSettings.AutoStartDelay;
+        spawnDelayMinMultiplier = GameBalanceSettings.MinSpawnDelayMultiplier;
+        spawnDelayMaxMultiplier = GameBalanceSettings.MaxSpawnDelayMultiplier;
 
         AudioListener.volume = DifficultySettings.gameVolume / 100f;
         DifficultySettings.OnVolumeChanged += OnGlobalVolumeChanged;
@@ -210,36 +210,7 @@ public class EnemyManager : MonoBehaviour
         waveset.Clear();
 
         // Calculate enemy count: starts at 10, progressively grows by 2 per wave
-        int enemyCount = 10 + (wave - 1) * 2;
-
-        int simonCount = 0;
-        int simonkingCount = 0;
-        int ultrasimonCount = 0;
-
-        if (wave < 5)
-        {
-            // Waves 1 to 4: Only Regular Simons
-            simonCount = enemyCount;
-        }
-        else if (wave < 15)
-        {
-            // Waves 5 to 14: Regular Simons + Simon Kings
-            // Simon King ratio starts at 10% and increases by 3% per wave up to max 40%
-            float kingRatio = Mathf.Min(0.4f, 0.1f + (wave - 5) * 0.03f);
-            simonkingCount = Mathf.RoundToInt(enemyCount * kingRatio);
-            simonCount = enemyCount - simonkingCount;
-        }
-        else
-        {
-            // Waves 15 and up: Regular Simons + Simon Kings + Ultra Simons
-            // Ultra Simon ratio starts at 10% and increases by 4% per wave up to max 40%
-            float ultraRatio = Mathf.Min(0.4f, 0.1f + (wave - 15) * 0.04f);
-            ultrasimonCount = Mathf.RoundToInt(enemyCount * ultraRatio);
-            
-            // Simon King ratio remains at 25%
-            simonkingCount = Mathf.RoundToInt(enemyCount * 0.25f);
-            simonCount = enemyCount - ultrasimonCount - simonkingCount;
-        }
+        GameBalanceSettings.GetWaveEnemyCounts(wave, out int simonCount, out int simonkingCount, out int ultrasimonCount);
 
         // Assemble waveset list using string identifiers
         for (int i = 0; i < simonCount; i++) waveset.Add("simon");
@@ -306,44 +277,15 @@ public class EnemyManager : MonoBehaviour
                 break;
         }
 
-        float spawnDelayMin = spawnDelayMinMultiplier * delayFactor * difficultyDelayFactor;
-        float spawnDelayMax = spawnDelayMaxMultiplier * delayFactor * difficultyDelayFactor;
+        var balanceDifficulty = DifficultySettings.GetBalanceDifficulty();
+        var spawnRange = GameBalanceSettings.GetSpawnDelayRange(wave, balanceDifficulty);
+        float spawnDelayMin = spawnRange.min;
+        float spawnDelayMax = spawnRange.max;
 
-        // Ensure min <= max and sensible lower bounds
-        if (spawnDelayMax < spawnDelayMin)
-        {
-            float tmp = spawnDelayMax;
-            spawnDelayMax = spawnDelayMin;
-            spawnDelayMin = tmp;
-        }
+        float difficultyHealthFactor = GameBalanceSettings.GetDifficultyHealthFactor(balanceDifficulty);
+        float difficultySpeedFactor = GameBalanceSettings.GetDifficultySpeedFactor(balanceDifficulty);
 
-        spawnDelayMin = Mathf.Max(0.02f, spawnDelayMin);
-        spawnDelayMax = Mathf.Max(0.04f, spawnDelayMax);
-
-        // Enemy multipliers
-        float waveHealthMultiplier = 1.0f + (wave - 1) * 0.15f;
-        float difficultyHealthFactor = 1.0f;
-        float difficultySpeedFactor = 1.0f;
-
-        switch (DifficultySettings.selectedDifficulty)
-        {
-            case DifficultySettings.Difficulty.Easy:
-                difficultyHealthFactor = 0.75f;
-                difficultySpeedFactor = 0.8f;
-                break;
-            case DifficultySettings.Difficulty.Normal:
-                difficultyHealthFactor = 1.0f;
-                difficultySpeedFactor = 1.0f;
-                break;
-            case DifficultySettings.Difficulty.Hard:
-                difficultyHealthFactor = 1.25f;
-                difficultySpeedFactor = 1.2f;
-                break;
-            case DifficultySettings.Difficulty.Hardcore:
-                difficultyHealthFactor = 2.0f;
-                difficultySpeedFactor = 1.25f;
-                break;
-        }
+        float waveHealthMultiplier = GameBalanceSettings.GetWaveHealthMultiplier(wave);
 
         for (int i = 0; i < waveset.Count; i++)
         {
@@ -378,27 +320,9 @@ public class EnemyManager : MonoBehaviour
                 if (enemyComp != null)
                 {
                     // Cache base stats first
-                    int baseHealth = 50; // default base health
-                    float baseSpeed = 4.0f; // default base speed
-
-                    if (enemyType == "simonking")
-                    {
-                        baseHealth = 150; // Simon King has higher base health!
-                        baseSpeed = 2.0f;
-                    }
-                    else if (enemyType == "ultrasimon")
-                    {
-                        baseHealth = 100; // Ultra Simon has higher base health!
-                        baseSpeed = 5.0f;
-                    }
-                    else
-                    {
-                        baseHealth = 50;
-                        baseSpeed = 4.0f;
-                    }
-
-                    enemyComp.health = Mathf.RoundToInt(baseHealth * waveHealthMultiplier * difficultyHealthFactor);
-                    enemyComp.movespeed = baseSpeed * difficultySpeedFactor;
+                    var enemyStats = GameBalanceSettings.GetEnemyTypeStats(enemyType);
+                    enemyComp.health = Mathf.RoundToInt(enemyStats.baseHealth * waveHealthMultiplier * difficultyHealthFactor);
+                    enemyComp.movespeed = enemyStats.baseSpeed * difficultySpeedFactor;
                     enemyComp.maxHealth = enemyComp.health; // update maxHealth for health bars
                 }
 

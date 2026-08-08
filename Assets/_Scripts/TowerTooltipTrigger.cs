@@ -30,31 +30,33 @@ public class TowerTooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointer
             tooltipInstance.transform.SetAsLastSibling();
             tooltipInstance.SetActive(true);
 
-            // Populate text
+            // Populate text using centralized tower stats so tooltip reflects GameBalanceSettings
             TMP_Text txt = tooltipInstance.GetComponentInChildren<TMP_Text>();
             if (txt != null)
             {
-                // Convert fire rate to speed (attacks per second)
-                float attacksPerSec = tower.fireRate > 0 ? (1f / tower.fireRate) : 0f;
-                
+                var stats = GetTooltipTowerStats(tower);
+                float attacksPerSec = stats.fireRate > 0 ? (1f / stats.fireRate) : 0f;
+                string prefabNameLower = towerPrefab.name.ToLowerInvariant();
+                string towerName = GetTooltipTowerName(towerPrefab.name, tower);
+
                 if (DifficultySettings.selectedLanguage == DifficultySettings.Language.English)
                 {
-                    txt.text = $"<b>{towerPrefab.name.Replace("Tower_", "").Replace("Tower", "")} Tower</b>\n" +
-                               $"Damage: {tower.damage}\n" +
+                    txt.text = $"<b>{towerName} Tower</b>\n" +
+                               $"Damage: {stats.damage}\n" +
                                $"Speed: {attacksPerSec:F1}/s\n" +
-                               $"Range: {tower.range}";
+                               $"Range: {stats.range}";
                 }
                 else
                 {
                     string chineseType = "防禦塔";
-                    if (towerPrefab.name.Contains("Soldier")) chineseType = "士兵";
-                    else if (towerPrefab.name.Contains("Sniper")) chineseType = "狙擊";
-                    else chineseType = "突擊";
+                    if (prefabNameLower.Contains("soldier")) chineseType = "士兵";
+                    else if (prefabNameLower.Contains("sniper")) chineseType = "狙擊";
+                    else if (prefabNameLower.Contains("assault")) chineseType = "突擊";
 
                     txt.text = $"<b>{chineseType}塔</b>\n" +
-                               $"傷害: {tower.damage}\n" +
+                               $"傷害: {stats.damage}\n" +
                                $"攻速: {attacksPerSec:F1}/秒\n" +
-                               $"範圍: {tower.range}";
+                               $"範圍: {stats.range}";
                 }
             }
 
@@ -117,6 +119,50 @@ public class TowerTooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointer
         desired.y = Mathf.Clamp(desired.y, minY, maxY);
 
         tooltipInstance.transform.position = desired;
+    }
+
+    private GameBalanceSettings.TowerStats GetTooltipTowerStats(Tower tower)
+    {
+        if (tower == null)
+        {
+            return new GameBalanceSettings.TowerStats(Tower.TowerClass.Unknown, 0, 0f, 0f, 0);
+        }
+
+        if (tower.towerClass != Tower.TowerClass.Unknown)
+        {
+            return GameBalanceSettings.GetTowerStats(tower.towerClass);
+        }
+
+        string nm = tower.gameObject.name.ToLowerInvariant();
+        if (nm.Contains("sniper"))
+        {
+            return GameBalanceSettings.GetTowerStats(Tower.TowerClass.Sniper);
+        }
+        else if (nm.Contains("assault"))
+        {
+            return GameBalanceSettings.GetTowerStats(Tower.TowerClass.Assault);
+        }
+        else if (nm.Contains("soldier"))
+        {
+            return GameBalanceSettings.GetTowerStats(Tower.TowerClass.Soldier);
+        }
+
+        // Fallback to current tower values if type is unknown
+        return new GameBalanceSettings.TowerStats(tower.towerClass, tower.damage, tower.range, tower.fireRate, tower.cost);
+    }
+
+    private string GetTooltipTowerName(string prefabName, Tower tower)
+    {
+        if (tower != null && tower.towerClass != Tower.TowerClass.Unknown)
+        {
+            return tower.towerClass.ToString();
+        }
+
+        string nameLower = prefabName.ToLowerInvariant();
+        if (nameLower.Contains("soldier")) return "Soldier";
+        if (nameLower.Contains("assault")) return "Assault";
+        if (nameLower.Contains("sniper")) return "Sniper";
+        return prefabName.Replace("Tower_", "").Replace("Tower", "");
     }
 
     private GameObject CreateTooltipPrefab()

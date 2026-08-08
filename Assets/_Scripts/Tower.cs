@@ -59,18 +59,11 @@ public class Tower : MonoBehaviour
     {
         if (towerClass != TowerClass.Unknown)
         {
-            switch (towerClass)
-            {
-                case TowerClass.Soldier:
-                    damage = 25;
-                    break;
-                case TowerClass.Assault:
-                    damage = 40;
-                    break;
-                case TowerClass.Sniper:
-                    damage = 80;
-                    break;
-            }
+            var stats = GameBalanceSettings.GetTowerStats(towerClass);
+            damage = stats.damage;
+            range = stats.range;
+            fireRate = stats.fireRate;
+            cost = stats.cost;
             return;
         }
 
@@ -78,15 +71,27 @@ public class Tower : MonoBehaviour
         string nm = gameObject.name.ToLower();
         if (isSniper || nm.Contains("sniper"))
         {
-            damage = 80;
+            var stats = GameBalanceSettings.GetTowerStats(TowerClass.Sniper);
+            damage = stats.damage;
+            range = stats.range;
+            fireRate = stats.fireRate;
+            cost = stats.cost;
         }
         else if (nm.Contains("assault"))
         {
-            damage = 40;
+            var stats = GameBalanceSettings.GetTowerStats(TowerClass.Assault);
+            damage = stats.damage;
+            range = stats.range;
+            fireRate = stats.fireRate;
+            cost = stats.cost;
         }
         else if (nm.Contains("soldier"))
         {
-            damage = 25;
+            var stats = GameBalanceSettings.GetTowerStats(TowerClass.Soldier);
+            damage = stats.damage;
+            range = stats.range;
+            fireRate = stats.fireRate;
+            cost = stats.cost;
         }
     }
 
