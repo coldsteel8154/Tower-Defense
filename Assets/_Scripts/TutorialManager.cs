@@ -39,14 +39,36 @@ public class TutorialManager : MonoBehaviour
     private bool stepClickToAdvance = false;
 
     private int difficultyDialogueSubStep = 0;
-    private string[] difficultyDialogues = {
+    private string[] difficultyDialoguesEnglish = {
         "This is the Difficulty Selection screen where you select how challenging the enemy invasion will be.",
         "<b>Easy Mode</b>: Enemies have lower health (75%), move slower (80%), and spawn with lower frequency. You also get 20 lives!",
         "<b>Normal Mode</b>: The default balanced settings with 10 player lives.",
         "<b>Hard Mode</b>: Enemies spawn faster, move 20% quicker, have 1.25x health, and you have only 5 lives.",
-        "<b>Hardcore Mode</b>: Secret mode activated by double-clicking Hard! 1 life, half reward money, 2x enemy health.",
+        "<b>Hardcore Mode</b>: Secret mode activated by double-clicking Hard! 1 life, half reward money, 1.5x enemy health.",
         "For this tutorial, let's play on Easy Mode."
     };
+
+    private string[] difficultyDialoguesChinese = {
+        "這是難度選擇畫面，您可以在此設定敵人入侵的挑戰程度。",
+        "<b>簡單模式</b>：敵人生命較低（75%）、移動較慢（80%），且生成頻率較低。您還有 20 條命！",
+        "<b>普通模式</b>：預設平衡設定，擁有 10 條生命。",
+        "<b>困難模式</b>：敵人生成更快、移動速度提升 20%、生命為 1.25 倍，您只有 5 條命。",
+        "<b>極限模式</b>：透過雙擊困難模式啟動的秘密模式！僅有 1 條命、獎勵金錢減半、敵人生命為 1.5 倍。",
+        "在這個教學中，我們將選擇簡單模式。"
+    };
+
+    private bool IsChineseLanguage => DifficultySettings.selectedLanguage == DifficultySettings.Language.TraditionalChinese;
+
+    private string Localize(string english, string chinese)
+    {
+        return IsChineseLanguage ? chinese : english;
+    }
+
+    private string LocalizeDifficultyLine(int index)
+    {
+        if (index < 0 || index >= difficultyDialoguesEnglish.Length) return string.Empty;
+        return IsChineseLanguage ? difficultyDialoguesChinese[index] : difficultyDialoguesEnglish[index];
+    }
 
     private void Awake()
     {
@@ -196,18 +218,20 @@ public class TutorialManager : MonoBehaviour
         switch (currentStep)
         {
             case TutorialStep.Welcome_ClickPlay:
-                SetDialogue("Welcome to Simon Universe! Let's start by clicking the <b>PLAY</b> button to choose your difficulty.");
+                SetDialogue(Localize("Welcome to Simon Universe! Let's start by clicking the <b>PLAY</b> button to choose your difficulty.",
+                                    "歡迎來到賽門宇宙！現在點擊 <b>開始遊戲</b> 按鈕來選擇難度。"));
                 FindAndPointToButton("PlayButton");
                 break;
 
             case TutorialStep.DifficultyIntro_Step:
                 difficultyDialogueSubStep = 0;
                 stepClickToAdvance = true;
-                SetDialogue(difficultyDialogues[difficultyDialogueSubStep] + "\n\n<i>[Click this panel to continue]</i>");
+                SetDialogue(LocalizeDifficultyLine(difficultyDialogueSubStep) + "\n\n<i>[" + Localize("Click this panel to continue", "點擊此面板以繼續") + "]</i>");
                 break;
 
             case TutorialStep.ClickEasy:
-                SetDialogue("Now, let's select <b>EASY</b> mode for our tutorial run.");
+                SetDialogue(Localize("Now, let's select <b>EASY</b> mode for our tutorial run.",
+                                    "現在，讓我們為教學選擇 <b>簡單</b> 模式。"));
                 // Find Easy button
                 if (MainMenuManager.instance != null && MainMenuManager.instance.easyButton != null)
                 {
@@ -217,7 +241,8 @@ public class TutorialManager : MonoBehaviour
                 break;
 
             case TutorialStep.ClickProceed:
-                SetDialogue("Great choice! Click the <b>START GAME</b> button below to begin.");
+                SetDialogue(Localize("Great choice! Click the <b>START GAME</b> button below to begin.",
+                                    "好選擇！點擊下面的 <b>開始遊戲</b> 按鈕開始。"));
                 if (MainMenuManager.instance != null && MainMenuManager.instance.proceedButton != null)
                 {
                     targetButton = MainMenuManager.instance.proceedButton;
@@ -228,16 +253,19 @@ public class TutorialManager : MonoBehaviour
             case TutorialStep.GameplayWelcome:
                 Time.timeScale = 0f; // Pause game initially
                 stepClickToAdvance = true;
-                SetDialogue("Welcome to the battlefield! The path is laid out, and Simons will start invading soon.\n\n<i>[Click this panel to continue]</i>");
+                SetDialogue(Localize("Welcome to the battlefield! The path is laid out, and Simons will start invading soon.\n\n<i>[Click this panel to continue]</i>",
+                                    "歡迎來到戰場！路徑已經鋪設好，賽門軍團即將入侵。\n\n<i>[點擊此面板以繼續]</i>"));
                 break;
 
             case TutorialStep.ExplainSidebar:
                 stepClickToAdvance = true;
-                SetDialogue("On the right sidebar, you can buy different defense towers: Soldier, Assault, and Sniper.\nEach has its unique range, fire rate, and damage.\n\n<i>[Click this panel to continue]</i>");
+                SetDialogue(Localize("On the left sidebar, you can buy different defense towers: Soldier, Assault, and Sniper.\nEach has its unique range, fire rate, and damage.\n\n<i>[Click this panel to continue]</i>",
+                                    "在左側邊欄，你可以購買不同的防禦塔：士兵、突擊和狙擊。\n每個塔都有自己的範圍、攻速和傷害。\n\n<i>[點擊此面板以繼續]</i>"));
                 break;
 
             case TutorialStep.PlaceTowerGuidance:
-                SetDialogue("Let's place a tower! Open the sidebar (if closed), hover over a tower button to see its stats, then click and place a tower near the path.");
+                SetDialogue(Localize("Let's place a tower! Open the sidebar (if closed), hover over a tower button to see its stats, then click and place a tower near the path.",
+                                    "讓我們放置一座防禦塔！打開側邊欄（如果已關閉），將滑鼠懸停在塔按鈕上查看其屬性，然後點擊並放在路徑附近。"));
                 // Point arrow to buy button in Content
                 GameObject sidebarObj = GameObject.Find("TowerSidebarPanel");
                 if (sidebarObj != null)
@@ -253,8 +281,9 @@ public class TutorialManager : MonoBehaviour
 
             case TutorialStep.SpawnWave:
                 Time.timeScale = 1f; // Unpause
-                SetDialogue("Awesome! A wave of 3 basic Simons is coming. Watch your tower defend the line!");
                 stepClickToAdvance = true;
+                SetDialogue(Localize("Awesome! A wave of 3 basic Simons is coming. Watch your tower defend the line!\n\n<i>[Click this panel to continue]</i>",
+                                    "太棒了！一波 3 隻基本賽門正在逼近。觀察你的防禦塔守住防線！\n\n<i>[點擊此面板以繼續]</i>"));
                 
                 // Spawn a tiny wave of 3 Simons for the tutorial!
                 if (EnemyManager.main != null)
@@ -270,7 +299,8 @@ public class TutorialManager : MonoBehaviour
             case TutorialStep.Congratulations:
                 Time.timeScale = 0f; // Pause
                 stepClickToAdvance = true;
-                SetDialogue("Congratulations! You've successfully completed the tutorial.\nYou are now ready to protect the universe from the Simon threat!");
+                SetDialogue(Localize("Congratulations! You've successfully completed the tutorial.\nYou are now ready to protect the universe from the Simon threat!",
+                                    "恭喜！你已成功完成教學。現在你已準備好捍衛宇宙，對抗賽門威脅！"));
                 break;
         }
     }
@@ -280,9 +310,9 @@ public class TutorialManager : MonoBehaviour
         if (currentStep == TutorialStep.DifficultyIntro_Step)
         {
             difficultyDialogueSubStep++;
-            if (difficultyDialogueSubStep < difficultyDialogues.Length)
+            if (difficultyDialogueSubStep < difficultyDialoguesEnglish.Length)
             {
-                SetDialogue(difficultyDialogues[difficultyDialogueSubStep] + "\n\n<i>[Click this panel to continue]</i>");
+                SetDialogue(LocalizeDifficultyLine(difficultyDialogueSubStep) + "\n\n<i>[" + Localize("Click this panel to continue", "點擊此面板以繼續") + "]</i>");
             }
             else
             {
@@ -342,11 +372,111 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
+    private static TMP_FontAsset chineseFontAsset;
+    private static TMP_FontAsset defaultFontAsset;
+
+    private static void EnsureFonts()
+    {
+        if (chineseFontAsset == null)
+        {
+            chineseFontAsset = Resources.Load<TMP_FontAsset>("Fonts & Materials/ChineseDynamicFont");
+        }
+        if (defaultFontAsset == null)
+        {
+            defaultFontAsset = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
+        }
+    }
+
+    private void ApplyFont(TMP_Text txt)
+    {
+        if (txt == null) return;
+        EnsureFonts();
+
+        if (defaultFontAsset != null)
+        {
+            txt.font = defaultFontAsset;
+            if (defaultFontAsset.material != null)
+            {
+                txt.fontSharedMaterial = defaultFontAsset.material;
+            }
+        }
+    }
+
+    private void OnEnable()
+    {
+        DifficultySettings.OnLanguageChanged += OnLanguageChanged;
+    }
+
+    private void OnDisable()
+    {
+        DifficultySettings.OnLanguageChanged -= OnLanguageChanged;
+    }
+
+    private void OnLanguageChanged()
+    {
+        if (currentStep != TutorialStep.None)
+        {
+            RunStep();
+            RefreshTutorialUI();
+        }
+    }
+
+    private void RefreshTutorialUI()
+    {
+        if (endTutorialButton != null)
+        {
+            TMP_Text txt = endTutorialButton.GetComponentInChildren<TMP_Text>();
+            if (txt != null)
+            {
+                ApplyFont(txt);
+                txt.text = Localize("End Tutorial", "結束教學");
+            }
+        }
+
+        if (confirmEndPopUp != null)
+        {
+            Transform tText = confirmEndPopUp.transform.Find("Text");
+            if (tText != null)
+            {
+                TMP_Text txt = tText.GetComponent<TMP_Text>();
+                if (txt != null)
+                {
+                    ApplyFont(txt);
+                    txt.text = Localize("Are you sure you want to end the tutorial?", "確定要結束教學嗎？");
+                }
+            }
+
+            Transform yesBtn = confirmEndPopUp.transform.Find("YesButton/Text");
+            if (yesBtn != null)
+            {
+                TMP_Text yTxt = yesBtn.GetComponent<TMP_Text>();
+                if (yTxt != null)
+                {
+                    ApplyFont(yTxt);
+                    yTxt.text = Localize("Yes", "是");
+                }
+            }
+
+            Transform noBtn = confirmEndPopUp.transform.Find("NoButton/Text");
+            if (noBtn != null)
+            {
+                TMP_Text nTxt = noBtn.GetComponent<TMP_Text>();
+                if (nTxt != null)
+                {
+                    ApplyFont(nTxt);
+                    nTxt.text = Localize("No", "否");
+                }
+            }
+        }
+    }
+
     private void SetDialogue(string text)
     {
         if (dialogueText != null)
         {
+            ApplyFont(dialogueText);
             dialogueText.text = text;
+            dialogueText.SetAllDirty();
         }
     }
 
@@ -383,7 +513,7 @@ public class TutorialManager : MonoBehaviour
             rect.sizeDelta = new Vector2(600, 150);
 
             UnityEngine.UI.Image img = dialogueBox.AddComponent<UnityEngine.UI.Image>();
-            img.color = new Color(0.12f, 0.12f, 0.15f, 0.95f);
+            img.color = new Color(0.12f, 0.12f, 0.15f, 0.85f);
 
             // Dialogue Outline
             GameObject outline = new GameObject("Outline");
@@ -412,6 +542,14 @@ public class TutorialManager : MonoBehaviour
         else
         {
             dialogueText = dialogueBox.GetComponentInChildren<TextMeshProUGUI>();
+            UnityEngine.UI.Image img = dialogueBox.GetComponent<UnityEngine.UI.Image>();
+            if (img != null) img.color = new Color(0.12f, 0.12f, 0.15f, 0.85f);
+            Transform outline = dialogueBox.transform.Find("Outline");
+            if (outline != null)
+            {
+                UnityEngine.UI.Image oImg = outline.GetComponent<UnityEngine.UI.Image>();
+                if (oImg != null) oImg.color = new Color(0.3f, 0.6f, 1f, 1f);
+            }
         }
 
         // Arrow
@@ -492,7 +630,8 @@ public class TutorialManager : MonoBehaviour
         tRect.sizeDelta = Vector2.zero;
 
         TMP_Text txt = textGo.AddComponent<TextMeshProUGUI>();
-        txt.text = "End Tutorial";
+        ApplyFont(txt);
+        txt.text = Localize("End Tutorial", "結束教學");
         txt.fontSize = 18;
         txt.color = Color.white;
         txt.alignment = TextAlignmentOptions.Center;
@@ -541,7 +680,8 @@ public class TutorialManager : MonoBehaviour
         tRect.sizeDelta = Vector2.zero;
 
         TMP_Text txt = textGo.AddComponent<TextMeshProUGUI>();
-        txt.text = "Are you sure you want to end the tutorial?";
+        ApplyFont(txt);
+        txt.text = Localize("Are you sure you want to end the tutorial?", "確定要結束教學嗎？");
         txt.fontSize = 20;
         txt.color = Color.white;
         txt.alignment = TextAlignmentOptions.Center;
@@ -566,7 +706,8 @@ public class TutorialManager : MonoBehaviour
         ytRect.anchorMax = Vector2.one;
         ytRect.sizeDelta = Vector2.zero;
         TMP_Text yTxt = yTextGo.AddComponent<TextMeshProUGUI>();
-        yTxt.text = "Yes";
+        ApplyFont(yTxt);
+        yTxt.text = Localize("Yes", "是");
         yTxt.fontSize = 16;
         yTxt.color = Color.white;
         yTxt.alignment = TextAlignmentOptions.Center;
@@ -591,7 +732,8 @@ public class TutorialManager : MonoBehaviour
         ntRect.anchorMax = Vector2.one;
         ntRect.sizeDelta = Vector2.zero;
         TMP_Text nTxt = nTextGo.AddComponent<TextMeshProUGUI>();
-        nTxt.text = "No";
+        ApplyFont(nTxt);
+        nTxt.text = Localize("No", "否");
         nTxt.fontSize = 16;
         nTxt.color = Color.white;
         nTxt.alignment = TextAlignmentOptions.Center;

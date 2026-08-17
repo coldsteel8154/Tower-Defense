@@ -39,30 +39,30 @@ public class LocalizedText : MonoBehaviour
 
     private void EnsureChineseFontAsset()
     {
-        if (chineseFontAsset != null || chineseFontAssetRequested)
+        if (chineseFontAsset != null)
         {
             return;
         }
 
-        chineseFontAssetRequested = true;
-
-        var sourceFont = Resources.Load<Font>("Fonts/NotoSansTC-VF");
-        if (sourceFont != null)
+        chineseFontAsset = Resources.Load<TMP_FontAsset>("Fonts & Materials/ChineseDynamicFont");
+        if (chineseFontAsset == null)
         {
-            chineseFontAsset = TMP_FontAsset.CreateFontAsset(sourceFont, 90, 9, UnityEngine.TextCore.LowLevel.GlyphRenderMode.SDFAA, 256, 256);
-            if (chineseFontAsset != null)
+            var sourceFont = Resources.Load<Font>("Fonts/NotoSansTC-VF");
+            if (sourceFont != null)
             {
-                chineseFontAsset.name = "NotoSansTC_Runtime";
+                chineseFontAsset = TMP_FontAsset.CreateFontAsset(sourceFont, 90, 9, UnityEngine.TextCore.LowLevel.GlyphRenderMode.SDFAA, 1024, 1024);
+                if (chineseFontAsset != null)
+                {
+                    chineseFontAsset.name = "NotoSansTC_Runtime";
+                    chineseFontAsset.atlasPopulationMode = AtlasPopulationMode.Dynamic;
+                    chineseFontAsset.isMultiAtlasTexturesEnabled = true;
+                }
             }
         }
 
         if (chineseFontAsset == null)
         {
-            chineseFontAsset = Resources.Load<TMP_FontAsset>("Fonts & Materials/ChineseDynamicFont");
-            if (chineseFontAsset == null)
-            {
-                Debug.LogWarning("LocalizedText: Could not load a usable Chinese font asset. Squares may remain until a proper TMP font asset is assigned.");
-            }
+            Debug.LogWarning("LocalizedText: Could not load a usable Chinese font asset. Squares may remain until a proper TMP font asset is assigned.");
         }
     }
 

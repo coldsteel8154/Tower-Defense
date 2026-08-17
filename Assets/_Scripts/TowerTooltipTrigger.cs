@@ -41,12 +41,12 @@ public class TowerTooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointer
                 string prefabNameLower = towerPrefab.name.ToLowerInvariant();
                 string towerName = GetTooltipTowerName(towerPrefab.name, tower, tooltipTowerClass);
 
-                string englishText = $"<b>{towerName} Tower</b>\n" +
+                string englishText = $"<b>{towerName} </b>\n" +
                                      $"Damage: {stats.damage}\n" +
                                      $"Speed: {attacksPerSec:F1}/s\n" +
                                      $"Range: {stats.range}";
 
-                string chineseText = $"<b>{towerName}塔</b>\n" +
+                string chineseText = $"<b>{towerName}</b>\n" +
                                      $"傷害: {stats.damage}\n" +
                                      $"攻速: {attacksPerSec:F1}/秒\n" +
                                      $"範圍: {stats.range}";
@@ -56,7 +56,7 @@ public class TowerTooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointer
                 else if (prefabNameLower.Contains("sniper")) chineseType = "狙擊";
                 else if (prefabNameLower.Contains("assault")) chineseType = "突擊";
 
-                chineseText = $"<b>{chineseType}塔</b>\n" +
+                chineseText = $"<b>{chineseType}</b>\n" +
                               $"傷害: {stats.damage}\n" +
                               $"攻速: {attacksPerSec:F1}/秒\n" +
                               $"範圍: {stats.range}";

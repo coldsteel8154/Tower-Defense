@@ -23,11 +23,6 @@ public class Enemy : MonoBehaviour
         maxHealth = health;
         gameObject.AddComponent<EnemyHealthBar>();
 
-        if (gameObject.name.ToLower().Contains("simon"))
-        {
-            movespeed *= 0.75f;
-        }
-
         if (EnemyManager.main != null && EnemyManager.main.checkpoints != null && EnemyManager.main.checkpoints.Length > 0)
         {
             checkpoint = EnemyManager.main.checkpoints[index];

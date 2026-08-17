@@ -386,7 +386,12 @@ public class EnemyManager : MonoBehaviour
         Transform existing = canvas.transform.Find("WaveText");
         if (existing != null)
         {
-            return existing.GetComponent<TMP_Text>();
+            TMP_Text existingText = existing.GetComponent<TMP_Text>();
+            if (existingText != null)
+            {
+                existingText.raycastTarget = false;
+            }
+            return existingText;
         }
 
         GameObject go = new GameObject("WaveText");
@@ -413,7 +418,8 @@ public class EnemyManager : MonoBehaviour
         tmp.fontSize = 32;
         tmp.color = Color.white;
         tmp.alignment = TextAlignmentOptions.Center;
-        
+        tmp.raycastTarget = false;
+
         // Outline
         tmp.outlineWidth = 0.2f;
         tmp.outlineColor = Color.black;
@@ -421,9 +427,22 @@ public class EnemyManager : MonoBehaviour
         return tmp;
     }
 
+    private Canvas GetOverlayCanvas()
+    {
+        Canvas[] canvases = Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (var c in canvases)
+        {
+            if (c.renderMode == RenderMode.ScreenSpaceOverlay)
+            {
+                return c;
+            }
+        }
+        return null;
+    }
+
     private void UpdateBGM()
     {
-        Canvas canvas = Object.FindAnyObjectByType<Canvas>();
+        Canvas canvas = GetOverlayCanvas();
         if (canvas == null) return;
 
         AudioSource audioSource = canvas.GetComponent<AudioSource>();
@@ -450,7 +469,7 @@ public class EnemyManager : MonoBehaviour
 
     private void OnGlobalVolumeChanged(float normalizedVolume)
     {
-        Canvas canvas = Object.FindAnyObjectByType<Canvas>();
+        Canvas canvas = GetOverlayCanvas();
         if (canvas == null) return;
 
         AudioSource audioSource = canvas.GetComponent<AudioSource>();

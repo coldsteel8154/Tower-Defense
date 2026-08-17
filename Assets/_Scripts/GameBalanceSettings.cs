@@ -86,9 +86,9 @@ public static class GameBalanceSettings
 
     public static readonly EnemyTypeStats[] EnemyTypes = new EnemyTypeStats[]
     {
-        new EnemyTypeStats("simon", 50, 4.0f, 20),
-        new EnemyTypeStats("simonking", 150, 2.0f, 50),
-        new EnemyTypeStats("ultrasimon", 100, 7.0f, 80)
+        new EnemyTypeStats("simon", 50, 3.0f, 20),
+        new EnemyTypeStats("simonking", 150, 1.5f, 50),
+        new EnemyTypeStats("ultrasimon", 100, 5.5f, 80)
     };
 
     public struct TowerStats
@@ -197,14 +197,29 @@ public static class GameBalanceSettings
     public static EnemyTypeStats GetEnemyTypeStats(string typeName)
     {
         string normalized = typeName?.ToLowerInvariant() ?? string.Empty;
+
+        EnemyTypeStats bestMatch = EnemyTypes[0];
+        int bestMatchLength = -1;
+
         foreach (var enemyType in EnemyTypes)
         {
-            if (normalized.Contains(enemyType.typeName))
+            if (normalized == enemyType.typeName)
             {
                 return enemyType;
             }
+
+            if (normalized.Contains(enemyType.typeName))
+            {
+                int candidateLength = enemyType.typeName.Length;
+                if (candidateLength > bestMatchLength)
+                {
+                    bestMatch = enemyType;
+                    bestMatchLength = candidateLength;
+                }
+            }
         }
-        return EnemyTypes[0];
+
+        return bestMatch;
     }
 
     public static int GetEnemyReward(string typeName, Difficulty difficulty)

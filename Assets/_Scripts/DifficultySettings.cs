@@ -9,7 +9,24 @@ public static class DifficultySettings
     public static Difficulty selectedDifficulty = Difficulty.Normal;
     public static Language selectedLanguage = Language.English;
     public static string particleSetting = "All"; // "All", "Less", "Least"
-    public static float gameVolume = 100f; // 0 to 100
+
+    private static float _gameVolume = -1f;
+
+    public static float gameVolume
+    {
+        get
+        {
+            if (_gameVolume < 0f)
+            {
+                _gameVolume = PlayerPrefs.GetFloat("GameVolume", 100f);
+            }
+            return _gameVolume;
+        }
+        set
+        {
+            SetVolume(value);
+        }
+    }
 
     public static GameBalanceSettings.Difficulty GetBalanceDifficulty(Difficulty difficulty)
     {
@@ -35,9 +52,11 @@ public static class DifficultySettings
 
     public static void SetVolume(float volume)
     {
-        gameVolume = Mathf.Clamp(volume, 0f, 100f);
-        AudioListener.volume = gameVolume / 100f;
-        OnVolumeChanged?.Invoke(gameVolume / 100f);
+        _gameVolume = Mathf.Clamp(volume, 0f, 100f);
+        PlayerPrefs.SetFloat("GameVolume", _gameVolume);
+        PlayerPrefs.Save();
+        AudioListener.volume = _gameVolume / 100f;
+        OnVolumeChanged?.Invoke(_gameVolume / 100f);
     }
 
     public static void SetLanguage(Language lang)

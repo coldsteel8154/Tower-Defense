@@ -5998,9 +5998,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 0}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 100
+  m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 100
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -6647,10 +6647,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 635776983}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.75}
-  m_AnchorMax: {x: 0.5, y: 0.75}
-  m_AnchoredPosition: {x: -200, y: -40}
-  m_SizeDelta: {x: 510.93, y: 403.19998}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -200, y: 50}
+  m_SizeDelta: {x: 450, y: 450}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2015256356
 MonoBehaviour:
@@ -6671,45 +6671,37 @@ MonoBehaviour:
     fireSprite: {fileID: 0}
     fireRate: 0
     isTower: 0
-    scaleMultiplier: 0
   - name: Soldier
     normalSprite: {fileID: -1898733338838041130, guid: 3358e240fae1f4e47b4112d97488ea87, type: 3}
     fireSprite: {fileID: 191638169214374201, guid: a53be7ce19f16ef4d8eb7b4d21016c46, type: 3}
     fireRate: 1.4
     isTower: 1
-    scaleMultiplier: 0
   - name: Ultra Simon
     normalSprite: {fileID: 21300000, guid: 2dfbb4b59265aca439b589f52614c2d0, type: 3}
     fireSprite: {fileID: 0}
     fireRate: 0
     isTower: 0
-    scaleMultiplier: 0
   - name: Assault
     normalSprite: {fileID: 21300000, guid: 59b7138fbc81f27478816f0dafc41a49, type: 3}
     fireSprite: {fileID: -3572337100545077531, guid: b5bb784877337984c809320f197e9bd6, type: 3}
     fireRate: 1
     isTower: 1
-    scaleMultiplier: 0
   - name: Simon King
     normalSprite: {fileID: 21300000, guid: 2ecc166ac44a888438d1f1b1919c302d, type: 3}
     fireSprite: {fileID: 0}
     fireRate: 0
     isTower: 0
-    scaleMultiplier: 0
   - name: Sniper
     normalSprite: {fileID: -4113342818379277879, guid: a3e704711cd217141a8006168c976213, type: 3}
     fireSprite: {fileID: 6802293868107920993, guid: 631237bf4eca9914697785dde7c7ed07, type: 3}
     fireRate: 3
     isTower: 1
-    scaleMultiplier: 0
   cycleDuration: 4
   spinDuration: 1
   swaySpeed: 2
   swayAmplitude: 8
-  towerVerticalOffset: 100
+  towerVerticalOffset: 0
   simonVerticalOffset: -40
-  uiPixelsPerUnit: 180
-  currentIndex: 0
 --- !u!114 &2015256357
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -458,6 +458,14 @@ public class PauseMenuManager : MonoBehaviour
 
     private void SetupOptionsUI()
     {
+        if (optionsPanel != null)
+        {
+            if (volumeSlider == null || !volumeSlider.transform.IsChildOf(optionsPanel.transform))
+            {
+                volumeSlider = optionsPanel.GetComponentInChildren<Slider>(true);
+            }
+        }
+
         // Language setup
         if (languageToggleButton != null)
         {
@@ -472,7 +480,7 @@ public class PauseMenuManager : MonoBehaviour
             volumeSlider.minValue = 0f;
             volumeSlider.maxValue = 100f;
             volumeSlider.onValueChanged.RemoveAllListeners();
-            volumeSlider.SetValueWithoutNotify(DifficultySettings.gameVolume);
+            volumeSlider.value = DifficultySettings.gameVolume;
             volumeSlider.onValueChanged.AddListener(OnVolumeSliderChanged);
             Debug.Log("PauseMenuManager bound VolumeSlider with current value " + DifficultySettings.gameVolume);
         }
@@ -522,6 +530,29 @@ public class PauseMenuManager : MonoBehaviour
     private void OnGlobalVolumeChanged(float normalizedVolume)
     {
         AudioListener.volume = normalizedVolume;
+
+        Canvas canvas = GetOverlayCanvas();
+        if (canvas != null)
+        {
+            AudioSource audioSource = canvas.GetComponent<AudioSource>();
+            if (audioSource != null)
+            {
+                audioSource.volume = normalizedVolume;
+            }
+        }
+    }
+
+    private Canvas GetOverlayCanvas()
+    {
+        Canvas[] canvases = Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (var c in canvases)
+        {
+            if (c.renderMode == RenderMode.ScreenSpaceOverlay)
+            {
+                return c;
+            }
+        }
+        return null;
     }
 
     private void OnParticleTogglePressed()
