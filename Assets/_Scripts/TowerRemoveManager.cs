@@ -172,7 +172,7 @@ public class TowerRemoveManager : MonoBehaviour
         Tower[] allTowers = Object.FindObjectsByType<Tower>(FindObjectsInactive.Exclude);
         foreach (var t in allTowers)
         {
-            if (Vector2.Distance(t.transform.position, mouseWorldPos) <= 1.2f)
+            if (t != null && Vector2.Distance(t.transform.position, mouseWorldPos) <= 1.2f)
             {
                 return t;
             }
@@ -193,4 +193,6 @@ public class TowerRemoveManager : MonoBehaviour
             lastHoveredTower = null;
         }
     }
+
+    private SpriteRenderer cachedSpriteRenderer;
 }

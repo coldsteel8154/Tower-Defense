@@ -44,6 +44,17 @@ public class Tower : MonoBehaviour
         if (rangeChild != null)
         {
             rangeRenderer = rangeChild.GetComponent<SpriteRenderer>();
+            
+            // Set very low alpha so overlaps don't create dark areas
+            // 0.1 + 0.1 overlap = 0.19 (still very light)
+            if (rangeRenderer != null)
+            {
+                Color rangeColor = rangeRenderer.color;
+                rangeColor.a = 0.1f;
+                rangeRenderer.color = rangeColor;
+                rangeRenderer.sortingLayerID = spriteRenderer != null ? spriteRenderer.sortingLayerID : rangeRenderer.sortingLayerID;
+                rangeRenderer.sortingOrder = spriteRenderer != null ? spriteRenderer.sortingOrder - 1 : -1;
+            }
         }
     }
     
@@ -57,6 +68,12 @@ public class Tower : MonoBehaviour
     {
         // Ensure that whenever the component becomes enabled at runtime it has correct stats
         ApplyClassDamage();
+        DifficultySettings.OnShowAllTowerRangesChanged += UpdateRangeVisibility;
+    }
+
+    void OnDisable()
+    {
+        DifficultySettings.OnShowAllTowerRangesChanged -= UpdateRangeVisibility;
     }
 
     public void ApplyClassDamage()
@@ -210,7 +227,8 @@ public class Tower : MonoBehaviour
     {
         if (rangeRenderer == null) return;
 
-        bool shouldShow = isHovered || (TowerPlacementManager.instance != null && TowerPlacementManager.instance.IsPlacing);
+        bool isPlacing = TowerPlacementManager.instance != null && TowerPlacementManager.instance.IsPlacing;
+        bool shouldShow = isHovered || (isPlacing && DifficultySettings.showAllTowerRangesWhenPlacing);
         if (rangeRenderer.enabled != shouldShow)
         {
             rangeRenderer.enabled = shouldShow;

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class EnemyManager : MonoBehaviour
@@ -83,6 +84,7 @@ public class EnemyManager : MonoBehaviour
             waveText = CreateWaveTextUI();
         }
 
+        EnsureWaveTextClickable();
         UpdateWaveUI();
 
         // Disable original SpawnManager if it exists so it doesn't conflict!
@@ -105,10 +107,11 @@ public class EnemyManager : MonoBehaviour
         // Skip normal updates in tutorial mode
         if (DifficultySettings.isTutorial) return;
 
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        // Use cached enemy list instead of expensive scene search
+        int enemyCount = SpawnManager.enemy_list != null ? SpawnManager.enemy_list.Count : 0;
 
         // Detect wave end
-        if (wavedone && enemies.Length == 0)
+        if (wavedone && enemyCount == 0)
         {
             if (wave == 20 && !victoryShownForWave20)
             {
@@ -133,25 +136,19 @@ public class EnemyManager : MonoBehaviour
                 int secondsLeft = Mathf.CeilToInt(Mathf.Max(0f, autoStartDelay - clearTimer));
                 string englishText = $"Wave {wave} Cleared!\nStarting in {secondsLeft}s — Press [Enter] to start now";
                 string chineseText = $"第 {wave} 波已清空！\n{secondsLeft} 秒後開始 — 按 [Enter] 立即開始";
-                var localized = waveText.GetComponent<LocalizedText>();
-                if (localized != null)
+                
+                LocalizedText localized = waveText.GetComponent<LocalizedText>();
+                if (localized == null)
                 {
-                    localized.SetContent(englishText, chineseText);
+                    localized = waveText.gameObject.AddComponent<LocalizedText>();
                 }
-                else
-                {
-                    waveText.text = DifficultySettings.selectedLanguage == DifficultySettings.Language.TraditionalChinese ? chineseText : englishText;
-                }
+                localized.SetContent(englishText, chineseText);
             }
 
-            // Immediate start via Enter
+            // Immediate start via Enter or click on the countdown text
             if (Input.GetKeyDown(KeyCode.Return))
             {
-                awaitingNextWave = false;
-                wave++;
-                wavedone = false;
-                UpdateWaveUI();
-                SetWave();
+                SkipWaveCountdown();
             }
 
             // Auto-start when timer elapses
@@ -170,13 +167,18 @@ public class EnemyManager : MonoBehaviour
         }
 
         // Cheat: Destroy all enemies instantly
-        if (Input.GetKeyDown(KeyCode.D) && wavedone)
+        if (Input.GetKeyDown(KeyCode.D) && wavedone && SpawnManager.enemy_list != null)
         {
-            for (int i = 0; i < enemies.Length; i++)
+            for (int i = SpawnManager.enemy_list.Count - 1; i >= 0; i--)
             {
-                Destroy(enemies[i]);
+                Destroy(SpawnManager.enemy_list[i]);
             }
         }
+    }
+
+    private void OnDisable()
+    {
+        DifficultySettings.OnVolumeChanged -= OnGlobalVolumeChanged;
     }
 
     public void StartNextWaveAfterVictory()
@@ -189,6 +191,41 @@ public class EnemyManager : MonoBehaviour
         SetWave();
     }
 
+    private void SkipWaveCountdown()
+    {
+        if (!awaitingNextWave || !wavedone)
+        {
+            return;
+        }
+
+        awaitingNextWave = false;
+        wave++;
+        wavedone = false;
+        UpdateWaveUI();
+        SetWave();
+    }
+
+    private void EnsureWaveTextClickable()
+    {
+        if (waveText == null)
+        {
+            return;
+        }
+
+        Button button = waveText.GetComponent<Button>();
+        if (button == null)
+        {
+            button = waveText.gameObject.AddComponent<Button>();
+        }
+
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(SkipWaveCountdown);
+        button.interactable = true;
+
+        button.targetGraphic = waveText;
+        waveText.raycastTarget = true;
+    }
+
     public void SetWaveForce()
     {
         if (spawnCoroutine != null)
@@ -196,11 +233,13 @@ public class EnemyManager : MonoBehaviour
             StopCoroutine(spawnCoroutine);
         }
 
-        // Destroy all existing enemies
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        for (int i = 0; i < enemies.Length; i++)
+        // Destroy all existing enemies using cached list instead of scene search
+        if (SpawnManager.enemy_list != null)
         {
-            Destroy(enemies[i]);
+            for (int i = SpawnManager.enemy_list.Count - 1; i >= 0; i--)
+            {
+                Destroy(SpawnManager.enemy_list[i]);
+            }
         }
 
         wavedone = false;
@@ -266,27 +305,6 @@ public class EnemyManager : MonoBehaviour
 
     IEnumerator spawn()
     {
-        // Spawning delay scaling: decreases delay as wave increases (i.e. spawning speed increases!)
-        float delayFactor = Mathf.Max(0.15f, 1.0f - (wave - 1) * 0.04f);
-        
-        // Difficulty delay factor
-        float difficultyDelayFactor = 1.0f;
-        switch (DifficultySettings.selectedDifficulty)
-        {
-            case DifficultySettings.Difficulty.Easy:
-                difficultyDelayFactor = 1.3f; // Slower frequency
-                break;
-            case DifficultySettings.Difficulty.Normal:
-                difficultyDelayFactor = 1.0f;
-                break;
-            case DifficultySettings.Difficulty.Hard:
-                difficultyDelayFactor = 0.75f; // Higher frequency
-                break;
-            case DifficultySettings.Difficulty.Hardcore:
-                difficultyDelayFactor = 0.6f; // Extremely fast
-                break;
-        }
-
         var balanceDifficulty = DifficultySettings.GetBalanceDifficulty();
         var spawnRange = GameBalanceSettings.GetSpawnDelayRange(wave, balanceDifficulty);
         float spawnDelayMin = spawnRange.min;
@@ -365,15 +383,15 @@ public class EnemyManager : MonoBehaviour
         {
             string englishText = $"Wave: {wave}";
             string chineseText = $"波次：{wave}";
-            var localized = waveText.GetComponent<LocalizedText>();
-            if (localized != null)
+            
+            // Ensure LocalizedText exists and use it
+            LocalizedText localized = waveText.GetComponent<LocalizedText>();
+            if (localized == null)
             {
-                localized.SetContent(englishText, chineseText);
+                localized = waveText.gameObject.AddComponent<LocalizedText>();
             }
-            else
-            {
-                waveText.text = DifficultySettings.selectedLanguage == DifficultySettings.Language.TraditionalChinese ? chineseText : englishText;
-            }
+            
+            localized.SetContent(englishText, chineseText);
         }
     }
 
@@ -390,8 +408,14 @@ public class EnemyManager : MonoBehaviour
             if (existingText != null)
             {
                 existingText.raycastTarget = false;
+                // Ensure LocalizedText component exists on existing wave text
+                LocalizedText localized = existing.GetComponent<LocalizedText>();
+                if (localized == null)
+                {
+                    localized = existing.gameObject.AddComponent<LocalizedText>();
+                }
+                return existingText;
             }
-            return existingText;
         }
 
         GameObject go = new GameObject("WaveText");
@@ -406,7 +430,6 @@ public class EnemyManager : MonoBehaviour
 
         TextMeshProUGUI tmp = go.AddComponent<TextMeshProUGUI>();
         var localizedText = go.AddComponent<LocalizedText>();
-        localizedText.SetContent("Wave: 1", "波次：1");
         
         // Copy font from any existing TMP text in the scene!
         var existingTmp = Object.FindAnyObjectByType<TextMeshProUGUI>();
@@ -478,11 +501,7 @@ public class EnemyManager : MonoBehaviour
             audioSource.volume = normalizedVolume;
         }
     }
-
-    private void OnDisable()
-    {
-        DifficultySettings.OnVolumeChanged -= OnGlobalVolumeChanged;
-    }
 }
+
 
 

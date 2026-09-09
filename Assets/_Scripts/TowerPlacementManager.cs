@@ -25,8 +25,8 @@ public class TowerPlacementManager : MonoBehaviour
     [Header("Visual Feedback")]
     [SerializeField] private Color validColor = new Color(0.3f, 1.0f, 0.3f, 0.7f);
     [SerializeField] private Color invalidColor = new Color(1.0f, 0.3f, 0.3f, 0.7f);
-    [SerializeField] private Color validRangeColor = new Color(0.3f, 1.0f, 0.3f, 0.2f);
-    [SerializeField] private Color invalidRangeColor = new Color(1.0f, 0.3f, 0.3f, 0.2f);
+    [SerializeField] private Color validRangeColor = new Color(0.3f, 1.0f, 0.3f, 0.1f);
+    [SerializeField] private Color invalidRangeColor = new Color(1.0f, 0.3f, 0.3f, 0.1f);
 
     private GameObject previewInstance;
     private SpriteRenderer previewMainRenderer;

@@ -12,10 +12,12 @@ public class Enemy : MonoBehaviour
     private Transform checkpoint;
     private int index = 0;
     private Coroutine pushCoroutine;
+    private SpriteRenderer cachedSpriteRenderer;
     
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        cachedSpriteRenderer = GetComponent<SpriteRenderer>();
     }
     
     void Start()
@@ -75,10 +77,9 @@ public class Enemy : MonoBehaviour
         }
 
         // Flip sprite to face movement
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        if (sr != null && direction.x != 0f)
+        if (cachedSpriteRenderer != null && direction.x != 0f)
         {
-            sr.flipX = direction.x < 0f;
+            cachedSpriteRenderer.flipX = direction.x < 0f;
         }
 
         if (rb != null)

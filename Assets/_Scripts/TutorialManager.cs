@@ -29,6 +29,7 @@ public class TutorialManager : MonoBehaviour
 
     [Header("UI Canvas & Elements")]
     private GameObject tutorialCanvas;
+    private TutorialInputBlocker inputBlocker;
     private GameObject dialogueBox;
     private TMP_Text dialogueText;
     private GameObject arrowIndicator;
@@ -116,6 +117,14 @@ public class TutorialManager : MonoBehaviour
             currentStep = TutorialStep.GameplayWelcome;
             RunStep();
         }
+        else if (scene.name == "MainMenu")
+        {
+            CreateTutorialCanvas();
+            SetupEndTutorialButton();
+
+            currentStep = TutorialStep.Welcome_ClickPlay;
+            RunStep();
+        }
         else if (scene.name == "SampleScene")
         {
             // Just in case SampleScene is loaded, treat it similarly
@@ -162,7 +171,7 @@ public class TutorialManager : MonoBehaviour
         if (confirmEndPopUp != null && confirmEndPopUp.activeSelf) return;
 
         // If clicking on End Tutorial button, don't interfere
-        if (RectTransformUtility.RectangleContainsScreenPoint(endTutorialButton.GetComponent<RectTransform>(), Input.mousePosition))
+        if (endTutorialButton != null && RectTransformUtility.RectangleContainsScreenPoint(endTutorialButton.GetComponent<RectTransform>(), Input.mousePosition))
         {
             return;
         }
@@ -212,6 +221,7 @@ public class TutorialManager : MonoBehaviour
         HideArrow();
         stepClickToAdvance = false;
         targetButton = null;
+        UpdateInputBlocker();
 
         if (dialogueBox != null) dialogueBox.SetActive(true);
 
@@ -220,7 +230,7 @@ public class TutorialManager : MonoBehaviour
             case TutorialStep.Welcome_ClickPlay:
                 SetDialogue(Localize("Welcome to Simon Universe! Let's start by clicking the <b>PLAY</b> button to choose your difficulty.",
                                     "歡迎來到賽門宇宙！現在點擊 <b>開始遊戲</b> 按鈕來選擇難度。"));
-                FindAndPointToButton("PlayButton");
+                StartCoroutine(FindAndPointToButtonWhenReady("PlayButton"));
                 break;
 
             case TutorialStep.DifficultyIntro_Step:
@@ -232,22 +242,13 @@ public class TutorialManager : MonoBehaviour
             case TutorialStep.ClickEasy:
                 SetDialogue(Localize("Now, let's select <b>EASY</b> mode for our tutorial run.",
                                     "現在，讓我們為教學選擇 <b>簡單</b> 模式。"));
-                // Find Easy button
-                if (MainMenuManager.instance != null && MainMenuManager.instance.easyButton != null)
-                {
-                    targetButton = MainMenuManager.instance.easyButton;
-                    ShowArrowAtButton(targetButton);
-                }
+                StartCoroutine(FindAndPointToButtonWhenReady("EasyButton"));
                 break;
 
             case TutorialStep.ClickProceed:
                 SetDialogue(Localize("Great choice! Click the <b>START GAME</b> button below to begin.",
                                     "好選擇！點擊下面的 <b>開始遊戲</b> 按鈕開始。"));
-                if (MainMenuManager.instance != null && MainMenuManager.instance.proceedButton != null)
-                {
-                    targetButton = MainMenuManager.instance.proceedButton;
-                    ShowArrowAtButton(targetButton);
-                }
+                StartCoroutine(FindAndPointToButtonWhenReady("ProceedButton"));
                 break;
 
             case TutorialStep.GameplayWelcome:
@@ -275,6 +276,7 @@ public class TutorialManager : MonoBehaviour
                     {
                         targetButton = sidebarBuyBtn;
                         ShowArrowAtButton(targetButton);
+                        UpdateInputBlocker();
                     }
                 }
                 break;
@@ -354,14 +356,37 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
+    private IEnumerator FindAndPointToButtonWhenReady(string name)
+    {
+        targetButton = null;
+
+        for (int attempt = 0; attempt < 5 && targetButton == null; attempt++)
+        {
+            yield return null;
+            FindAndPointToButton(name);
+        }
+
+        UpdateInputBlocker();
+    }
+
     private void ShowArrowAtButton(Button btn)
     {
         if (arrowIndicator == null) CreateArrow();
         if (arrowIndicator != null)
         {
+            arrowIndicator.transform.SetAsLastSibling();
             arrowIndicator.SetActive(true);
             arrowIndicator.transform.position = btn.transform.position + new Vector3(0, 50f, 0);
         }
+    }
+
+    private void UpdateInputBlocker()
+    {
+        if (inputBlocker == null) return;
+
+        inputBlocker.SetAllowedTarget(
+            targetButton != null ? targetButton.GetComponent<RectTransform>() : null,
+            endTutorialButton != null ? endTutorialButton.GetComponent<RectTransform>() : null);
     }
 
     private void HideArrow()
@@ -498,6 +523,40 @@ public class TutorialManager : MonoBehaviour
 
             tutorialCanvas.AddComponent<GraphicRaycaster>();
         }
+
+        inputBlocker = tutorialCanvas.GetComponentInChildren<TutorialInputBlocker>(true);
+        if (inputBlocker == null)
+        {
+            GameObject blockerObject = new GameObject("InputBlocker");
+            blockerObject.transform.SetParent(tutorialCanvas.transform, false);
+
+            RectTransform blockerRect = blockerObject.AddComponent<RectTransform>();
+            blockerRect.anchorMin = Vector2.zero;
+            blockerRect.anchorMax = Vector2.one;
+            blockerRect.offsetMin = Vector2.zero;
+            blockerRect.offsetMax = Vector2.zero;
+
+            Image blockerImage = blockerObject.AddComponent<Image>();
+            blockerImage.color = Color.clear;
+            blockerImage.raycastTarget = false;
+            inputBlocker = blockerObject.AddComponent<TutorialInputBlocker>();
+        }
+
+        if (inputBlocker != null)
+        {
+            Image blockerImage = inputBlocker.GetComponent<Image>();
+            if (blockerImage != null)
+            {
+                blockerImage.raycastTarget = false;
+            }
+            inputBlocker.enabled = false;
+        }
+
+        if (inputBlocker != null)
+        {
+            inputBlocker.transform.SetAsFirstSibling();
+        }
+        UpdateInputBlocker();
 
         // Dialogue Box
         dialogueBox = tutorialCanvas.transform.Find("DialogueBox")?.gameObject;

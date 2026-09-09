@@ -31,10 +31,11 @@ public class TowerSidebarUI : MonoBehaviour
 
     private bool isOpen = true;
     private Coroutine slideCoroutine;
-    private float sidebarWidth = 200f;
+    private float sidebarWidth = 421.11f;
     private float closedPosX;
     private float openPosX;
-
+    private float openPosXOffset = 0f; // Offset to ensure the sidebar is fully visible when open
+    private float closedPosXOffset = 122.0675f; // Offset to ensure the sidebar is fully hidden when closed    
     private void Start()
     {
         // Ensure there is an EventSystem and a Canvas so tooltips and UI events work
@@ -56,8 +57,8 @@ public class TowerSidebarUI : MonoBehaviour
         if (sidebarPanel != null)
         {
             sidebarWidth = sidebarPanel.rect.width;
-            openPosX = sidebarPanel.anchoredPosition.x;
-            closedPosX = openPosX - sidebarWidth;
+            openPosX = sidebarPanel.anchoredPosition.x+openPosXOffset; // Adjusted to ensure the sidebar is fully visible when open
+            closedPosX = openPosX - sidebarWidth ; // Adjusted to ensure the sidebar is fully hidden when closed
         }
 
         if (toggleButton != null)
@@ -162,7 +163,7 @@ public class TowerSidebarUI : MonoBehaviour
         {
             StopCoroutine(slideCoroutine);
         }
-        slideCoroutine = StartCoroutine(SlideRoutine(isOpen ? openPosX : closedPosX));
+        slideCoroutine = StartCoroutine(SlideRoutine(isOpen ? openPosX : closedPosX-closedPosXOffset));
     }
 
     private void UpdateArrowText()

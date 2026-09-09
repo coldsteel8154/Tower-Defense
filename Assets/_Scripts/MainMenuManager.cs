@@ -29,6 +29,8 @@ public class MainMenuManager : MonoBehaviour
     public Slider volumeSlider;
     public Button particleToggleButton;
     public TMP_Text particleToggleText;
+    public Button towerRangeToggleButton;
+    public TMP_Text towerRangeToggleText;
 
     [Header("Audio")]
     public AudioSource bgmSource;
@@ -80,6 +82,7 @@ public class MainMenuManager : MonoBehaviour
 
         if (languageToggleButton == null) languageToggleButton = FindButtonInScene("LanguageToggleButton");
         if (particleToggleButton == null) particleToggleButton = FindButtonInScene("ParticleToggleButton");
+        if (towerRangeToggleButton == null) towerRangeToggleButton = FindButtonInScene("ShowAllTowerRangesToggleButton");
         if (volumeSlider == null)
         {
             var sliderGo = GameObject.Find("VolumeSlider");
@@ -113,7 +116,8 @@ public class MainMenuManager : MonoBehaviour
         BindButton("TutorialButton", () => {
             GameObject tutorialMgrGo = new GameObject("TutorialManager");
             TutorialManager tm = tutorialMgrGo.AddComponent<TutorialManager>();
-            tm.StartTutorial();
+            DifficultySettings.isTutorial = true;
+            SceneManager.LoadScene("MainMenu");
         });
 
         // Bind Back Buttons (using recursive search!)
@@ -172,7 +176,8 @@ public class MainMenuManager : MonoBehaviour
                 b.onClick.AddListener(() => {
                     GameObject tutorialMgrGo = new GameObject("TutorialManager");
                     TutorialManager tm = tutorialMgrGo.AddComponent<TutorialManager>();
-                    tm.StartTutorial();
+                    DifficultySettings.isTutorial = true;
+                    SceneManager.LoadScene("MainMenu");
                 });
             }
         }
@@ -210,8 +215,6 @@ public class MainMenuManager : MonoBehaviour
             }
         }
 
-        // Check if coming back from game to tutorial or regular
-        DifficultySettings.isTutorial = false;
     }
 
     private void Update()
@@ -390,6 +393,41 @@ public class MainMenuManager : MonoBehaviour
             particleToggleButton.onClick.AddListener(OnParticleTogglePressed);
             UpdateParticleText();
         }
+
+        if (towerRangeToggleButton != null)
+        {
+            towerRangeToggleButton.onClick.RemoveAllListeners();
+            towerRangeToggleButton.onClick.AddListener(ToggleTowerRanges);
+            UpdateTowerRangeText();
+        }
+    }
+
+    private void ToggleTowerRanges()
+    {
+        DifficultySettings.SetShowAllTowerRangesWhenPlacing(!DifficultySettings.showAllTowerRangesWhenPlacing);
+        UpdateTowerRangeText();
+    }
+
+    private void UpdateTowerRangeText()
+    {
+        if (towerRangeToggleButton == null) return;
+        if (towerRangeToggleText == null) towerRangeToggleText = towerRangeToggleButton.GetComponentInChildren<TMP_Text>();
+        if (towerRangeToggleText != null)
+        {
+            string englishText = "Show All Tower Ranges While Placing/Moving: " + (DifficultySettings.showAllTowerRangesWhenPlacing ? "On" : "Off");
+            string chineseText = "放置/移動時顯示所有防禦塔範圍：" + (DifficultySettings.showAllTowerRangesWhenPlacing ? "開" : "關");
+            LocalizedText localized = towerRangeToggleText.GetComponent<LocalizedText>();
+            if (localized != null)
+            {
+                localized.SetContent(englishText, chineseText);
+            }
+            else
+            {
+                towerRangeToggleText.text = DifficultySettings.selectedLanguage == DifficultySettings.Language.English
+                    ? englishText
+                    : chineseText;
+            }
+        }
     }
 
     private void ToggleLanguage()
@@ -403,6 +441,7 @@ public class MainMenuManager : MonoBehaviour
             DifficultySettings.SetLanguage(DifficultySettings.Language.English);
         }
         UpdateLanguageText();
+        UpdateTowerRangeText();
     }
 
     private void UpdateLanguageText()

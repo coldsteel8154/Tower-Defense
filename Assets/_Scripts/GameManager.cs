@@ -30,6 +30,9 @@ public class GameManager : MonoBehaviour
     public GameObject deathParticlePrefab;
     public bool isImmortal = false;
 
+    private string livesLabel = "Lives:";
+    private string moneyLabel = "Money:";
+
     private void Awake()
     {
         if (instance == null)
@@ -79,6 +82,10 @@ public class GameManager : MonoBehaviour
 
         // Set initial stats based on difficulty!
         ApplyDifficultySettings();
+
+        // Listen for language changes
+        DifficultySettings.OnLanguageChanged += UpdateLocalizationLabels;
+        UpdateLocalizationLabels();
 
         UpdateLivesUI();
         UpdateMoneyUI();
@@ -359,7 +366,7 @@ public class GameManager : MonoBehaviour
     {
         if (lives != null)
         {
-            lives.text = "Lives:" + playerLives;
+            lives.text = livesLabel + playerLives;
         }
     }
 
@@ -367,8 +374,30 @@ public class GameManager : MonoBehaviour
     {
         if (money != null)
         {
-            money.text = "Money:" + playerMoney;
+            money.text = moneyLabel + playerMoney;
         }
+    }
+
+    private void UpdateLocalizationLabels()
+    {
+        if (DifficultySettings.selectedLanguage == DifficultySettings.Language.TraditionalChinese)
+        {
+            livesLabel = "生命:";
+            moneyLabel = "金幣:";
+        }
+        else
+        {
+            livesLabel = "Lives:";
+            moneyLabel = "Money:";
+        }
+
+        UpdateLivesUI();
+        UpdateMoneyUI();
+    }
+
+    private void OnDisable()
+    {
+        DifficultySettings.OnLanguageChanged -= UpdateLocalizationLabels;
     }
 }
 

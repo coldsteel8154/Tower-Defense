@@ -19,6 +19,8 @@ public class PauseMenuManager : MonoBehaviour
     public Slider volumeSlider;
     public Button particleToggleButton;
     public TMP_Text particleToggleText;
+    public Button towerRangeToggleButton;
+    public TMP_Text towerRangeToggleText;
 
     private bool isPaused = false;
     public bool IsPaused => isPaused;
@@ -68,6 +70,7 @@ public class PauseMenuManager : MonoBehaviour
         if (confirmEndPanel == null) confirmEndPanel = FindGameObjectInScene("ConfirmEndPanel");
         if (languageToggleButton == null) languageToggleButton = FindButtonInScene("LanguageToggleButton");
         if (particleToggleButton == null) particleToggleButton = FindButtonInScene("ParticleToggleButton");
+        if (towerRangeToggleButton == null) towerRangeToggleButton = FindButtonInScene("ShowAllTowerRangesToggleButton");
         if (volumeSlider == null)
         {
             var sliderGo = FindGameObjectInScene("VolumeSlider");
@@ -111,6 +114,7 @@ public class PauseMenuManager : MonoBehaviour
         }
 
         BindAllButtons();
+        BindMobilePauseButton();
         SetupOptionsUI();
         StartCoroutine(RetryBindingsCoroutine());
     }
@@ -127,6 +131,8 @@ public class PauseMenuManager : MonoBehaviour
 
     private void RetryBindEssentialButtons()
     {
+        BindMobilePauseButton();
+
         // Ensure pause/resume and end-game popup are wired
         Button resume = FindButtonInScene("PauseResumeButton");
         if (resume != null)
@@ -368,6 +374,63 @@ public class PauseMenuManager : MonoBehaviour
         }
     }
 
+    private void BindMobilePauseButton()
+    {
+        Button mobilePauseButton = null;
+
+        GameObject mobilePauseGo = GameObject.Find("mobilepausebutton");
+        if (mobilePauseGo == null)
+        {
+            foreach (var obj in Resources.FindObjectsOfTypeAll<GameObject>())
+            {
+                if (obj == null || !obj.scene.IsValid()) continue;
+                string candidateName = obj.name.Trim();
+                if (candidateName.Equals("mobilepausebutton", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    mobilePauseGo = obj;
+                    break;
+                }
+            }
+        }
+
+        if (mobilePauseGo != null)
+        {
+            mobilePauseButton = mobilePauseGo.GetComponent<Button>();
+        }
+
+        if (mobilePauseButton == null)
+        {
+            foreach (var btn in Resources.FindObjectsOfTypeAll<Button>())
+            {
+                if (btn == null || btn.gameObject == null) continue;
+                string candidateName = btn.gameObject.name.Trim();
+                if (candidateName.Equals("mobilepausebutton", System.StringComparison.OrdinalIgnoreCase) ||
+                    candidateName.StartsWith("mobilepausebutton", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    mobilePauseButton = btn;
+                    break;
+                }
+            }
+        }
+
+        if (mobilePauseButton != null)
+        {
+            mobilePauseButton.onClick.RemoveAllListeners();
+            mobilePauseButton.onClick.AddListener(() =>
+            {
+                if (PauseMenuManager.instance != null)
+                {
+                    PauseMenuManager.instance.TogglePause();
+                }
+            });
+            mobilePauseButton.interactable = true;
+        }
+        else
+        {
+            Debug.LogWarning("PauseMenuManager could not find the mobile pause button (name may include trailing spaces or be not yet created). ");
+        }
+    }
+
     public void TogglePause()
     {
         if (isPaused)
@@ -496,6 +559,41 @@ public class PauseMenuManager : MonoBehaviour
             particleToggleButton.onClick.AddListener(OnParticleTogglePressed);
             UpdateParticleText();
         }
+
+        if (towerRangeToggleButton != null)
+        {
+            towerRangeToggleButton.onClick.RemoveAllListeners();
+            towerRangeToggleButton.onClick.AddListener(ToggleTowerRanges);
+            UpdateTowerRangeText();
+        }
+    }
+
+    private void ToggleTowerRanges()
+    {
+        DifficultySettings.SetShowAllTowerRangesWhenPlacing(!DifficultySettings.showAllTowerRangesWhenPlacing);
+        UpdateTowerRangeText();
+    }
+
+    private void UpdateTowerRangeText()
+    {
+        if (towerRangeToggleButton == null) return;
+        if (towerRangeToggleText == null) towerRangeToggleText = towerRangeToggleButton.GetComponentInChildren<TMP_Text>();
+        if (towerRangeToggleText != null)
+        {
+            string englishText = "Show All Tower Ranges While Placing/Moving: " + (DifficultySettings.showAllTowerRangesWhenPlacing ? "On" : "Off");
+            string chineseText = "放置/移動時顯示所有防禦塔範圍：" + (DifficultySettings.showAllTowerRangesWhenPlacing ? "開" : "關");
+            LocalizedText localized = towerRangeToggleText.GetComponent<LocalizedText>();
+            if (localized != null)
+            {
+                localized.SetContent(englishText, chineseText);
+            }
+            else
+            {
+                towerRangeToggleText.text = DifficultySettings.selectedLanguage == DifficultySettings.Language.English
+                    ? englishText
+                    : chineseText;
+            }
+        }
     }
 
     private void ToggleLanguage()
@@ -509,6 +607,7 @@ public class PauseMenuManager : MonoBehaviour
             DifficultySettings.SetLanguage(DifficultySettings.Language.English);
         }
         UpdateLanguageText();
+        UpdateTowerRangeText();
     }
 
     private void UpdateLanguageText()

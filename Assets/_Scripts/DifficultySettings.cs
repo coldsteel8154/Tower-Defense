@@ -9,6 +9,7 @@ public static class DifficultySettings
     public static Difficulty selectedDifficulty = Difficulty.Normal;
     public static Language selectedLanguage = Language.English;
     public static string particleSetting = "All"; // "All", "Less", "Least"
+    public static bool showAllTowerRangesWhenPlacing = PlayerPrefs.GetInt("ShowAllTowerRangesWhenPlacing", 1) == 1;
 
     private static float _gameVolume = -1f;
 
@@ -49,6 +50,7 @@ public static class DifficultySettings
 
     public static event Action OnLanguageChanged;
     public static event Action<float> OnVolumeChanged;
+    public static event Action OnShowAllTowerRangesChanged;
 
     public static void SetVolume(float volume)
     {
@@ -63,5 +65,13 @@ public static class DifficultySettings
     {
         selectedLanguage = lang;
         OnLanguageChanged?.Invoke();
+    }
+
+    public static void SetShowAllTowerRangesWhenPlacing(bool showAll)
+    {
+        showAllTowerRangesWhenPlacing = showAll;
+        PlayerPrefs.SetInt("ShowAllTowerRangesWhenPlacing", showAll ? 1 : 0);
+        PlayerPrefs.Save();
+        OnShowAllTowerRangesChanged?.Invoke();
     }
 }
