@@ -1,0 +1,14 @@
+{
+    "name": "Ianchen971031bruh.Kenney.Editor.Tests",
+    "references": [
+        "Ianchen971031bruh.Kenney.Editor",
+        "Ianchen971031bruh.Kenney"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": []
+}

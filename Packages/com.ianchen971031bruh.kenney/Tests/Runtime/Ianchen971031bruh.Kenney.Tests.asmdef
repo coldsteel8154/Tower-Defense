@@ -1,0 +1,11 @@
+{
+    "name": "Ianchen971031bruh.Kenney.Tests",
+    "references": [
+        "Ianchen971031bruh.Kenney"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": []
+}

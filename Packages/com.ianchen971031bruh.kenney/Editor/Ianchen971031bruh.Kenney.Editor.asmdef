@@ -1,0 +1,10 @@
+{
+    "name": "Ianchen971031bruh.Kenney.Editor",
+    "references": [
+      "Ianchen971031bruh.Kenney"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": []
+}

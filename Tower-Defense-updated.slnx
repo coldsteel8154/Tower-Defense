@@ -1,3 +1,14 @@
 ﻿<Solution>
   <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="CFXRRuntime.csproj" />
+  <Project Path="CFXRDemo.csproj" />
+  <Project Path="CFXREditor.csproj" />
+  <Project Path="Ianchen971031bruh.Kenney.Editor.Tests.csproj" />
+  <Project Path="KinoBloom.Runtime.csproj" />
+  <Project Path="CFXR.WelcomeScreen.csproj" />
+  <Project Path="Ianchen971031bruh.Kenney.Editor.csproj" />
+  <Project Path="ToonyColorsPro.Demo.Editor.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="Ianchen971031bruh.Kenney.Tests.csproj" />
+  <Project Path="Ianchen971031bruh.Kenney.csproj" />
 </Solution>
