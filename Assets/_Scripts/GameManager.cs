@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public int playerLives = 10;
     public int playerMoney = 120;
+    public bool IsMoneyInfinite { get; private set; }
     
     [Header("Panels")]
     public GameObject defeatPanel;
@@ -234,8 +235,15 @@ public class GameManager : MonoBehaviour
     private void ApplyDifficultySettings()
     {
         var balanceDifficulty = DifficultySettings.GetBalanceDifficulty();
-        playerLives = GameBalanceSettings.GetPlayerLives(balanceDifficulty, DifficultySettings.isTutorial);
-        playerMoney = GameBalanceSettings.GetStartingMoney(balanceDifficulty);
+        playerLives = GameBalanceSettings.Instance.GetPlayerLives(balanceDifficulty, DifficultySettings.isTutorial);
+        playerMoney = GameBalanceSettings.Instance.GetStartingMoney(balanceDifficulty);
+        IsMoneyInfinite = false;
+    }
+
+    public void EnableInfiniteMoney()
+    {
+        IsMoneyInfinite = true;
+        UpdateMoneyUI();
     }
 
     public void LoseLife(int dmg)
@@ -290,7 +298,7 @@ public class GameManager : MonoBehaviour
         int completedWaves = EnemyManager.main != null ? EnemyManager.main.wave - 1 : 0;
         if (completedWaves < 0) completedWaves = 0;
 
-        int finalScore = GameBalanceSettings.CalculateScore(
+        int finalScore = GameBalanceSettings.Instance.CalculateScore(
             regularSimonKills,
             simonKingKills,
             ultraSimonKills,
@@ -374,7 +382,7 @@ public class GameManager : MonoBehaviour
     {
         if (money != null)
         {
-            money.text = moneyLabel + playerMoney;
+            money.text = moneyLabel + (IsMoneyInfinite ? "∞" : playerMoney.ToString());
         }
     }
 

@@ -1,0 +1,1301 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7c39616d8b33f24990cf0a9499d564f, type: 3}
+  m_Name: GameBalanceSettings
+  m_EditorClassIdentifier: Assembly-CSharp::GameBalanceSettings
+  easy:
+    playerLives: 20
+    startingMoney: 120
+    enemyHealthFactor: 0.75
+    enemySpeedFactor: 0.8
+    spawnFrequencyFactor: 1.3
+    rewardMultiplier: 1
+    scoreMultiplier: 0.8
+  normal:
+    playerLives: 10
+    startingMoney: 120
+    enemyHealthFactor: 1
+    enemySpeedFactor: 1
+    spawnFrequencyFactor: 1
+    rewardMultiplier: 1
+    scoreMultiplier: 1
+  hard:
+    playerLives: 5
+    startingMoney: 120
+    enemyHealthFactor: 1.25
+    enemySpeedFactor: 1.2
+    spawnFrequencyFactor: 0.75
+    rewardMultiplier: 1
+    scoreMultiplier: 1.25
+  hardcore:
+    playerLives: 1
+    startingMoney: 120
+    enemyHealthFactor: 1.5
+    enemySpeedFactor: 1.3
+    spawnFrequencyFactor: 0.6
+    rewardMultiplier: 0.5
+    scoreMultiplier: 2
+  soldierBaseCost: 60
+  assaultBaseCost: 100
+  sniperBaseCost: 250
+  fallbackTowerProgression:
+    level1Stats:
+      towerClass: 0
+      damage: 20
+      range: 8
+      fireRate: 1
+      cost: 100
+    tierDelta:
+      damageDelta: 0
+      intervalDelta: 0
+      rangeDelta: 0
+  recycleRefundRatio: 0.5
+  serializedMaxSlowCap: 0.85
+  minimumAttackInterval: 0.05
+  soldierProgression:
+    level1Stats:
+      towerClass: 1
+      damage: 25
+      range: 7
+      fireRate: 1
+      cost: 60
+    tierDelta:
+      damageDelta: 20
+      intervalDelta: -0.08
+      rangeDelta: 0.5
+  assaultProgression:
+    level1Stats:
+      towerClass: 2
+      damage: 40
+      range: 7
+      fireRate: 0.75
+      cost: 100
+    tierDelta:
+      damageDelta: 15
+      intervalDelta: -0.18
+      rangeDelta: 0
+  sniperProgression:
+    level1Stats:
+      towerClass: 3
+      damage: 80
+      range: 14
+      fireRate: 1.5
+      cost: 250
+    tierDelta:
+      damageDelta: 130
+      intervalDelta: 0.15
+      rangeDelta: 3.5
+  soldierTowerSprite: {fileID: -1898733338838041130, guid: 3358e240fae1f4e47b4112d97488ea87, type: 3}
+  assaultTowerSprite: {fileID: 21300000, guid: 59b7138fbc81f27478816f0dafc41a49, type: 3}
+  sniperTowerSprite: {fileID: -4113342818379277879, guid: a3e704711cd217141a8006168c976213, type: 3}
+  soldierFireSprite: {fileID: 191638169214374201, guid: a53be7ce19f16ef4d8eb7b4d21016c46, type: 3}
+  assaultFireSprite: {fileID: -3572337100545077531, guid: b5bb784877337984c809320f197e9bd6, type: 3}
+  sniperFireSprite: {fileID: 6802293868107920993, guid: 631237bf4eca9914697785dde7c7ed07, type: 3}
+  specialTowerEvolutionStats:
+  - towerType: 1
+    towerPrefab: {fileID: 7025671057251057409, guid: b7b4098563b13f14692ed76645da7166, type: 3}
+    soldierCount: 5
+    assaultCount: 0
+    sniperCount: 0
+    level5Stats:
+      towerClass: 0
+      damage: 130
+      range: 8.5
+      fireRate: 0.65
+      cost: 300
+    skillName: Veteran's Rally
+    skillDescription: Melee within 2 range; kills grant nearby towers +30% damage
+      and +20% attack speed for 5 seconds.
+    secondaryDamage: 140
+    secondaryRange: 2
+    secondaryHitWidth: 0
+    secondaryMaxTargets: 1
+    secondaryFireRate: 0.35
+    abilityRadius: 4
+    abilityDuration: 5
+    abilityCooldown: 0
+    abilityDamage: 0
+    abilitySlow: 0
+    abilitySlowDuration: 0
+    abilityKnockback: 0
+    abilityDamageMultiplier: 1
+    abilityAttackIntervalMultiplier: 1
+    abilityTriggerRadius: 0
+    abilityChance: 0
+    abilityEveryNthHit: 0
+    maxTargets: 0
+    coneAngle: 0
+    auraDamageBonus: 0.3
+    auraAttackSpeedBonus: 0.2
+    auraRangeBonus: 0
+    abilityPulseInterval: 0
+    visualFireDuration: 0
+    abilityDazzleDuration: 0
+    abilityStartupDelay: 0
+    projectileAirDuration: 0
+    projectileAirPeakHeight: 0
+    projectileAirRotationSpeed: 0
+    projectileBounceDuration: 0
+    projectileBounceDistance: 0
+    projectileBouncePeakHeight: 0
+    projectileBounceRotationSpeed: 0
+    projectileRollDuration: 0
+    projectileRollDistance: 0
+    projectileRollRotationSpeed: 0
+    projectileExplosionForwardOffset: 0
+    landmineVisualScaleMultiplier: 1
+    grenadeVisualScaleMultiplier: 1
+  - towerType: 2
+    towerPrefab: {fileID: 7025671057251057409, guid: 5df7ff9a05dddaf4da98edbe731448d7, type: 3}
+    soldierCount: 0
+    assaultCount: 5
+    sniperCount: 0
+    level5Stats:
+      towerClass: 0
+      damage: 65
+      range: 7
+      fireRate: 0.12
+      cost: 500
+    skillName: Gatling Frenzy
+    skillDescription: Every 10 seconds, fire a 60-degree fan for 4 seconds at twice
+      the attack speed with knockback.
+    secondaryDamage: 0
+    secondaryRange: 7
+    secondaryHitWidth: 0
+    secondaryMaxTargets: 1
+    secondaryFireRate: 0
+    abilityRadius: 0
+    abilityDuration: 4
+    abilityCooldown: 10
+    abilityDamage: 0
+    abilitySlow: 0
+    abilitySlowDuration: 0
+    abilityKnockback: 1.5
+    abilityDamageMultiplier: 1
+    abilityAttackIntervalMultiplier: 0.5
+    abilityTriggerRadius: 0
+    abilityChance: 0
+    abilityEveryNthHit: 0
+    maxTargets: 0
+    coneAngle: 60
+    auraDamageBonus: 0
+    auraAttackSpeedBonus: 0
+    auraRangeBonus: 0
+    abilityPulseInterval: 0
+    visualFireDuration: 0
+    abilityDazzleDuration: 0
+    abilityStartupDelay: 0
+    projectileAirDuration: 0
+    projectileAirPeakHeight: 0
+    projectileAirRotationSpeed: 0
+    projectileBounceDuration: 0
+    projectileBounceDistance: 0
+    projectileBouncePeakHeight: 0
+    projectileBounceRotationSpeed: 0
+    projectileRollDuration: 0
+    projectileRollDistance: 0
+    projectileRollRotationSpeed: 0
+    projectileExplosionForwardOffset: 0
+    landmineVisualScaleMultiplier: 1
+    grenadeVisualScaleMultiplier: 1
+  - towerType: 3
+    towerPrefab: {fileID: 7025671057251057409, guid: 99a20e335f9a22f46a3c0a86be71fe7e, type: 3}
+    soldierCount: 0
+    assaultCount: 0
+    sniperCount: 5
+    level5Stats:
+      towerClass: 0
+      damage: 680
+      range: 28
+      fireRate: 2.2
+      cost: 1250
+    skillName: Reaper's Seventh Bullet
+    skillDescription: Every 7 kills, execute the non-boss enemy nearest the path
+      end.
+    secondaryDamage: 0
+    secondaryRange: 0
+    secondaryHitWidth: 0
+    secondaryMaxTargets: 1
+    secondaryFireRate: 0.15
+    abilityRadius: 0
+    abilityDuration: 1
+    abilityCooldown: 0
+    abilityDamage: 0
+    abilitySlow: 0
+    abilitySlowDuration: 0
+    abilityKnockback: 0
+    abilityDamageMultiplier: 1
+    abilityAttackIntervalMultiplier: 1
+    abilityTriggerRadius: 0
+    abilityChance: 0
+    abilityEveryNthHit: 7
+    maxTargets: 0
+    coneAngle: 0
+    auraDamageBonus: 0
+    auraAttackSpeedBonus: 0
+    auraRangeBonus: 0
+    abilityPulseInterval: 0
+    visualFireDuration: 0
+    abilityDazzleDuration: 0
+    abilityStartupDelay: 0
+    projectileAirDuration: 0
+    projectileAirPeakHeight: 0
+    projectileAirRotationSpeed: 0
+    projectileBounceDuration: 0
+    projectileBounceDistance: 0
+    projectileBouncePeakHeight: 0
+    projectileBounceRotationSpeed: 0
+    projectileRollDuration: 0
+    projectileRollDistance: 0
+    projectileRollRotationSpeed: 0
+    projectileExplosionForwardOffset: 0
+    landmineVisualScaleMultiplier: 1
+    grenadeVisualScaleMultiplier: 1
+  - towerType: 4
+    towerPrefab: {fileID: 7025671057251057409, guid: efbe235e0910ed548aa12a00f2ef8d06, type: 3}
+    soldierCount: 4
+    assaultCount: 1
+    sniperCount: 0
+    level5Stats:
+      towerClass: 0
+      damage: 110
+      range: 8.5
+      fireRate: 0.5
+      cost: 340
+    skillName: Warcry Surge
+    skillDescription: Every 5 shots, nearby towers gain 25% attack speed for 3 seconds.
+    secondaryDamage: 0
+    secondaryRange: 0
+    secondaryHitWidth: 0
+    secondaryMaxTargets: 1
+    secondaryFireRate: 0
+    abilityRadius: 3.5
+    abilityDuration: 3
+    abilityCooldown: 0
+    abilityDamage: 0
+    abilitySlow: 0
+    abilitySlowDuration: 0
+    abilityKnockback: 0
+    abilityDamageMultiplier: 2
+    abilityAttackIntervalMultiplier: 1
+    abilityTriggerRadius: 0
+    abilityChance: 0.25
+    abilityEveryNthHit: 5
+    maxTargets: 0
+    coneAngle: 0
+    auraDamageBonus: 0
+    auraAttackSpeedBonus: 0
+    auraRangeBonus: 0
+    abilityPulseInterval: 0
+    visualFireDuration: 0
+    abilityDazzleDuration: 0
+    abilityStartupDelay: 0
+    projectileAirDuration: 0
+    projectileAirPeakHeight: 0
+    projectileAirRotationSpeed: 0
+    projectileBounceDuration: 0
+    projectileBounceDistance: 0
+    projectileBouncePeakHeight: 0
+    projectileBounceRotationSpeed: 0
+    projectileRollDuration: 0
+    projectileRollDistance: 0
+    projectileRollRotationSpeed: 0
+    projectileExplosionForwardOffset: 0
+    landmineVisualScaleMultiplier: 1
+    grenadeVisualScaleMultiplier: 1
+  - towerType: 5
+    towerPrefab: {fileID: 7025671057251057409, guid: eb77d32b991f31a4299393db2728121a, type: 3}
+    soldierCount: 4
+    assaultCount: 0
+    sniperCount: 1
+    level5Stats:
+      towerClass: 0
+      damage: 180
+      range: 13
+      fireRate: 0.8
+      cost: 490
+    skillName: Spotter's Mark
+    skillDescription: Every 8 seconds, mark the highest-health enemy; all towers
+      deal 30% more damage to it for 5 seconds.
+    secondaryDamage: 0
+    secondaryRange: 0
+    secondaryHitWidth: 0
+    secondaryMaxTargets: 1
+    secondaryFireRate: 0.18
+    abilityRadius: 0
+    abilityDuration: 5
+    abilityCooldown: 8
+    abilityDamage: 0.3
+    abilitySlow: 0
+    abilitySlowDuration: 0.12
+    abilityKnockback: 0
+    abilityDamageMultiplier: 1
+    abilityAttackIntervalMultiplier: 1
+    abilityTriggerRadius: 0
+    abilityChance: 0
+    abilityEveryNthHit: 0
+    maxTargets: 0
+    coneAngle: 0
+    auraDamageBonus: 0
+    auraAttackSpeedBonus: 0
+    auraRangeBonus: 0
+    abilityPulseInterval: 0
+    visualFireDuration: 0
+    abilityDazzleDuration: 0
+    abilityStartupDelay: 0
+    projectileAirDuration: 0
+    projectileAirPeakHeight: 0
+    projectileAirRotationSpeed: 0
+    projectileBounceDuration: 0
+    projectileBounceDistance: 0
+    projectileBouncePeakHeight: 0
+    projectileBounceRotationSpeed: 0
+    projectileRollDuration: 0
+    projectileRollDistance: 0
+    projectileRollRotationSpeed: 0
+    projectileExplosionForwardOffset: 0
+    landmineVisualScaleMultiplier: 1
+    grenadeVisualScaleMultiplier: 1
+  - towerType: 6
+    towerPrefab: {fileID: 7025671057251057409, guid: 9771938f9a845674eb28c8f686820ef4, type: 3}
+    soldierCount: 1
+    assaultCount: 4
+    sniperCount: 0
+    level5Stats:
+      towerClass: 0
+      damage: 75
+      range: 9.5
+      fireRate: 0.16
+      cost: 460
+    skillName: Frag Grenade Surge
+    skillDescription: Every 30 shots, throw a grenade for 300 area damage and 40%
+      slow; grenade cooldown is 5 seconds.
+    secondaryDamage: 0
+    secondaryRange: 0
+    secondaryHitWidth: 0
+    secondaryMaxTargets: 1
+    secondaryFireRate: 0
+    abilityRadius: 3
+    abilityDuration: 5
+    abilityCooldown: 5
+    abilityDamage: 300
+    abilitySlow: 0.4
+    abilitySlowDuration: 2
+    abilityKnockback: 0
+    abilityDamageMultiplier: 1
+    abilityAttackIntervalMultiplier: 1
+    abilityTriggerRadius: 0
+    abilityChance: 0
+    abilityEveryNthHit: 30
+    maxTargets: 0
+    coneAngle: 0
+    auraDamageBonus: 0
+    auraAttackSpeedBonus: 0
+    auraRangeBonus: 0
+    abilityPulseInterval: 0
+    visualFireDuration: 0
+    abilityDazzleDuration: 0
+    abilityStartupDelay: 0
+    projectileAirDuration: 0.45
+    projectileAirPeakHeight: 1.8
+    projectileAirRotationSpeed: -720
+    projectileBounceDuration: 0.18
+    projectileBounceDistance: 0.6
+    projectileBouncePeakHeight: 0.6
+    projectileBounceRotationSpeed: -360
+    projectileRollDuration: 0.15
+    projectileRollDistance: 0.3
+    projectileRollRotationSpeed: -120
+    projectileExplosionForwardOffset: 0.9
+    landmineVisualScaleMultiplier: 1
+    grenadeVisualScaleMultiplier: 0.25
+  - towerType: 7
+    towerPrefab: {fileID: 7025671057251057409, guid: 3524cd8f1d9bf6a4bb06e1a51e10f45f, type: 3}
+    soldierCount: 0
+    assaultCount: 4
+    sniperCount: 1
+    level5Stats:
+      towerClass: 0
+      damage: 105
+      range: 12.5
+      fireRate: 0.22
+      cost: 650
+    skillName: Armor Shredder
+    skillDescription: 35% chance to fire an armor-piercing shot with 1 range knockback.
+    secondaryDamage: 0
+    secondaryRange: 0
+    secondaryHitWidth: 0
+    secondaryMaxTargets: 1
+    secondaryFireRate: 0
+    abilityRadius: 0
+    abilityDuration: 0
+    abilityCooldown: 0
+    abilityDamage: 0
+    abilitySlow: 0
+    abilitySlowDuration: 0
+    abilityKnockback: 1
+    abilityDamageMultiplier: 1
+    abilityAttackIntervalMultiplier: 1
+    abilityTriggerRadius: 0
+    abilityChance: 0.35
+    abilityEveryNthHit: 0
+    maxTargets: 0
+    coneAngle: 0
+    auraDamageBonus: 0
+    auraAttackSpeedBonus: 0
+    auraRangeBonus: 0
+    abilityPulseInterval: 0
+    visualFireDuration: 0
+    abilityDazzleDuration: 0
+    abilityStartupDelay: 0
+    projectileAirDuration: 0
+    projectileAirPeakHeight: 0
+    projectileAirRotationSpeed: 0
+    projectileBounceDuration: 0
+    projectileBounceDistance: 0
+    projectileBouncePeakHeight: 0
+    projectileBounceRotationSpeed: 0
+    projectileRollDuration: 0
+    projectileRollDistance: 0
+    projectileRollRotationSpeed: 0
+    projectileExplosionForwardOffset: 0
+    landmineVisualScaleMultiplier: 1
+    grenadeVisualScaleMultiplier: 1
+  - towerType: 8
+    towerPrefab: {fileID: 7025671057251057409, guid: 10d463fb160d6274b94962f3d559755e, type: 3}
+    soldierCount: 1
+    assaultCount: 0
+    sniperCount: 4
+    level5Stats:
+      towerClass: 0
+      damage: 520
+      range: 24
+      fireRate: 1.6
+      cost: 1060
+    skillName: Vitals Hunter
+    skillDescription: Prioritize low-health enemies; below 35% health, deal double
+      damage. Ranged kills reset cooldown.
+    secondaryDamage: 50
+    secondaryRange: 2
+    secondaryHitWidth: 0
+    secondaryMaxTargets: 1
+    secondaryFireRate: 0.35
+    abilityRadius: 0
+    abilityDuration: 0
+    abilityCooldown: 0
+    abilityDamage: 0
+    abilitySlow: 0
+    abilitySlowDuration: 0
+    abilityKnockback: 0
+    abilityDamageMultiplier: 2
+    abilityAttackIntervalMultiplier: 1
+    abilityTriggerRadius: 0
+    abilityChance: 0.35
+    abilityEveryNthHit: 0
+    maxTargets: 0
+    coneAngle: 0
+    auraDamageBonus: 0
+    auraAttackSpeedBonus: 0
+    auraRangeBonus: 0
+    abilityPulseInterval: 0
+    visualFireDuration: 0
+    abilityDazzleDuration: 0
+    abilityStartupDelay: 0
+    projectileAirDuration: 0
+    projectileAirPeakHeight: 0
+    projectileAirRotationSpeed: 0
+    projectileBounceDuration: 0
+    projectileBounceDistance: 0
+    projectileBouncePeakHeight: 0
+    projectileBounceRotationSpeed: 0
+    projectileRollDuration: 0
+    projectileRollDistance: 0
+    projectileRollRotationSpeed: 0
+    projectileExplosionForwardOffset: 0
+    landmineVisualScaleMultiplier: 1
+    grenadeVisualScaleMultiplier: 1
+  - towerType: 9
+    towerPrefab: {fileID: 7025671057251057409, guid: 4daf2a31ccc274d4997b7d36e9993ba0, type: 3}
+    soldierCount: 0
+    assaultCount: 1
+    sniperCount: 4
+    level5Stats:
+      towerClass: 0
+      damage: 360
+      range: 22
+      fireRate: 0.9
+      cost: 1100
+    skillName: Overload HE Shell
+    skillDescription: Every third shot deals 450 area damage with 2 range knockback.
+    secondaryDamage: 0
+    secondaryRange: 0
+    secondaryHitWidth: 0
+    secondaryMaxTargets: 1
+    secondaryFireRate: 0.25
+    abilityRadius: 1.25
+    abilityDuration: 0
+    abilityCooldown: 0
+    abilityDamage: 450
+    abilitySlow: 0
+    abilitySlowDuration: 0
+    abilityKnockback: 2
+    abilityDamageMultiplier: 1
+    abilityAttackIntervalMultiplier: 1
+    abilityTriggerRadius: 0
+    abilityChance: 0
+    abilityEveryNthHit: 3
+    maxTargets: 0
+    coneAngle: 0
+    auraDamageBonus: 0
+    auraAttackSpeedBonus: 0
+    auraRangeBonus: 0
+    abilityPulseInterval: 0
+    visualFireDuration: 0
+    abilityDazzleDuration: 0
+    abilityStartupDelay: 0
+    projectileAirDuration: 0
+    projectileAirPeakHeight: 0
+    projectileAirRotationSpeed: 0
+    projectileBounceDuration: 0
+    projectileBounceDistance: 0
+    projectileBouncePeakHeight: 0
+    projectileBounceRotationSpeed: 0
+    projectileRollDuration: 0
+    projectileRollDistance: 0
+    projectileRollRotationSpeed: 0
+    projectileExplosionForwardOffset: 0
+    landmineVisualScaleMultiplier: 1
+    grenadeVisualScaleMultiplier: 1
+  - towerType: 10
+    towerPrefab: {fileID: 7025671057251057409, guid: f07a1b900c60dbb4884668214c3c98ed, type: 3}
+    soldierCount: 3
+    assaultCount: 2
+    sniperCount: 0
+    level5Stats:
+      towerClass: 0
+      damage: 85
+      range: 8
+      fireRate: 0.35
+      cost: 380
+    skillName: Superconductive Shock
+    skillDescription: Consecutive hits gain up to 50% damage; kills stun enemies
+      in a 1.5 radius for 0.5 seconds.
+    secondaryDamage: 0
+    secondaryRange: 0
+    secondaryHitWidth: 0
+    secondaryMaxTargets: 1
+    secondaryFireRate: 0
+    abilityRadius: 1.5
+    abilityDuration: 0.5
+    abilityCooldown: 0
+    abilityDamage: 0
+    abilitySlow: 0
+    abilitySlowDuration: 0
+    abilityKnockback: 0
+    abilityDamageMultiplier: 1
+    abilityAttackIntervalMultiplier: 1
+    abilityTriggerRadius: 0
+    abilityChance: 0.05
+    abilityEveryNthHit: 10
+    maxTargets: 0
+    coneAngle: 0
+    auraDamageBonus: 0
+    auraAttackSpeedBonus: 0
+    auraRangeBonus: 0
+    abilityPulseInterval: 0
+    visualFireDuration: 0
+    abilityDazzleDuration: 0
+    abilityStartupDelay: 0
+    projectileAirDuration: 0
+    projectileAirPeakHeight: 0
+    projectileAirRotationSpeed: 0
+    projectileBounceDuration: 0
+    projectileBounceDistance: 0
+    projectileBouncePeakHeight: 0
+    projectileBounceRotationSpeed: 0
+    projectileRollDuration: 0
+    projectileRollDistance: 0
+    projectileRollRotationSpeed: 0
+    projectileExplosionForwardOffset: 0
+    landmineVisualScaleMultiplier: 1
+    grenadeVisualScaleMultiplier: 1
+  - towerType: 11
+    towerPrefab: {fileID: 7025671057251057409, guid: 2569732f0c8d96c4caa4a8779c259025, type: 3}
+    soldierCount: 3
+    assaultCount: 0
+    sniperCount: 2
+    level5Stats:
+      towerClass: 0
+      damage: 260
+      range: 17
+      fireRate: 1
+      cost: 680
+    skillName: Piercing DMR
+    skillDescription: Pierce the first 2 enemies in a 0.4-wide line; each takes full
+      damage and 1.2 knockback.
+    secondaryDamage: 260
+    secondaryRange: 17
+    secondaryHitWidth: 0.4
+    secondaryMaxTargets: 1
+    secondaryFireRate: 0
+    abilityRadius: 0
+    abilityDuration: 0
+    abilityCooldown: 0
+    abilityDamage: 0
+    abilitySlow: 0
+    abilitySlowDuration: 0
+    abilityKnockback: 1.2
+    abilityDamageMultiplier: 1
+    abilityAttackIntervalMultiplier: 1
+    abilityTriggerRadius: 0
+    abilityChance: 0.4
+    abilityEveryNthHit: 0
+    maxTargets: 2
+    coneAngle: 0
+    auraDamageBonus: 0
+    auraAttackSpeedBonus: 0
+    auraRangeBonus: 0
+    abilityPulseInterval: 0
+    visualFireDuration: 0
+    abilityDazzleDuration: 0
+    abilityStartupDelay: 0
+    projectileAirDuration: 0
+    projectileAirPeakHeight: 0
+    projectileAirRotationSpeed: 0
+    projectileBounceDuration: 0
+    projectileBounceDistance: 0
+    projectileBouncePeakHeight: 0
+    projectileBounceRotationSpeed: 0
+    projectileRollDuration: 0
+    projectileRollDistance: 0
+    projectileRollRotationSpeed: 0
+    projectileExplosionForwardOffset: 0
+    landmineVisualScaleMultiplier: 1
+    grenadeVisualScaleMultiplier: 1
+  - towerType: 12
+    towerPrefab: {fileID: 7025671057251057409, guid: c41d190c0d7e0a74bbcec984a45e7544, type: 3}
+    soldierCount: 3
+    assaultCount: 1
+    sniperCount: 1
+    level5Stats:
+      towerClass: 0
+      damage: 120
+      range: 12
+      fireRate: 0.6
+      cost: 530
+    skillName: Artillery Coordination
+    skillDescription: Nearby towers gain 12% damage and 15% range; call a 400-damage
+      mortar strike every 12 seconds.
+    secondaryDamage: 0
+    secondaryRange: 1.5
+    secondaryHitWidth: 0
+    secondaryMaxTargets: 1
+    secondaryFireRate: 1
+    abilityRadius: 5
+    abilityDuration: 0
+    abilityCooldown: 12
+    abilityDamage: 400
+    abilitySlow: 0
+    abilitySlowDuration: 0
+    abilityKnockback: 1.5
+    abilityDamageMultiplier: 1
+    abilityAttackIntervalMultiplier: 1
+    abilityTriggerRadius: 0
+    abilityChance: 0
+    abilityEveryNthHit: 0
+    maxTargets: 0
+    coneAngle: 0
+    auraDamageBonus: 0.12
+    auraAttackSpeedBonus: 0
+    auraRangeBonus: 0.15
+    abilityPulseInterval: 0
+    visualFireDuration: 0
+    abilityDazzleDuration: 0
+    abilityStartupDelay: 3
+    projectileAirDuration: 0
+    projectileAirPeakHeight: 0
+    projectileAirRotationSpeed: 0
+    projectileBounceDuration: 0
+    projectileBounceDistance: 0
+    projectileBouncePeakHeight: 0
+    projectileBounceRotationSpeed: 0
+    projectileRollDuration: 0
+    projectileRollDistance: 0
+    projectileRollRotationSpeed: 0
+    projectileExplosionForwardOffset: 0
+    landmineVisualScaleMultiplier: 1
+    grenadeVisualScaleMultiplier: 1
+  - towerType: 13
+    towerPrefab: {fileID: 7025671057251057409, guid: f8ba825ea75707d4692d45d453c05857, type: 3}
+    soldierCount: 2
+    assaultCount: 3
+    sniperCount: 0
+    level5Stats:
+      towerClass: 0
+      damage: 200
+      range: 7.5
+      fireRate: 0.45
+      cost: 420
+    skillName: Point-Blank Breach
+    skillDescription: Fire 5 pellets in a 75-degree cone; point-blank damage increases
+      by up to 50%.
+    secondaryDamage: 40
+    secondaryRange: 2
+    secondaryHitWidth: 0
+    secondaryMaxTargets: 1
+    secondaryFireRate: 0.25
+    abilityRadius: 0
+    abilityDuration: 0.12
+    abilityCooldown: 0
+    abilityDamage: 0
+    abilitySlow: 0
+    abilitySlowDuration: 0
+    abilityKnockback: 0
+    abilityDamageMultiplier: 1
+    abilityAttackIntervalMultiplier: 1
+    abilityTriggerRadius: 0
+    abilityChance: 0.5
+    abilityEveryNthHit: 0
+    maxTargets: 5
+    coneAngle: 75
+    auraDamageBonus: 0
+    auraAttackSpeedBonus: 0
+    auraRangeBonus: 0
+    abilityPulseInterval: 0
+    visualFireDuration: 0
+    abilityDazzleDuration: 0
+    abilityStartupDelay: 0
+    projectileAirDuration: 0
+    projectileAirPeakHeight: 0
+    projectileAirRotationSpeed: 0
+    projectileBounceDuration: 0
+    projectileBounceDistance: 0
+    projectileBouncePeakHeight: 0
+    projectileBounceRotationSpeed: 0
+    projectileRollDuration: 0
+    projectileRollDistance: 0
+    projectileRollRotationSpeed: 0
+    projectileExplosionForwardOffset: 0
+    landmineVisualScaleMultiplier: 1
+    grenadeVisualScaleMultiplier: 1
+  - towerType: 14
+    towerPrefab: {fileID: 7025671057251057409, guid: a1b3946d62d743f4c87afeaea4a00281, type: 3}
+    soldierCount: 0
+    assaultCount: 3
+    sniperCount: 2
+    level5Stats:
+      towerClass: 0
+      damage: 360
+      range: 18
+      fireRate: 0.4
+      cost: 800
+    skillName: Siege Suppression Line
+    skillDescription: Twin 180-damage shots; every fifth volley gains stronger knockback.
+    secondaryDamage: 180
+    secondaryRange: 2
+    secondaryHitWidth: 0
+    secondaryMaxTargets: 1
+    secondaryFireRate: 0
+    abilityRadius: 0
+    abilityDuration: 0.12
+    abilityCooldown: 0
+    abilityDamage: 0
+    abilitySlow: 0
+    abilitySlowDuration: 0
+    abilityKnockback: 1
+    abilityDamageMultiplier: 1
+    abilityAttackIntervalMultiplier: 1
+    abilityTriggerRadius: 0
+    abilityChance: 0
+    abilityEveryNthHit: 5
+    maxTargets: 0
+    coneAngle: 0
+    auraDamageBonus: 0
+    auraAttackSpeedBonus: 0
+    auraRangeBonus: 0
+    abilityPulseInterval: 0
+    visualFireDuration: 0
+    abilityDazzleDuration: 0
+    abilityStartupDelay: 0
+    projectileAirDuration: 0
+    projectileAirPeakHeight: 0
+    projectileAirRotationSpeed: 0
+    projectileBounceDuration: 0
+    projectileBounceDistance: 0
+    projectileBouncePeakHeight: 0
+    projectileBounceRotationSpeed: 0
+    projectileRollDuration: 0
+    projectileRollDistance: 0
+    projectileRollRotationSpeed: 0
+    projectileExplosionForwardOffset: 0
+    landmineVisualScaleMultiplier: 1
+    grenadeVisualScaleMultiplier: 1
+  - towerType: 15
+    towerPrefab: {fileID: 7025671057251057409, guid: 63a10043caf9e944482ec138d5657f74, type: 3}
+    soldierCount: 1
+    assaultCount: 3
+    sniperCount: 1
+    level5Stats:
+      towerClass: 0
+      damage: 90
+      range: 11
+      fireRate: 0.3
+      cost: 730
+    skillName: Kinetic Path Ambush
+    skillDescription: Every 20 hits, leap to the nearest path segment, knock back
+      and dazzle nearby enemies, then fire a 60-degree, 3-range cone toward the enemy
+      incoming direction for 5 seconds.
+    secondaryDamage: 0
+    secondaryRange: 3
+    secondaryHitWidth: 0
+    secondaryMaxTargets: 1
+    secondaryFireRate: 0
+    abilityRadius: 1
+    abilityDuration: 5
+    abilityCooldown: 0
+    abilityDamage: 0
+    abilitySlow: 0
+    abilitySlowDuration: 0
+    abilityKnockback: 2
+    abilityDamageMultiplier: 1
+    abilityAttackIntervalMultiplier: 1
+    abilityTriggerRadius: 0
+    abilityChance: 0
+    abilityEveryNthHit: 20
+    maxTargets: 0
+    coneAngle: 60
+    auraDamageBonus: 0
+    auraAttackSpeedBonus: 0
+    auraRangeBonus: 0
+    abilityPulseInterval: 0.25
+    visualFireDuration: 0
+    abilityDazzleDuration: 3
+    abilityStartupDelay: 0
+    projectileAirDuration: 0
+    projectileAirPeakHeight: 0
+    projectileAirRotationSpeed: 0
+    projectileBounceDuration: 0
+    projectileBounceDistance: 0
+    projectileBouncePeakHeight: 0
+    projectileBounceRotationSpeed: 0
+    projectileRollDuration: 0
+    projectileRollDistance: 0
+    projectileRollRotationSpeed: 0
+    projectileExplosionForwardOffset: 0
+    landmineVisualScaleMultiplier: 1
+    grenadeVisualScaleMultiplier: 1
+  - towerType: 16
+    towerPrefab: {fileID: 7025671057251057409, guid: 64fa1b755d8855045b27ddd32e7dd835, type: 3}
+    soldierCount: 2
+    assaultCount: 0
+    sniperCount: 3
+    level5Stats:
+      towerClass: 0
+      damage: 480
+      range: 20
+      fireRate: 1.3
+      cost: 870
+    skillName: Lone Wolf & Tactical Mine
+    skillDescription: Gain 35% damage with no enemy within 3; mines deal 600 area
+      damage and 50% slow.
+    secondaryDamage: 0
+    secondaryRange: 3
+    secondaryHitWidth: 0
+    secondaryMaxTargets: 1
+    secondaryFireRate: 0
+    abilityRadius: 1.5
+    abilityDuration: 0
+    abilityCooldown: 10
+    abilityDamage: 600
+    abilitySlow: 0.5
+    abilitySlowDuration: 3
+    abilityKnockback: 0
+    abilityDamageMultiplier: 1
+    abilityAttackIntervalMultiplier: 1
+    abilityTriggerRadius: 0.3
+    abilityChance: 0.35
+    abilityEveryNthHit: 0
+    maxTargets: 0
+    coneAngle: 0
+    auraDamageBonus: 0
+    auraAttackSpeedBonus: 0
+    auraRangeBonus: 0
+    abilityPulseInterval: 0
+    visualFireDuration: 0
+    abilityDazzleDuration: 0
+    abilityStartupDelay: 0
+    projectileAirDuration: 0
+    projectileAirPeakHeight: 0
+    projectileAirRotationSpeed: 0
+    projectileBounceDuration: 0
+    projectileBounceDistance: 0
+    projectileBouncePeakHeight: 0
+    projectileBounceRotationSpeed: 0
+    projectileRollDuration: 0
+    projectileRollDistance: 0
+    projectileRollRotationSpeed: 0
+    projectileExplosionForwardOffset: 0
+    landmineVisualScaleMultiplier: 0.25
+    grenadeVisualScaleMultiplier: 1
+  - towerType: 17
+    towerPrefab: {fileID: 7025671057251057409, guid: 3ed7ca66d4ba91640a7389048d7a4f68, type: 3}
+    soldierCount: 0
+    assaultCount: 2
+    sniperCount: 3
+    level5Stats:
+      towerClass: 0
+      damage: 320
+      range: 25
+      fireRate: 1.5
+      cost: 950
+    skillName: Linear Pierce Railbeam
+    skillDescription: A 0.5-wide beam pierces all enemies, dealing 25% slow for 2
+      seconds and 0.8 knockback.
+    secondaryDamage: 0
+    secondaryRange: 0.5
+    secondaryHitWidth: 0
+    secondaryMaxTargets: 1
+    secondaryFireRate: 0.4
+    abilityRadius: 0
+    abilityDuration: 2
+    abilityCooldown: 0
+    abilityDamage: 0
+    abilitySlow: 0.25
+    abilitySlowDuration: 2
+    abilityKnockback: 0.8
+    abilityDamageMultiplier: 1
+    abilityAttackIntervalMultiplier: 1
+    abilityTriggerRadius: 0
+    abilityChance: 0
+    abilityEveryNthHit: 0
+    maxTargets: 0
+    coneAngle: 0
+    auraDamageBonus: 0
+    auraAttackSpeedBonus: 0
+    auraRangeBonus: 0
+    abilityPulseInterval: 0
+    visualFireDuration: 0.08
+    abilityDazzleDuration: 0
+    abilityStartupDelay: 0
+    projectileAirDuration: 0
+    projectileAirPeakHeight: 0
+    projectileAirRotationSpeed: 0
+    projectileBounceDuration: 0
+    projectileBounceDistance: 0
+    projectileBouncePeakHeight: 0
+    projectileBounceRotationSpeed: 0
+    projectileRollDuration: 0
+    projectileRollDistance: 0
+    projectileRollRotationSpeed: 0
+    projectileExplosionForwardOffset: 0
+    landmineVisualScaleMultiplier: 1
+    grenadeVisualScaleMultiplier: 1
+  - towerType: 18
+    towerPrefab: {fileID: 7025671057251057409, guid: 269e9f8a8e5177a4cae0100363f524b7, type: 3}
+    soldierCount: 1
+    assaultCount: 1
+    sniperCount: 3
+    level5Stats:
+      towerClass: 0
+      damage: 420
+      range: 23
+      fireRate: 1.1
+      cost: 910
+    skillName: Target Tag & C4I Uplink
+    skillDescription: Hits slow and tag enemies; tagged kills link Hawkeye and the
+      nearest 2 allies for +20% range.
+    secondaryDamage: 0.2
+    secondaryRange: 0
+    secondaryHitWidth: 0
+    secondaryMaxTargets: 1
+    secondaryFireRate: 0.1
+    abilityRadius: 5
+    abilityDuration: 4
+    abilityCooldown: 0
+    abilityDamage: 0
+    abilitySlow: 0.3
+    abilitySlowDuration: 4
+    abilityKnockback: 0
+    abilityDamageMultiplier: 1
+    abilityAttackIntervalMultiplier: 1
+    abilityTriggerRadius: 0
+    abilityChance: 0.25
+    abilityEveryNthHit: 0
+    maxTargets: 0
+    coneAngle: 0
+    auraDamageBonus: 0
+    auraAttackSpeedBonus: 0
+    auraRangeBonus: 0
+    abilityPulseInterval: 0
+    visualFireDuration: 0
+    abilityDazzleDuration: 0
+    abilityStartupDelay: 0
+    projectileAirDuration: 0
+    projectileAirPeakHeight: 0
+    projectileAirRotationSpeed: 0
+    projectileBounceDuration: 0
+    projectileBounceDistance: 0
+    projectileBouncePeakHeight: 0
+    projectileBounceRotationSpeed: 0
+    projectileRollDuration: 0
+    projectileRollDistance: 0
+    projectileRollRotationSpeed: 0
+    projectileExplosionForwardOffset: 0
+    landmineVisualScaleMultiplier: 1
+    grenadeVisualScaleMultiplier: 1
+  - towerType: 19
+    towerPrefab: {fileID: 7025671057251057409, guid: 08543b9d0df38e249a810e58916305a7, type: 3}
+    soldierCount: 2
+    assaultCount: 2
+    sniperCount: 1
+    level5Stats:
+      towerClass: 0
+      damage: 95
+      range: 13
+      fireRate: 0.35
+      cost: 570
+    skillName: Tactical Burst Trio
+    skillDescription: Every third shot deals double damage and 1.2 knockback.
+    secondaryDamage: 0
+    secondaryRange: 0
+    secondaryHitWidth: 0
+    secondaryMaxTargets: 1
+    secondaryFireRate: 0
+    abilityRadius: 0
+    abilityDuration: 0
+    abilityCooldown: 0
+    abilityDamage: 0
+    abilitySlow: 0
+    abilitySlowDuration: 0
+    abilityKnockback: 1.2
+    abilityDamageMultiplier: 2
+    abilityAttackIntervalMultiplier: 1
+    abilityTriggerRadius: 0
+    abilityChance: 0
+    abilityEveryNthHit: 3
+    maxTargets: 0
+    coneAngle: 0
+    auraDamageBonus: 0
+    auraAttackSpeedBonus: 0
+    auraRangeBonus: 0
+    abilityPulseInterval: 0
+    visualFireDuration: 0
+    abilityDazzleDuration: 0
+    abilityStartupDelay: 0
+    projectileAirDuration: 0
+    projectileAirPeakHeight: 0
+    projectileAirRotationSpeed: 0
+    projectileBounceDuration: 0
+    projectileBounceDistance: 0
+    projectileBouncePeakHeight: 0
+    projectileBounceRotationSpeed: 0
+    projectileRollDuration: 0
+    projectileRollDistance: 0
+    projectileRollRotationSpeed: 0
+    projectileExplosionForwardOffset: 0
+    landmineVisualScaleMultiplier: 1
+    grenadeVisualScaleMultiplier: 1
+  - towerType: 20
+    towerPrefab: {fileID: 7025671057251057409, guid: a5d3b8519668bc449aa16a38ef8a4c07, type: 3}
+    soldierCount: 2
+    assaultCount: 1
+    sniperCount: 2
+    level5Stats:
+      towerClass: 0
+      damage: 240
+      range: 18
+      fireRate: 0.95
+      cost: 760
+    skillName: Singularity Inward Pull
+    skillDescription: Every fifth shot creates a 2.5-radius, 3-second vortex that
+      slows 50% and pulls 0.4 every 0.25 seconds.
+    secondaryDamage: 320
+    secondaryRange: 0.8
+    secondaryHitWidth: 0
+    secondaryMaxTargets: 1
+    secondaryFireRate: 0
+    abilityRadius: 2.5
+    abilityDuration: 3
+    abilityCooldown: 0
+    abilityDamage: 0
+    abilitySlow: 0.5
+    abilitySlowDuration: 3
+    abilityKnockback: 0.4
+    abilityDamageMultiplier: 1
+    abilityAttackIntervalMultiplier: 1
+    abilityTriggerRadius: 0
+    abilityChance: 0
+    abilityEveryNthHit: 5
+    maxTargets: 0
+    coneAngle: 0
+    auraDamageBonus: 0
+    auraAttackSpeedBonus: 0
+    auraRangeBonus: 0
+    abilityPulseInterval: 0.25
+    visualFireDuration: 0
+    abilityDazzleDuration: 0
+    abilityStartupDelay: 0
+    projectileAirDuration: 0
+    projectileAirPeakHeight: 0
+    projectileAirRotationSpeed: 0
+    projectileBounceDuration: 0
+    projectileBounceDistance: 0
+    projectileBouncePeakHeight: 0
+    projectileBounceRotationSpeed: 0
+    projectileRollDuration: 0
+    projectileRollDistance: 0
+    projectileRollRotationSpeed: 0
+    projectileExplosionForwardOffset: 0
+    landmineVisualScaleMultiplier: 1
+    grenadeVisualScaleMultiplier: 1
+  - towerType: 21
+    towerPrefab: {fileID: 7025671057251057409, guid: dc3edc3e7538e4e43953703527bd1487, type: 3}
+    soldierCount: 1
+    assaultCount: 2
+    sniperCount: 2
+    level5Stats:
+      towerClass: 0
+      damage: 160
+      range: 16
+      fireRate: 0.48
+      cost: 760
+    skillName: Twin Bore & Overload Blast
+    skillDescription: Twin shots pierce enemies; every fifth shot hits 3 enemies
+      for 260 with heavy knockback and a 0.4-second stun.
+    secondaryDamage: 260
+    secondaryRange: 16
+    secondaryHitWidth: 0.5
+    secondaryMaxTargets: 2
+    secondaryFireRate: 0.8
+    abilityRadius: 0
+    abilityDuration: 0.4
+    abilityCooldown: 0
+    abilityDamage: 0
+    abilitySlow: 0
+    abilitySlowDuration: 0
+    abilityKnockback: 1.8
+    abilityDamageMultiplier: 1
+    abilityAttackIntervalMultiplier: 1
+    abilityTriggerRadius: 0
+    abilityChance: 0
+    abilityEveryNthHit: 5
+    maxTargets: 3
+    coneAngle: 0
+    auraDamageBonus: 0
+    auraAttackSpeedBonus: 0
+    auraRangeBonus: 0
+    abilityPulseInterval: 0
+    visualFireDuration: 0
+    abilityDazzleDuration: 0
+    abilityStartupDelay: 0
+    projectileAirDuration: 0
+    projectileAirPeakHeight: 0
+    projectileAirRotationSpeed: 0
+    projectileBounceDuration: 0
+    projectileBounceDistance: 0
+    projectileBouncePeakHeight: 0
+    projectileBounceRotationSpeed: 0
+    projectileRollDuration: 0
+    projectileRollDistance: 0
+    projectileRollRotationSpeed: 0
+    projectileExplosionForwardOffset: 0
+    landmineVisualScaleMultiplier: 1
+    grenadeVisualScaleMultiplier: 1
+  towerVisualScaleMultipliers:
+  - towerType: 1
+    visualScaleMultiplier: 1
+  - towerType: 2
+    visualScaleMultiplier: 1
+  - towerType: 3
+    visualScaleMultiplier: 1
+  - towerType: 4
+    visualScaleMultiplier: 1
+  - towerType: 5
+    visualScaleMultiplier: 1
+  - towerType: 6
+    visualScaleMultiplier: 1
+  - towerType: 7
+    visualScaleMultiplier: 1
+  - towerType: 8
+    visualScaleMultiplier: 1
+  - towerType: 9
+    visualScaleMultiplier: 1
+  - towerType: 10
+    visualScaleMultiplier: 1
+  - towerType: 11
+    visualScaleMultiplier: 1
+  - towerType: 12
+    visualScaleMultiplier: 1
+  - towerType: 13
+    visualScaleMultiplier: 1
+  - towerType: 14
+    visualScaleMultiplier: 1
+  - towerType: 15
+    visualScaleMultiplier: 1
+  - towerType: 16
+    visualScaleMultiplier: 1
+  - towerType: 17
+    visualScaleMultiplier: 1
+  - towerType: 18
+    visualScaleMultiplier: 1
+  - towerType: 19
+    visualScaleMultiplier: 1
+  - towerType: 20
+    visualScaleMultiplier: 1
+  - towerType: 21
+    visualScaleMultiplier: 1
+  markVisualScaleMultipliers:
+  - markName: Mark_Reaper
+    visualScaleMultiplier: 2
+  - markName: Mark_Mortar
+    visualScaleMultiplier: 1
+  slowedTagIcon: {fileID: 7215569060728343946, guid: c8bed0283d7267e4ea26704bc4dcff9f, type: 3}
+  dazzledTagIcon: {fileID: 5688261421347216261, guid: 83496352027dab744b5d4862328624c7, type: 3}
+  vulnerableTagIcon: {fileID: 414244879553218598, guid: 5a6a1903dc669f049984fd8ebc15921c, type: 3}
+  hasteTagIcon: {fileID: -2511640811923716225, guid: 27ba6e2b4df0b454f9a51138a5c8aa41, type: 3}
+  damageTagIcon: {fileID: 6432402440040616058, guid: 08dbd48cfe66af44dbba7d4361f0cbed, type: 3}
+  rangeTagIcon: {fileID: -23680001110779912, guid: 020168abe17b7904f88fde458e36508f, type: 3}
+  autoStartDelay: 30
+  minSpawnDelayMultiplier: 0.1
+  maxSpawnDelayMultiplier: 2.5
+  minSpawnDelayCap: 0.02
+  maxSpawnDelayCap: 0.04
+  waveSpawnDelayDecreasePerWave: 0.04
+  minWaveSpawnDelayFactor: 0.1
+  waveHealthIncreasePerWave: 0.2
+  initialEnemyCount: 10
+  enemyCountIncreasePerWave: 5
+  firstKingWave: 5
+  firstUltraWave: 15
+  maxSpecialEnemyRatio: 0.4
+  initialKingRatio: 0.1
+  kingRatioIncreasePerWave: 0.03
+  initialUltraRatio: 0.1
+  ultraRatioIncreasePerWave: 0.04
+  lateWaveKingRatio: 0.25
+  enemyTypes:
+  - typeName: simon
+    baseHealth: 50
+    baseSpeed: 3
+    baseReward: 20
+  - typeName: simonking
+    baseHealth: 150
+    baseSpeed: 1.5
+    baseReward: 50
+  - typeName: ultrasimon
+    baseHealth: 100
+    baseSpeed: 5.5
+    baseReward: 80
+  scoreBase: 50
+  scorePerWeightedKill: 10
+  scorePerWaveProduct: 50
+  damageScoreDivisor: 50

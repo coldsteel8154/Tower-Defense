@@ -12,6 +12,7 @@ public class PauseMenuManager : MonoBehaviour
     public GameObject pausePanel;
     public GameObject optionsPanel;
     public GameObject confirmEndPanel;
+    private GameObject towerCombinationsPanel;
 
     [Header("Options Panel Sub-components")]
     public Button languageToggleButton;
@@ -101,6 +102,16 @@ public class PauseMenuManager : MonoBehaviour
         if (pausePanel != null) pausePanel.SetActive(false);
         if (optionsPanel != null) optionsPanel.SetActive(false);
         if (confirmEndPanel != null) confirmEndPanel.SetActive(false);
+        Canvas guideCanvas = pausePanel != null ? pausePanel.GetComponentInParent<Canvas>() : null;
+        if (guideCanvas != null)
+        {
+            towerCombinationsPanel = TowerCombinationsGuide.Build(guideCanvas.transform, CloseTowerCombinations,
+                GameBalanceSettings.Instance);
+        }
+        else
+        {
+            Debug.LogError("PauseMenuManager could not create the tower combinations guide because its Canvas is missing.");
+        }
 
         Debug.Log("PauseMenuManager panels: pause=" + (pausePanel != null) + ", options=" + (optionsPanel != null) + ", confirmEnd=" + (confirmEndPanel != null));
         if (confirmEndPanel != null)
@@ -174,6 +185,10 @@ public class PauseMenuManager : MonoBehaviour
             else if (confirmEndPanel != null && confirmEndPanel.activeSelf)
             {
                 HideEndGameConfirmation();
+            }
+            else if (towerCombinationsPanel != null && towerCombinationsPanel.activeSelf)
+            {
+                CloseTowerCombinations();
             }
             else
             {
@@ -354,6 +369,7 @@ public class PauseMenuManager : MonoBehaviour
             BindButtonInPanel(pausePanel, "PauseResumeButton", ResumeGame);
             BindButtonInPanel(pausePanel, "PauseOptionsButton", OpenOptions);
             BindButtonInPanel(pausePanel, "PauseEndGameButton", ShowEndGameConfirmation);
+            BindButtonInPanel(pausePanel, "TowerCombinationsButton", OpenTowerCombinations);
             BindButtonInPanel(pausePanel, "PauseOptionsBackButton", CloseOptions);
         }
         else
@@ -447,6 +463,7 @@ public class PauseMenuManager : MonoBehaviour
     {
         isPaused = true;
         Time.timeScale = 0f;
+        if (towerCombinationsPanel != null) towerCombinationsPanel.SetActive(false);
         if (pausePanel != null) pausePanel.SetActive(true);
     }
 
@@ -457,10 +474,12 @@ public class PauseMenuManager : MonoBehaviour
         if (pausePanel != null) pausePanel.SetActive(false);
         if (optionsPanel != null) optionsPanel.SetActive(false);
         if (confirmEndPanel != null) confirmEndPanel.SetActive(false);
+        if (towerCombinationsPanel != null) towerCombinationsPanel.SetActive(false);
     }
 
     public void OpenOptions()
     {
+        if (towerCombinationsPanel != null) towerCombinationsPanel.SetActive(false);
         if (pausePanel != null) pausePanel.SetActive(false);
         if (optionsPanel != null) optionsPanel.SetActive(true);
         SetupOptionsUI();
@@ -472,10 +491,36 @@ public class PauseMenuManager : MonoBehaviour
         if (pausePanel != null) pausePanel.SetActive(true);
     }
 
+    public void OpenTowerCombinations()
+    {
+        if (!isPaused)
+        {
+            Debug.LogWarning("Tower combinations can only be opened from the paused menu.");
+            return;
+        }
+        if (towerCombinationsPanel == null)
+        {
+            Debug.LogError("PauseMenuManager could not open the tower combinations guide because it was not created.");
+            return;
+        }
+
+        if (pausePanel != null) pausePanel.SetActive(false);
+        if (optionsPanel != null) optionsPanel.SetActive(false);
+        towerCombinationsPanel.SetActive(true);
+        towerCombinationsPanel.transform.SetAsLastSibling();
+    }
+
+    public void CloseTowerCombinations()
+    {
+        if (towerCombinationsPanel != null) towerCombinationsPanel.SetActive(false);
+        if (pausePanel != null) pausePanel.SetActive(true);
+    }
+
     public void ShowEndGameConfirmation()
     {
         if (confirmEndPanel != null)
         {
+            if (towerCombinationsPanel != null) towerCombinationsPanel.SetActive(false);
             confirmEndPanel.SetActive(true);
             confirmEndPanel.transform.SetAsLastSibling();
             CanvasGroup group = confirmEndPanel.GetComponent<CanvasGroup>();
@@ -681,4 +726,3 @@ public class PauseMenuManager : MonoBehaviour
         }
     }
 }
-

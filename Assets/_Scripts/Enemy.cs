@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    public event Action<Enemy> Died;
+
     public int health = 50;
     public float movespeed = 2.0f;
     [HideInInspector] public int maxHealth = 50;
@@ -13,11 +16,26 @@ public class Enemy : MonoBehaviour
     private int index = 0;
     private Coroutine pushCoroutine;
     private SpriteRenderer cachedSpriteRenderer;
+    private EnemyStatusManager statusManager;
     
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         cachedSpriteRenderer = GetComponent<SpriteRenderer>();
+        statusManager = GetComponent<EnemyStatusManager>();
+        if (statusManager == null)
+        {
+            statusManager = gameObject.AddComponent<EnemyStatusManager>();
+        }
+
+        GameBalanceSettings settings = GameBalanceSettings.Instance;
+        statusManager.SetTagIcons(
+            settings.GetStatusTagIcon(StatusTagType.Slowed),
+            settings.GetStatusTagIcon(StatusTagType.Dazzled),
+            settings.GetStatusTagIcon(StatusTagType.Vulnerable),
+            settings.GetStatusTagIcon(StatusTagType.Haste),
+            settings.GetStatusTagIcon(StatusTagType.Damage),
+            settings.GetStatusTagIcon(StatusTagType.Range));
     }
     
     void Start()
@@ -84,7 +102,8 @@ public class Enemy : MonoBehaviour
 
         if (rb != null)
         {
-            rb.linearVelocity = direction * movespeed;
+            float statusSpeedMultiplier = statusManager != null ? statusManager.GetCurrentSpeedMultiplier() : 1f;
+            rb.linearVelocity = direction * movespeed * statusSpeedMultiplier;
         }
     }
     
@@ -96,6 +115,16 @@ public class Enemy : MonoBehaviour
     public void TakeDamage(int amount)
     {
         if (health <= 0) return;
+
+        EnemyStatusManager activeStatusManager = statusManager != null ? statusManager : GetComponent<EnemyStatusManager>();
+        if (activeStatusManager != null)
+        {
+            amount = Mathf.RoundToInt(amount * activeStatusManager.GetVulnerabilityDamageMultiplier());
+            if (UnityEngine.Random.value < activeStatusManager.GetAllyCriticalChance())
+            {
+                amount *= 2;
+            }
+        }
 
         health -= amount;
 
@@ -166,6 +195,8 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
+        Died?.Invoke(this);
+
         if (GameManager.instance != null)
         {
             if (gameObject.name.Contains("simonking"))
@@ -181,7 +212,7 @@ public class Enemy : MonoBehaviour
                 GameManager.instance.regularSimonKills++;
             }
 
-            int reward = GameBalanceSettings.GetEnemyReward(gameObject.name, DifficultySettings.GetBalanceDifficulty());
+            int reward = GameBalanceSettings.Instance.GetEnemyReward(gameObject.name, DifficultySettings.GetBalanceDifficulty());
             GameManager.instance.playerMoney += reward;
             GameManager.instance.UpdateMoneyUI();
         }

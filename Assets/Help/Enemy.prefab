@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: -141101444978564701}
   - component: {fileID: -5343681737295829158}
   - component: {fileID: 5450826505145146807}
-  m_Layer: 0
+  - component: {fileID: 85234799123456789}
+  m_Layer: 10
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -167,8 +168,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1dab3e126aeaa294180004a90831deab, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   health: 50
   movespeed: 2
   maxHealth: 50
+--- !u!114 &85234799123456789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2300014209246036060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1176b35f3f04d8c8b731b5f6bc9a9f1, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyStatusManager
+  activeEffects: []
+  slowedIcon: {fileID: 7215569060728343946, guid: c8bed0283d7267e4ea26704bc4dcff9f, type: 3}
+  dazzledIcon: {fileID: 5688261421347216261, guid: 83496352027dab744b5d4862328624c7, type: 3}
+  vulnerableIcon: {fileID: 414244879553218598, guid: 5a6a1903dc669f049984fd8ebc15921c, type: 3}
+  hasteIcon: {fileID: -2511640811923716225, guid: 27ba6e2b4df0b454f9a51138a5c8aa41, type: 3}
+  damageIcon: {fileID: 6432402440040616058, guid: 08dbd48cfe66af44dbba7d4361f0cbed, type: 3}
+  rangeIcon: {fileID: -23680001110779912, guid: 020168abe17b7904f88fde458e36508f, type: 3}

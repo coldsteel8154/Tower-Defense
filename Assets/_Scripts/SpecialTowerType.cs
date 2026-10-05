@@ -1,0 +1,25 @@
+public enum SpecialTowerType
+{
+    None = 0,
+    Veteran = 1,
+    Juggernaut = 2,
+    GhostRecon = 3,
+    DrillSergeant = 4,
+    Spotter = 5,
+    GunnerCommander = 6,
+    ShredderVanguard = 7,
+    Pathfinder = 8,
+    BarrettOverload = 9,
+    ShockTrooper = 10,
+    Marksman = 11,
+    TacticalCaptain = 12,
+    TrenchSweeper = 13,
+    SiegeDestroyer = 14,
+    IronVanguard = 15,
+    GuerillaEliminator = 16,
+    RailgunOperator = 17,
+    HawkeyeOperator = 18,
+    CombatSpecialist = 19,
+    LinebreakerScout = 20,
+    HeavyMarksman = 21
+}

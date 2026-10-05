@@ -57,7 +57,7 @@ public class CheatCommandSystem : MonoBehaviour
         tmp.fontSize = 18;
         tmp.alignment = TMPro.TextAlignmentOptions.Center;
         tmp.color = Color.white;
-        tmp.text = "Commands: /money [add/set/minus] [amount]  /wave [set/jump/revert] [n]  /freeze  /unfreeze  /lives [set/add/minus/kill/immortal]";
+        tmp.text = "Commands: /money [add/set/minus] [amount] or /money infinite  /wave [set/jump/revert] [n]  /freeze  /unfreeze  /lives [set/add/minus/kill/immortal]";
 
         helpGo.transform.SetAsLastSibling();
 
@@ -130,6 +130,12 @@ public class CheatCommandSystem : MonoBehaviour
 
         if (cmd == "/money")
         {
+            if (parts.Length == 2 && parts[1].Equals("infinite", System.StringComparison.OrdinalIgnoreCase))
+            {
+                GameManager.instance?.EnableInfiniteMoney();
+                return;
+            }
+
             // /money [add/set/minus] [amount]
             // Default is add, so if no mode specified, e.g. "/money 100", parts[1] is amount
             string mode = "add";

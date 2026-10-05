@@ -78,8 +78,15 @@ public class TowerPlacementManager : MonoBehaviour
         bool isOverUI = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
 
         // Check placement validity
-        bool hasMoney = GameManager.instance != null ? GameManager.instance.playerMoney >= currentTowerCost : false;
-        bool isValid = !isOverUI && IsValidPlacement(mouseWorldPos) && hasMoney;
+        Tower previewTower = previewInstance.GetComponent<Tower>();
+        TowerSynthesisManager synthesisManager = TowerSynthesisManager.Instance;
+        Tower mergeTarget = synthesisManager.FindTowerAtPosition(mouseWorldPos, previewTower);
+        bool hasMoney = GameManager.instance != null &&
+            (GameManager.instance.IsMoneyInfinite || GameManager.instance.playerMoney >= currentTowerCost);
+        bool canMerge = mergeTarget != null && synthesisManager.CanPurchaseAndSynthesize(
+            previewTower, mergeTarget, currentTowerCost);
+        bool canPlace = mergeTarget == null && IsValidPlacement(mouseWorldPos) && hasMoney;
+        bool isValid = !isOverUI && (canMerge || canPlace);
 
         // Update preview colors
         UpdatePreviewColors(isValid);
@@ -96,7 +103,21 @@ public class TowerPlacementManager : MonoBehaviour
         {
             if (isValid)
             {
-                PlaceTower(mouseWorldPos);
+                if (mergeTarget != null)
+                {
+                    if (synthesisManager.PurchaseAndSynthesize(previewTower, mergeTarget, currentTowerCost))
+                    {
+                        isPlacing = false;
+                        previewInstance = null;
+                        previewMainRenderer = null;
+                        previewRangeRenderer = null;
+                        previewTowerRange = null;
+                    }
+                }
+                else
+                {
+                    PlaceTower(mouseWorldPos);
+                }
             }
             else if (isOverUI)
             {
@@ -160,14 +181,16 @@ public class TowerPlacementManager : MonoBehaviour
             return;
         }
 
-        if (GameManager.instance.playerMoney < cost)
+        Tower prefabTower = prefab.GetComponent<Tower>();
+        int configuredCost = prefabTower != null ? prefabTower.GetBalanceConfiguredCost() : cost;
+        if (!GameManager.instance.IsMoneyInfinite && GameManager.instance.playerMoney < configuredCost)
         {
             Debug.LogWarning("Insufficient money to buy a tower!");
             return;
         }
 
         currentTowerPrefab = prefab;
-        currentTowerCost = cost;
+        currentTowerCost = configuredCost;
         isPlacing = true;
 
         // Instantiate tower as preview
@@ -176,15 +199,42 @@ public class TowerPlacementManager : MonoBehaviour
 
         // Disable logic components so it doesn't act as a real tower
         Tower towerComp = previewInstance.GetComponent<Tower>();
-        if (towerComp != null) towerComp.enabled = false;
+        if (towerComp != null)
+        {
+            towerComp.cost = currentTowerCost;
+            towerComp.accumulatedValue = currentTowerCost;
+            towerComp.componentCount = 1;
+            towerComp.tier = 1;
+            towerComp.InitializeRecipeCounts();
+            towerComp.enabled = false;
+        }
+        TowerPlacementController placementController = previewInstance.GetComponent<TowerPlacementController>();
+        if (placementController != null) placementController.enabled = false;
+        SpecialTowerCombatController specialCombat = previewInstance.GetComponent<SpecialTowerCombatController>();
+        if (specialCombat != null) specialCombat.enabled = false;
+        ShockTrooperCombat shockTrooperCombat = previewInstance.GetComponent<ShockTrooperCombat>();
+        if (shockTrooperCombat != null) shockTrooperCombat.enabled = false;
+        HawkeyeOperatorCombat hawkeyeCombat = previewInstance.GetComponent<HawkeyeOperatorCombat>();
+        if (hawkeyeCombat != null) hawkeyeCombat.enabled = false;
+        LinebreakerVortexController vortexController = previewInstance.GetComponent<LinebreakerVortexController>();
+        if (vortexController != null) vortexController.enabled = false;
+        TowerStatusManager towerStatusManager = previewInstance.GetComponent<TowerStatusManager>();
+        if (towerStatusManager != null) towerStatusManager.enabled = false;
 
         var rb = previewInstance.GetComponent<Rigidbody2D>();
         if (rb != null) rb.simulated = false;
 
-        previewMainRenderer = previewInstance.GetComponent<SpriteRenderer>();
+        Transform previewVisualRoot = previewInstance.transform.Find("VisualRoot");
+        previewMainRenderer = previewVisualRoot != null
+            ? previewVisualRoot.GetComponent<SpriteRenderer>()
+            : previewInstance.GetComponent<SpriteRenderer>();
 
         // Disable range trigger logic, but keep range renderer visual
         Transform rangeChild = previewInstance.transform.Find("Range");
+        if (rangeChild == null)
+        {
+            rangeChild = previewInstance.transform.Find("RangeVisualizer");
+        }
         if (rangeChild != null)
         {
             previewTowerRange = rangeChild.GetComponent<TowerRange>();
@@ -192,6 +242,7 @@ public class TowerPlacementManager : MonoBehaviour
             {
                 previewTowerRange.UpdateRange();
                 previewTowerRange.enabled = false;
+                previewTowerRange.SetVisible(true);
             }
 
             var col = rangeChild.GetComponent<CircleCollider2D>();
@@ -221,7 +272,10 @@ public class TowerPlacementManager : MonoBehaviour
         // Deduct money
         if (GameManager.instance != null)
         {
-            GameManager.instance.playerMoney -= currentTowerCost;
+            if (!GameManager.instance.IsMoneyInfinite)
+            {
+                GameManager.instance.playerMoney -= currentTowerCost;
+            }
             GameManager.instance.UpdateMoneyUI();
         }
         else
@@ -237,6 +291,9 @@ public class TowerPlacementManager : MonoBehaviour
         if (towerComp != null)
         {
             towerComp.cost = currentTowerCost;
+            towerComp.accumulatedValue = currentTowerCost;
+            towerComp.componentCount = 1;
+            towerComp.tier = 1;
         }
 
 
@@ -257,6 +314,7 @@ public class TowerPlacementManager : MonoBehaviour
         {
             previewRangeRenderer.color = isValid ? validRangeColor : invalidRangeColor;
         }
+        previewTowerRange?.SetPreviewColor(isValid ? validColor : invalidColor);
     }
 
     public bool IsValidPlacement(Vector2 position)

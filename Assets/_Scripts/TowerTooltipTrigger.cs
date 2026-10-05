@@ -136,7 +136,7 @@ public class TowerTooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointer
     {
         if (overrideClass != Tower.TowerClass.Unknown)
         {
-            return GameBalanceSettings.GetTowerStats(overrideClass);
+            return GameBalanceSettings.Instance.GetTowerStats(overrideClass);
         }
 
         if (tower == null)
@@ -146,21 +146,21 @@ public class TowerTooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointer
 
         if (tower.towerClass != Tower.TowerClass.Unknown)
         {
-            return GameBalanceSettings.GetTowerStats(tower.towerClass);
+            return GameBalanceSettings.Instance.GetTowerStats(tower.towerClass);
         }
 
         string nm = tower.gameObject.name.ToLowerInvariant();
         if (nm.Contains("sniper"))
         {
-            return GameBalanceSettings.GetTowerStats(Tower.TowerClass.Sniper);
+            return GameBalanceSettings.Instance.GetTowerStats(Tower.TowerClass.Sniper);
         }
         else if (nm.Contains("assault"))
         {
-            return GameBalanceSettings.GetTowerStats(Tower.TowerClass.Assault);
+            return GameBalanceSettings.Instance.GetTowerStats(Tower.TowerClass.Assault);
         }
         else if (nm.Contains("soldier"))
         {
-            return GameBalanceSettings.GetTowerStats(Tower.TowerClass.Soldier);
+            return GameBalanceSettings.Instance.GetTowerStats(Tower.TowerClass.Soldier);
         }
 
         // Fallback to current tower values if type is unknown
@@ -293,6 +293,27 @@ public class TowerTooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointer
         tmp.raycastTarget = false;
         var localizedText = textGo.AddComponent<LocalizedText>();
         localizedText.SetContent("Tooltip", "提示" );
+
+        // Tower Tag Bar under stat text block
+        int uiLayer = LayerMask.NameToLayer("UI");
+        GameObject tagBarGo = new GameObject("TowerTagBar");
+        tagBarGo.transform.SetParent(go.transform, false);
+        if (uiLayer >= 0) tagBarGo.layer = uiLayer;
+
+        RectTransform tagBarRect = tagBarGo.AddComponent<RectTransform>();
+        tagBarRect.anchorMin = new Vector2(0f, 0f);
+        tagBarRect.anchorMax = new Vector2(1f, 0f);
+        tagBarRect.pivot = new Vector2(0f, 0f);
+        tagBarRect.anchoredPosition = new Vector2(8f, 6f);
+        tagBarRect.sizeDelta = new Vector2(-16f, 24f);
+
+        UnityEngine.UI.HorizontalLayoutGroup hlg = tagBarGo.AddComponent<UnityEngine.UI.HorizontalLayoutGroup>();
+        hlg.childAlignment = TextAnchor.MiddleLeft;
+        hlg.childForceExpandWidth = false;
+        hlg.childForceExpandHeight = false;
+        hlg.childControlWidth = false;
+        hlg.childControlHeight = false;
+        hlg.spacing = 4.0f;
 
         return go;
     }

@@ -94,6 +94,10 @@ public class TowerSidebarUI : MonoBehaviour
         {
             if (option.towerPrefab == null) continue;
 
+            Tower optionTower = option.towerPrefab.GetComponent<Tower>();
+            int configuredCost = optionTower != null
+                ? optionTower.GetBalanceConfiguredCost()
+                : option.cost;
             GameObject btnObj = Instantiate(buyButtonPrefab, contentParent);
             TowerBuyButtonUI btnUI = btnObj.GetComponent<TowerBuyButtonUI>();
             if (btnUI != null)
@@ -102,18 +106,18 @@ public class TowerSidebarUI : MonoBehaviour
                 Sprite icon = option.customIcon;
                 if (icon == null)
                 {
-                    SpriteRenderer sr = option.towerPrefab.GetComponent<SpriteRenderer>();
+                    SpriteRenderer sr = option.towerPrefab.GetComponentInChildren<SpriteRenderer>();
                     if (sr != null)
                     {
                         icon = sr.sprite;
                     }
                 }
 
-                btnUI.Setup(icon, option.cost, () =>
+                btnUI.Setup(icon, configuredCost, () =>
                 {
                     if (TowerPlacementManager.instance != null)
                     {
-                        TowerPlacementManager.instance.StartPlacement(option.towerPrefab, option.cost);
+                        TowerPlacementManager.instance.StartPlacement(option.towerPrefab, configuredCost);
                     }
                 });
 

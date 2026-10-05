@@ -2,7 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
+  serializedVersion: 3
   tags:
   - Enemy
   - Tower
@@ -15,10 +15,10 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
+  - Path
+  - Tower
+  - Enemy
+  - UI
   - 
   - 
   - 
@@ -43,3 +43,24 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Background
+    uniqueID: 1001
+    locked: 0
+  - name: Path
+    uniqueID: 1002
+    locked: 0
+  - name: RangeIndicators
+    uniqueID: 1003
+    locked: 0
+  - name: Towers
+    uniqueID: 1004
+    locked: 0
+  - name: VFX
+    uniqueID: 1005
+    locked: 0
+  - name: UI
+    uniqueID: 1006
+    locked: 0
+  m_RenderingLayers:
+  - Default
+  m_MigratedRenderPipelines: []

@@ -40,9 +40,9 @@ public class EnemyManager : MonoBehaviour
     void Start()
     {
         // Enforce delay settings from balance configuration
-        autoStartDelay = GameBalanceSettings.AutoStartDelay;
-        spawnDelayMinMultiplier = GameBalanceSettings.MinSpawnDelayMultiplier;
-        spawnDelayMaxMultiplier = GameBalanceSettings.MaxSpawnDelayMultiplier;
+        autoStartDelay = GameBalanceSettings.Instance.AutoStartDelay;
+        spawnDelayMinMultiplier = GameBalanceSettings.Instance.MinSpawnDelayMultiplier;
+        spawnDelayMaxMultiplier = GameBalanceSettings.Instance.MaxSpawnDelayMultiplier;
 
         AudioListener.volume = DifficultySettings.gameVolume / 100f;
         DifficultySettings.OnVolumeChanged += OnGlobalVolumeChanged;
@@ -240,6 +240,7 @@ public class EnemyManager : MonoBehaviour
             {
                 Destroy(SpawnManager.enemy_list[i]);
             }
+            SpawnManager.enemy_list.Clear();
         }
 
         wavedone = false;
@@ -259,7 +260,7 @@ public class EnemyManager : MonoBehaviour
         waveset.Clear();
 
         // Calculate enemy count: starts at 10, progressively grows by 2 per wave
-        GameBalanceSettings.GetWaveEnemyCounts(wave, out int simonCount, out int simonkingCount, out int ultrasimonCount);
+        GameBalanceSettings.Instance.GetWaveEnemyCounts(wave, out int simonCount, out int simonkingCount, out int ultrasimonCount);
 
         // Assemble waveset list using string identifiers
         for (int i = 0; i < simonCount; i++) waveset.Add("simon");
@@ -306,14 +307,14 @@ public class EnemyManager : MonoBehaviour
     IEnumerator spawn()
     {
         var balanceDifficulty = DifficultySettings.GetBalanceDifficulty();
-        var spawnRange = GameBalanceSettings.GetSpawnDelayRange(wave, balanceDifficulty);
+        var spawnRange = GameBalanceSettings.Instance.GetSpawnDelayRange(wave, balanceDifficulty);
         float spawnDelayMin = spawnRange.min;
         float spawnDelayMax = spawnRange.max;
 
-        float difficultyHealthFactor = GameBalanceSettings.GetDifficultyHealthFactor(balanceDifficulty);
-        float difficultySpeedFactor = GameBalanceSettings.GetDifficultySpeedFactor(balanceDifficulty);
+        float difficultyHealthFactor = GameBalanceSettings.Instance.GetDifficultyHealthFactor(balanceDifficulty);
+        float difficultySpeedFactor = GameBalanceSettings.Instance.GetDifficultySpeedFactor(balanceDifficulty);
 
-        float waveHealthMultiplier = GameBalanceSettings.GetWaveHealthMultiplier(wave);
+        float waveHealthMultiplier = GameBalanceSettings.Instance.GetWaveHealthMultiplier(wave);
 
         for (int i = 0; i < waveset.Count; i++)
         {
@@ -348,7 +349,7 @@ public class EnemyManager : MonoBehaviour
                 if (enemyComp != null)
                 {
                     // Cache base stats first
-                    var enemyStats = GameBalanceSettings.GetEnemyTypeStats(enemyType);
+                    var enemyStats = GameBalanceSettings.Instance.GetEnemyTypeStats(enemyType);
                     enemyComp.health = Mathf.RoundToInt(enemyStats.baseHealth * waveHealthMultiplier * difficultyHealthFactor);
                     enemyComp.movespeed = enemyStats.baseSpeed * difficultySpeedFactor;
                     enemyComp.maxHealth = enemyComp.health; // update maxHealth for health bars

@@ -25,31 +25,31 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3915258504970940166}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8322923912212310662}
-  - {fileID: 5869645134196676684}
+  - {fileID: 6948972675307886287}
   - {fileID: 999534805564561725}
-  - {fileID: 4475386437418348586}
+  - {fileID: 1081245110224567981}
   - {fileID: 3308271217590721599}
-  - {fileID: 3080423976076357270}
+  - {fileID: 1992072881547993105}
   - {fileID: 4991758760079830399}
-  - {fileID: 8320771282901573020}
-  - {fileID: 3071264267511366997}
+  - {fileID: 4783895478161199903}
+  - {fileID: 1983215949798853584}
   - {fileID: 5026887536182617677}
   - {fileID: 9144483773872460352}
-  - {fileID: 402519952225877680}
-  - {fileID: 6896653856895307684}
+  - {fileID: 3786567626299666475}
+  - {fileID: 7975673551940829479}
   - {fileID: 6206388948943432458}
-  - {fileID: 4215184068403957046}
+  - {fileID: 821283929286853553}
   - {fileID: 8136930732715535796}
-  - {fileID: 3886438683420367342}
+  - {fileID: 357466168260319081}
   - {fileID: 326064844981182622}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!198 &5158059802248021565
 ParticleSystem:
@@ -4776,7 +4776,7 @@ ParticleSystem:
     vectorLabel1_3: W
 --- !u!199 &8337833412057618827
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -4792,6 +4792,11 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4813,9 +4818,11 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 1005
+  m_SortingLayer: 5
+  m_SortingOrder: 3
+  m_MaskInteraction: 0
   m_RenderMode: 5
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -4830,13 +4837,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 1
   m_ApplyActiveColorSpace: 1
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 00010304
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -4845,7 +4854,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!1001 &402519952225877679
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4857,6 +4865,18 @@ PrefabInstance:
     - target: {fileID: 1921079115439858272, guid: 8fcfc832f78d73548b72b5021ba4dba4, type: 3}
       propertyPath: m_Name
       value: VFX_Shockwave_Vertical_01_White_Big_500ms
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 8fcfc832f78d73548b72b5021ba4dba4, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 8fcfc832f78d73548b72b5021ba4dba4, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 8fcfc832f78d73548b72b5021ba4dba4, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
       objectReference: {fileID: 0}
     - target: {fileID: 3538315220092702340, guid: 8fcfc832f78d73548b72b5021ba4dba4, type: 3}
       propertyPath: m_RootOrder
@@ -4902,12 +4922,24 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 8fcfc832f78d73548b72b5021ba4dba4, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 8fcfc832f78d73548b72b5021ba4dba4, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 8fcfc832f78d73548b72b5021ba4dba4, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8fcfc832f78d73548b72b5021ba4dba4, type: 3}
---- !u!4 &402519952225877680 stripped
+--- !u!4 &3786567626299666475 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3538315220092702340, guid: 8fcfc832f78d73548b72b5021ba4dba4, type: 3}
   m_PrefabInstance: {fileID: 402519952225877679}
@@ -4923,6 +4955,18 @@ PrefabInstance:
     - target: {fileID: 1921079115439858272, guid: 1e41a236f6f7fea488ef8da9ae450731, type: 3}
       propertyPath: m_Name
       value: VFX_Shockwave_01_White_1s
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 1e41a236f6f7fea488ef8da9ae450731, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 1e41a236f6f7fea488ef8da9ae450731, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 1e41a236f6f7fea488ef8da9ae450731, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
       objectReference: {fileID: 0}
     - target: {fileID: 3538315220092702340, guid: 1e41a236f6f7fea488ef8da9ae450731, type: 3}
       propertyPath: m_RootOrder
@@ -4967,6 +5011,18 @@ PrefabInstance:
     - target: {fileID: 3538315220092702340, guid: 1e41a236f6f7fea488ef8da9ae450731, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 1e41a236f6f7fea488ef8da9ae450731, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 1e41a236f6f7fea488ef8da9ae450731, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 1e41a236f6f7fea488ef8da9ae450731, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4990,6 +5046,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: VFX_Shockwave_01_White_Big_2s
       objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: ce5ca67f26760db42b9a403e9d93786e, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: ce5ca67f26760db42b9a403e9d93786e, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: ce5ca67f26760db42b9a403e9d93786e, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
+      objectReference: {fileID: 0}
     - target: {fileID: 3538315220092702340, guid: ce5ca67f26760db42b9a403e9d93786e, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -5034,12 +5102,24 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: ce5ca67f26760db42b9a403e9d93786e, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: ce5ca67f26760db42b9a403e9d93786e, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: ce5ca67f26760db42b9a403e9d93786e, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ce5ca67f26760db42b9a403e9d93786e, type: 3}
---- !u!4 &3071264267511366997 stripped
+--- !u!4 &1983215949798853584 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3538315220092702340, guid: ce5ca67f26760db42b9a403e9d93786e, type: 3}
   m_PrefabInstance: {fileID: 3071264267511366996}
@@ -5055,6 +5135,18 @@ PrefabInstance:
     - target: {fileID: 1921079115439858272, guid: 94e933748336ee540a146d4786732f25, type: 3}
       propertyPath: m_Name
       value: VFX_Shockwave_01_White_Big_1s
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 94e933748336ee540a146d4786732f25, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 94e933748336ee540a146d4786732f25, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 94e933748336ee540a146d4786732f25, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
       objectReference: {fileID: 0}
     - target: {fileID: 3538315220092702340, guid: 94e933748336ee540a146d4786732f25, type: 3}
       propertyPath: m_RootOrder
@@ -5100,12 +5192,24 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 94e933748336ee540a146d4786732f25, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 94e933748336ee540a146d4786732f25, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 94e933748336ee540a146d4786732f25, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 94e933748336ee540a146d4786732f25, type: 3}
---- !u!4 &3080423976076357270 stripped
+--- !u!4 &1992072881547993105 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3538315220092702340, guid: 94e933748336ee540a146d4786732f25, type: 3}
   m_PrefabInstance: {fileID: 3080423976076357269}
@@ -5121,6 +5225,18 @@ PrefabInstance:
     - target: {fileID: 1921079115439858272, guid: 5b3be442dcda5944aa8c6becf073f356, type: 3}
       propertyPath: m_Name
       value: VFX_Shockwave_Vertical_01_White_Big_2s
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 5b3be442dcda5944aa8c6becf073f356, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 5b3be442dcda5944aa8c6becf073f356, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 5b3be442dcda5944aa8c6becf073f356, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
       objectReference: {fileID: 0}
     - target: {fileID: 3538315220092702340, guid: 5b3be442dcda5944aa8c6becf073f356, type: 3}
       propertyPath: m_RootOrder
@@ -5165,6 +5281,18 @@ PrefabInstance:
     - target: {fileID: 3538315220092702340, guid: 5b3be442dcda5944aa8c6becf073f356, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 5b3be442dcda5944aa8c6becf073f356, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 5b3be442dcda5944aa8c6becf073f356, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 5b3be442dcda5944aa8c6becf073f356, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5188,6 +5316,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: VFX_Shockwave_Vertical_01_White_2s
       objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 02dfcdf795eb9314189ea9e456c1e6f9, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 02dfcdf795eb9314189ea9e456c1e6f9, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 02dfcdf795eb9314189ea9e456c1e6f9, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
+      objectReference: {fileID: 0}
     - target: {fileID: 3538315220092702340, guid: 02dfcdf795eb9314189ea9e456c1e6f9, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -5232,12 +5372,24 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 02dfcdf795eb9314189ea9e456c1e6f9, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 02dfcdf795eb9314189ea9e456c1e6f9, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 02dfcdf795eb9314189ea9e456c1e6f9, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 02dfcdf795eb9314189ea9e456c1e6f9, type: 3}
---- !u!4 &3886438683420367342 stripped
+--- !u!4 &357466168260319081 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3538315220092702340, guid: 02dfcdf795eb9314189ea9e456c1e6f9, type: 3}
   m_PrefabInstance: {fileID: 3886438683420367341}
@@ -5254,6 +5406,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: VFX_Shockwave_Vertical_01_White_Big_1s
       objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 82a5f28efe12eeb43812249f55eeb8bc, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 82a5f28efe12eeb43812249f55eeb8bc, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 82a5f28efe12eeb43812249f55eeb8bc, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
+      objectReference: {fileID: 0}
     - target: {fileID: 3538315220092702340, guid: 82a5f28efe12eeb43812249f55eeb8bc, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -5298,12 +5462,24 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 82a5f28efe12eeb43812249f55eeb8bc, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 82a5f28efe12eeb43812249f55eeb8bc, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 82a5f28efe12eeb43812249f55eeb8bc, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 82a5f28efe12eeb43812249f55eeb8bc, type: 3}
---- !u!4 &4215184068403957046 stripped
+--- !u!4 &821283929286853553 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3538315220092702340, guid: 82a5f28efe12eeb43812249f55eeb8bc, type: 3}
   m_PrefabInstance: {fileID: 4215184068403957045}
@@ -5319,6 +5495,18 @@ PrefabInstance:
     - target: {fileID: 1921079115439858272, guid: cf22afb314419024a912600068b12f79, type: 3}
       propertyPath: m_Name
       value: VFX_Shockwave_01_White_Big_500ms
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: cf22afb314419024a912600068b12f79, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: cf22afb314419024a912600068b12f79, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: cf22afb314419024a912600068b12f79, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
       objectReference: {fileID: 0}
     - target: {fileID: 3538315220092702340, guid: cf22afb314419024a912600068b12f79, type: 3}
       propertyPath: m_RootOrder
@@ -5363,6 +5551,18 @@ PrefabInstance:
     - target: {fileID: 3538315220092702340, guid: cf22afb314419024a912600068b12f79, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: cf22afb314419024a912600068b12f79, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: cf22afb314419024a912600068b12f79, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: cf22afb314419024a912600068b12f79, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5386,6 +5586,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: VFX_Shockwave_01_White_Small_1s
       objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: ac05be33874017546bb6420aad58bbb0, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: ac05be33874017546bb6420aad58bbb0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: ac05be33874017546bb6420aad58bbb0, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
+      objectReference: {fileID: 0}
     - target: {fileID: 3538315220092702340, guid: ac05be33874017546bb6420aad58bbb0, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -5430,12 +5642,24 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: ac05be33874017546bb6420aad58bbb0, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: ac05be33874017546bb6420aad58bbb0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: ac05be33874017546bb6420aad58bbb0, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ac05be33874017546bb6420aad58bbb0, type: 3}
---- !u!4 &4475386437418348586 stripped
+--- !u!4 &1081245110224567981 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3538315220092702340, guid: ac05be33874017546bb6420aad58bbb0, type: 3}
   m_PrefabInstance: {fileID: 4475386437418348585}
@@ -5451,6 +5675,18 @@ PrefabInstance:
     - target: {fileID: 1921079115439858272, guid: 8e8c85e98b5211247ac6b0f066ceed74, type: 3}
       propertyPath: m_Name
       value: VFX_Shockwave_Vertical_01_White_Small_2s
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 8e8c85e98b5211247ac6b0f066ceed74, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 8e8c85e98b5211247ac6b0f066ceed74, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 8e8c85e98b5211247ac6b0f066ceed74, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
       objectReference: {fileID: 0}
     - target: {fileID: 3538315220092702340, guid: 8e8c85e98b5211247ac6b0f066ceed74, type: 3}
       propertyPath: m_RootOrder
@@ -5495,6 +5731,18 @@ PrefabInstance:
     - target: {fileID: 3538315220092702340, guid: 8e8c85e98b5211247ac6b0f066ceed74, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 8e8c85e98b5211247ac6b0f066ceed74, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 8e8c85e98b5211247ac6b0f066ceed74, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 8e8c85e98b5211247ac6b0f066ceed74, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5518,6 +5766,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: VFX_Shockwave_01_White_Small_500ms
       objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 1d486509569e8c94981a82fad44a58c0, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 1d486509569e8c94981a82fad44a58c0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 1d486509569e8c94981a82fad44a58c0, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
+      objectReference: {fileID: 0}
     - target: {fileID: 3538315220092702340, guid: 1d486509569e8c94981a82fad44a58c0, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -5561,6 +5821,18 @@ PrefabInstance:
     - target: {fileID: 3538315220092702340, guid: 1d486509569e8c94981a82fad44a58c0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 1d486509569e8c94981a82fad44a58c0, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 1d486509569e8c94981a82fad44a58c0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 1d486509569e8c94981a82fad44a58c0, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5584,6 +5856,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: VFX_Shockwave_Vertical_01_White_500ms
       objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 278bd7cf036262a4c890fada95fd5b95, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 278bd7cf036262a4c890fada95fd5b95, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 278bd7cf036262a4c890fada95fd5b95, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
+      objectReference: {fileID: 0}
     - target: {fileID: 3538315220092702340, guid: 278bd7cf036262a4c890fada95fd5b95, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -5627,6 +5911,18 @@ PrefabInstance:
     - target: {fileID: 3538315220092702340, guid: 278bd7cf036262a4c890fada95fd5b95, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 278bd7cf036262a4c890fada95fd5b95, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 278bd7cf036262a4c890fada95fd5b95, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 278bd7cf036262a4c890fada95fd5b95, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5650,6 +5946,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: VFX_Shockwave_01_White_500ms
       objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 2289229ab7734584cb82ddfdf4799fc9, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 2289229ab7734584cb82ddfdf4799fc9, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 2289229ab7734584cb82ddfdf4799fc9, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
+      objectReference: {fileID: 0}
     - target: {fileID: 3538315220092702340, guid: 2289229ab7734584cb82ddfdf4799fc9, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -5694,12 +6002,24 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 2289229ab7734584cb82ddfdf4799fc9, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 2289229ab7734584cb82ddfdf4799fc9, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 2289229ab7734584cb82ddfdf4799fc9, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2289229ab7734584cb82ddfdf4799fc9, type: 3}
---- !u!4 &5869645134196676684 stripped
+--- !u!4 &6948972675307886287 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3538315220092702340, guid: 2289229ab7734584cb82ddfdf4799fc9, type: 3}
   m_PrefabInstance: {fileID: 5869645134196676683}
@@ -5715,6 +6035,18 @@ PrefabInstance:
     - target: {fileID: 1921079115439858272, guid: b37d2dc254f212740a3ec23b2ab204c0, type: 3}
       propertyPath: m_Name
       value: VFX_Shockwave_Vertical_01_White_Small_1s
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: b37d2dc254f212740a3ec23b2ab204c0, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: b37d2dc254f212740a3ec23b2ab204c0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: b37d2dc254f212740a3ec23b2ab204c0, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
       objectReference: {fileID: 0}
     - target: {fileID: 3538315220092702340, guid: b37d2dc254f212740a3ec23b2ab204c0, type: 3}
       propertyPath: m_RootOrder
@@ -5760,12 +6092,24 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: b37d2dc254f212740a3ec23b2ab204c0, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: b37d2dc254f212740a3ec23b2ab204c0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: b37d2dc254f212740a3ec23b2ab204c0, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b37d2dc254f212740a3ec23b2ab204c0, type: 3}
---- !u!4 &6896653856895307684 stripped
+--- !u!4 &7975673551940829479 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3538315220092702340, guid: b37d2dc254f212740a3ec23b2ab204c0, type: 3}
   m_PrefabInstance: {fileID: 6896653856895307683}
@@ -5781,6 +6125,18 @@ PrefabInstance:
     - target: {fileID: 1921079115439858272, guid: 4c9cd48329a95a143ac41e493ca32539, type: 3}
       propertyPath: m_Name
       value: VFX_Shockwave_Vertical_01_White_1s
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 4c9cd48329a95a143ac41e493ca32539, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 4c9cd48329a95a143ac41e493ca32539, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 4c9cd48329a95a143ac41e493ca32539, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
       objectReference: {fileID: 0}
     - target: {fileID: 3538315220092702340, guid: 4c9cd48329a95a143ac41e493ca32539, type: 3}
       propertyPath: m_RootOrder
@@ -5825,6 +6181,18 @@ PrefabInstance:
     - target: {fileID: 3538315220092702340, guid: 4c9cd48329a95a143ac41e493ca32539, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 4c9cd48329a95a143ac41e493ca32539, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 4c9cd48329a95a143ac41e493ca32539, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 4c9cd48329a95a143ac41e493ca32539, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5848,6 +6216,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: VFX_Shockwave_01_White_2s
       objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 3effc97fe44811b46bb9a9103aee7592, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 3effc97fe44811b46bb9a9103aee7592, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 3effc97fe44811b46bb9a9103aee7592, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
+      objectReference: {fileID: 0}
     - target: {fileID: 3538315220092702340, guid: 3effc97fe44811b46bb9a9103aee7592, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -5892,12 +6272,24 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 3effc97fe44811b46bb9a9103aee7592, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 3effc97fe44811b46bb9a9103aee7592, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 3effc97fe44811b46bb9a9103aee7592, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3effc97fe44811b46bb9a9103aee7592, type: 3}
---- !u!4 &8320771282901573020 stripped
+--- !u!4 &4783895478161199903 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3538315220092702340, guid: 3effc97fe44811b46bb9a9103aee7592, type: 3}
   m_PrefabInstance: {fileID: 8320771282901573019}
@@ -5913,6 +6305,18 @@ PrefabInstance:
     - target: {fileID: 1921079115439858272, guid: 1adea4409fc7df04a9838261bdf3654a, type: 3}
       propertyPath: m_Name
       value: VFX_Shockwave_01_White_Small_2s
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 1adea4409fc7df04a9838261bdf3654a, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 1adea4409fc7df04a9838261bdf3654a, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 1adea4409fc7df04a9838261bdf3654a, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
       objectReference: {fileID: 0}
     - target: {fileID: 3538315220092702340, guid: 1adea4409fc7df04a9838261bdf3654a, type: 3}
       propertyPath: m_RootOrder
@@ -5957,6 +6361,18 @@ PrefabInstance:
     - target: {fileID: 3538315220092702340, guid: 1adea4409fc7df04a9838261bdf3654a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 1adea4409fc7df04a9838261bdf3654a, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 1adea4409fc7df04a9838261bdf3654a, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 1adea4409fc7df04a9838261bdf3654a, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5980,6 +6396,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: VFX_Shockwave_Vertical_01_White_Small_500ms
       objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 175e18fec3edb3441a1719a7edb82964, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 175e18fec3edb3441a1719a7edb82964, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928515181061335224, guid: 175e18fec3edb3441a1719a7edb82964, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
+      objectReference: {fileID: 0}
     - target: {fileID: 3538315220092702340, guid: 175e18fec3edb3441a1719a7edb82964, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -6023,6 +6451,18 @@ PrefabInstance:
     - target: {fileID: 3538315220092702340, guid: 175e18fec3edb3441a1719a7edb82964, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 175e18fec3edb3441a1719a7edb82964, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 175e18fec3edb3441a1719a7edb82964, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887663029050426632, guid: 175e18fec3edb3441a1719a7edb82964, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1005
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

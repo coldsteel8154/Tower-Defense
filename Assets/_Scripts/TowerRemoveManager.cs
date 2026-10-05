@@ -136,7 +136,7 @@ public class TowerRemoveManager : MonoBehaviour
         // Refund half cost
         if (GameManager.instance != null)
         {
-            int refund = tower.cost / 2;
+            int refund = GameBalanceSettings.Instance.CalculateRecycleRefund(tower.accumulatedValue);
             GameManager.instance.playerMoney += refund;
             GameManager.instance.UpdateMoneyUI();
             Debug.Log("Refunded $" + refund + " for removing " + tower.name);

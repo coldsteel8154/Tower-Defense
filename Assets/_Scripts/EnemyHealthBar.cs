@@ -74,6 +74,60 @@ public class EnemyHealthBar : MonoBehaviour
         textRect.anchorMin = new Vector2(0.02f, 0f);
         textRect.anchorMax = new Vector2(0.28f, 1f);
         textRect.sizeDelta = Vector2.zero;
+
+        // 4. Enemy Tag Container (above health fill)
+        int uiLayer = LayerMask.NameToLayer("UI");
+
+        GameObject tagContainerGo = new GameObject("TagContainer");
+        tagContainerGo.transform.SetParent(canvasGo.transform, false);
+        if (uiLayer >= 0) tagContainerGo.layer = uiLayer;
+
+        RectTransform tcRect = tagContainerGo.AddComponent<RectTransform>();
+        tcRect.anchorMin = new Vector2(0f, 1f);
+        tcRect.anchorMax = new Vector2(1f, 1f);
+        tcRect.pivot = new Vector2(0f, 0f);
+        tcRect.anchoredPosition = new Vector2(0f, 0.05f); // Positioned above the health bar
+        tcRect.sizeDelta = new Vector2(0f, 0.3f);
+
+        HorizontalLayoutGroup hlg = tagContainerGo.AddComponent<HorizontalLayoutGroup>();
+        hlg.childAlignment = TextAnchor.LowerLeft;
+        hlg.childForceExpandWidth = false;
+        hlg.childForceExpandHeight = false;
+        hlg.childControlWidth = false;
+        hlg.childControlHeight = false;
+        hlg.spacing = 0.02f;
+
+        // Child Template: TagItemTemplate (Image 24x24 + TextMeshPro-UGUI superscript "^N")
+        GameObject templateGo = new GameObject("TagItemTemplate");
+        templateGo.transform.SetParent(tagContainerGo.transform, false);
+        if (uiLayer >= 0) templateGo.layer = uiLayer;
+
+        RectTransform tplRect = templateGo.AddComponent<RectTransform>();
+        tplRect.sizeDelta = new Vector2(0.34f, 0.34f);
+
+        Image img = templateGo.AddComponent<Image>();
+        img.raycastTarget = false;
+
+        GameObject superTextGo = new GameObject("SuperscriptText");
+        superTextGo.transform.SetParent(templateGo.transform, false);
+        if (uiLayer >= 0) superTextGo.layer = uiLayer;
+
+        RectTransform stRect = superTextGo.AddComponent<RectTransform>();
+        stRect.anchorMin = new Vector2(1f, 1f);
+        stRect.anchorMax = new Vector2(1f, 1f);
+        stRect.pivot = new Vector2(0f, 1f); // Top-right of tag icon
+        stRect.anchoredPosition = new Vector2(0f, 0f);
+        stRect.sizeDelta = new Vector2(0.2f, 0.2f);
+
+        TextMeshProUGUI tmp = superTextGo.AddComponent<TextMeshProUGUI>();
+        tmp.text = "^N";
+        tmp.fontSize = 0.18f;
+        tmp.alignment = TextAlignmentOptions.TopLeft;
+        tmp.color = Color.white;
+        tmp.raycastTarget = false;
+
+        // Deactivate template as specified
+        templateGo.SetActive(false);
     }
 
     private void Update()
