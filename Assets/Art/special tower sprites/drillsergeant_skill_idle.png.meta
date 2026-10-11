@@ -64,11 +64,11 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 3
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 0
-  spritePivot: {x: 0.5, y: 0.5}
+  alignment: 9
+  spritePivot: {x: 0.49461934, y: 0.60895884}
   spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
@@ -134,12 +134,12 @@ TextureImporter:
       name: drillsergeant_skill_idle_0
       rect:
         serializedVersion: 2
-        x: 16
-        y: 182
-        width: 106
-        height: 406
+        x: 17
+        y: 183
+        width: 104
+        height: 404
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -156,12 +156,12 @@ TextureImporter:
       name: drillsergeant_skill_idle_1
       rect:
         serializedVersion: 2
-        x: 85
-        y: 230
-        width: 83
-        height: 311
+        x: 86
+        y: 231
+        width: 81
+        height: 309
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -178,12 +178,12 @@ TextureImporter:
       name: drillsergeant_skill_idle_2
       rect:
         serializedVersion: 2
-        x: 154
-        y: 271
-        width: 60
-        height: 228
+        x: 155
+        y: 272
+        width: 58
+        height: 226
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -200,12 +200,12 @@ TextureImporter:
       name: drillsergeant_skill_idle_3
       rect:
         serializedVersion: 2
-        x: 202
-        y: 144
-        width: 234
-        height: 360
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 203
+        y: 145
+        width: 232
+        height: 357
+      alignment: 9
+      pivot: {x: 0.4887982, y: 0.6989798}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -222,12 +222,12 @@ TextureImporter:
       name: drillsergeant_skill_idle_4
       rect:
         serializedVersion: 2
-        x: 430
-        y: 271
-        width: 60
-        height: 228
+        x: 431
+        y: 272
+        width: 58
+        height: 226
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -244,12 +244,12 @@ TextureImporter:
       name: drillsergeant_skill_idle_5
       rect:
         serializedVersion: 2
-        x: 477
-        y: 229
-        width: 82
-        height: 312
+        x: 478
+        y: 230
+        width: 80
+        height: 310
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -266,12 +266,12 @@ TextureImporter:
       name: drillsergeant_skill_idle_6
       rect:
         serializedVersion: 2
-        x: 522
-        y: 182
-        width: 106
-        height: 406
+        x: 523
+        y: 183
+        width: 104
+        height: 404
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -288,15 +288,17 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
-    internalID: 0
+    spriteID: f4dd537d396ecf64582c0813a5afea1f
+    internalID: -1418639221
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       drillsergeant_skill_idle_0: 4913018872882664030
       drillsergeant_skill_idle_1: -4831324529774892997

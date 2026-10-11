@@ -33,10 +33,11 @@ public static class TowerCombinationsGuide
         cardImage.color = PanelColor;
         SetRect(card.GetComponent<RectTransform>(), new Vector2(0.035f, 0.035f), new Vector2(0.965f, 0.965f));
 
-        Button backButton = CreateButton(card.transform, "Back to Pause", new Vector2(0.025f, 0.89f),
+        Button backButton = CreateButton(card.transform, "Back to Pause", "返回暫停選單", new Vector2(0.025f, 0.89f),
             new Vector2(0.23f, 0.98f), onBack, 25);
         backButton.gameObject.name = "TowerCombinationsBackButton";
-        CreateText(card.transform, "GuideTitle", "Tower Crafting Guide", 36, AccentColor, TextAlignmentOptions.Center,
+        CreateLocalizedText(card.transform, "GuideTitle", "Tower Crafting Guide", "防禦塔合成指南",
+            36, AccentColor, TextAlignmentOptions.Center,
             new Vector2(0.25f, 0.89f), new Vector2(0.975f, 0.98f));
 
         GameObject viewportObject = CreateObject("RecipeViewport", card.transform);
@@ -77,8 +78,9 @@ public static class TowerCombinationsGuide
         List<GameBalanceSettings.SpecialTowerEvolutionStats> recipes = GetRecipes(settings);
         if (recipes.Count == 0)
         {
-            CreateText(contentObject.transform, "NoRecipes", "No special tower recipes are configured.",
-                22, Color.white, TextAlignmentOptions.Center, Vector2.zero, Vector2.one);
+            CreateLocalizedText(contentObject.transform, "NoRecipes", "No special tower recipes are configured.",
+                "尚未設定特種防禦塔合成配方。", 22, Color.white, TextAlignmentOptions.Center,
+                Vector2.zero, Vector2.one);
         }
         else
         {
@@ -140,79 +142,98 @@ public static class TowerCombinationsGuide
         else
         {
             Debug.LogWarning("Tower combination guide could not find an idle sprite for " + recipe.towerType + ".");
-            CreateText(iconObject.transform, "MissingSprite", "No image", 18, Color.white,
-                TextAlignmentOptions.Center, Vector2.zero, Vector2.one);
+            CreateLocalizedText(iconObject.transform, "MissingSprite", "No image", "無圖片",
+                18, Color.white, TextAlignmentOptions.Center, Vector2.zero, Vector2.one);
         }
 
-        string title = ToDisplayName(recipe.towerType);
-        CreateText(row.transform, "TowerName", title, 36, AccentColor, TextAlignmentOptions.Left,
+        CreateLocalizedText(row.transform, "TowerName",
+            DifficultySettings.GetSpecialTowerName(recipe.towerType, false),
+            DifficultySettings.GetSpecialTowerName(recipe.towerType, true),
+            36, AccentColor, TextAlignmentOptions.Left,
             new Vector2(0.255f, 0.82f), new Vector2(0.975f, 0.98f));
-        CreateText(row.transform, "Recipe", BuildRecipeText(recipe), 24, Color.white, TextAlignmentOptions.Left,
+        CreateLocalizedText(row.transform, "Recipe", BuildRecipeText(recipe, false), BuildRecipeText(recipe, true),
+            24, Color.white, TextAlignmentOptions.Left,
             new Vector2(0.255f, 0.68f), new Vector2(0.975f, 0.84f));
 
         float displayedRange = Tower.GetConfiguredWorldRange(recipe.towerType, recipe.level5Stats.range);
-        string stats = string.Format("Damage: {0}    Range: {1:0.0}    Fire rate: {2:0.00}s    Cost: {3}",
+        string englishStats = string.Format("Damage: {0}    Range: {1:0.0}    Interval: {2:0.00}s    Cost: {3}",
             recipe.level5Stats.damage, displayedRange, recipe.level5Stats.fireRate, recipe.level5Stats.cost);
-        CreateText(row.transform, "TowerStats", stats, 22, new Color(0.85f, 0.88f, 0.92f),
+        string chineseStats = string.Format("傷害：{0}    射程：{1:0.0}    攻擊間隔：{2:0.00} 秒    價格：{3}",
+            recipe.level5Stats.damage, displayedRange, recipe.level5Stats.fireRate, recipe.level5Stats.cost);
+        CreateLocalizedText(row.transform, "TowerStats", englishStats, chineseStats,
+            22, new Color(0.85f, 0.88f, 0.92f),
             TextAlignmentOptions.Left, new Vector2(0.255f, 0.48f), new Vector2(0.975f, 0.69f));
 
-        CreateText(row.transform, "SkillStats", BuildSkillStats(recipe), 19, new Color(0.95f, 0.79f, 0.46f),
+        CreateLocalizedText(row.transform, "SkillStats", BuildSkillStats(recipe, false),
+            BuildSkillStats(recipe, true), 19, new Color(0.95f, 0.79f, 0.46f),
             TextAlignmentOptions.Left, new Vector2(0.255f, 0.34f), new Vector2(0.975f, 0.49f));
 
-        string skillText = string.IsNullOrWhiteSpace(recipe.skillName)
+        string englishSkillText = string.IsNullOrWhiteSpace(recipe.skillName)
             ? recipe.skillDescription
             : recipe.skillName + (string.IsNullOrWhiteSpace(recipe.skillDescription)
                 ? string.Empty
                 : "\n" + recipe.skillDescription);
-        CreateText(row.transform, "SkillDescription", skillText, 21, new Color(0.78f, 0.81f, 0.86f),
+        string chineseSkillName =
+            DifficultySettings.GetSpecialTowerSkillName(recipe.towerType, recipe.skillName, true);
+        string chineseSkillDescription =
+            DifficultySettings.GetSpecialTowerSkillDescription(recipe.towerType, recipe.skillDescription, true);
+        string chineseSkillText = string.IsNullOrWhiteSpace(chineseSkillName)
+            ? chineseSkillDescription
+            : chineseSkillName + (string.IsNullOrWhiteSpace(chineseSkillDescription)
+                ? string.Empty
+                : "\n" + chineseSkillDescription);
+        CreateLocalizedText(row.transform, "SkillDescription", englishSkillText, chineseSkillText,
+            21, new Color(0.78f, 0.81f, 0.86f),
             TextAlignmentOptions.TopLeft, new Vector2(0.255f, 0.035f), new Vector2(0.975f, 0.35f));
     }
 
-    private static string BuildRecipeText(GameBalanceSettings.SpecialTowerEvolutionStats recipe)
+    private static string BuildRecipeText(GameBalanceSettings.SpecialTowerEvolutionStats recipe, bool chinese)
     {
         List<string> parts = new List<string>();
         if (recipe.soldierCount > 0)
         {
-            parts.Add(recipe.soldierCount + " Soldier");
+            parts.Add(recipe.soldierCount + (chinese ? " 名步兵" : " Soldier"));
         }
         if (recipe.assaultCount > 0)
         {
-            parts.Add(recipe.assaultCount + " Assault");
+            parts.Add(recipe.assaultCount + (chinese ? " 名突擊兵" : " Assault"));
         }
         if (recipe.sniperCount > 0)
         {
-            parts.Add(recipe.sniperCount + " Sniper");
+            parts.Add(recipe.sniperCount + (chinese ? " 名狙擊手" : " Sniper"));
         }
-        return "Recipe: " + string.Join(" + ", parts);
+        return (chinese ? "合成配方：" : "Recipe: ") + string.Join(" + ", parts);
     }
 
-    private static string BuildSkillStats(GameBalanceSettings.SpecialTowerEvolutionStats recipe)
+    private static string BuildSkillStats(GameBalanceSettings.SpecialTowerEvolutionStats recipe, bool chinese)
     {
         List<string> details = new List<string>();
-        AddDetail(details, "secondary dmg", recipe.secondaryDamage, "0");
-        AddDetail(details, "secondary range", recipe.secondaryRange, "0.0");
-        AddDetail(details, "skill dmg", recipe.abilityDamage, "0");
-        AddDetail(details, "area", recipe.abilityRadius, "0.0");
-        AddDetail(details, "duration", recipe.abilityDuration, "0.0", "s");
-        AddDetail(details, "cooldown", recipe.abilityCooldown, "0.0", "s");
-        AddDetail(details, "knockback", recipe.abilityKnockback, "0.0");
+        AddDetail(details, chinese ? "副攻傷害" : "secondary dmg", recipe.secondaryDamage, "0");
+        AddDetail(details, chinese ? "副攻射程" : "secondary range", recipe.secondaryRange, "0.0");
+        AddDetail(details, chinese ? "技能傷害" : "skill dmg", recipe.abilityDamage, "0");
+        AddDetail(details, chinese ? "範圍" : "area", recipe.abilityRadius, "0.0");
+        AddDetail(details, chinese ? "持續時間" : "duration", recipe.abilityDuration, "0.0", chinese ? " 秒" : "s");
+        AddDetail(details, chinese ? "冷卻時間" : "cooldown", recipe.abilityCooldown, "0.0", chinese ? " 秒" : "s");
+        AddDetail(details, chinese ? "擊退" : "knockback", recipe.abilityKnockback, "0.0");
         if (recipe.abilityChance > 0f)
         {
-            details.Add((recipe.abilityChance * 100f).ToString("0") + "% chance");
+            details.Add((recipe.abilityChance * 100f).ToString("0") + (chinese ? "% 機率" : "% chance"));
         }
         if (recipe.abilitySlow > 0f)
         {
-            details.Add("slow " + (recipe.abilitySlow * 100f).ToString("0") + "%");
+            details.Add((chinese ? "緩速 " : "slow ") + (recipe.abilitySlow * 100f).ToString("0") + "%");
         }
         if (recipe.abilityEveryNthHit > 0)
         {
-            details.Add("every " + recipe.abilityEveryNthHit + " hits");
+            details.Add((chinese ? "每 " : "every ") + recipe.abilityEveryNthHit + (chinese ? " 次命中" : " hits"));
         }
         if (recipe.maxTargets > 0)
         {
-            details.Add("up to " + recipe.maxTargets + " targets");
+            details.Add((chinese ? "最多 " : "up to ") + recipe.maxTargets + (chinese ? " 個目標" : " targets"));
         }
-        return details.Count > 0 ? "Skill stats: " + string.Join("  |  ", details) : string.Empty;
+        return details.Count > 0
+            ? (chinese ? "技能數值：" : "Skill stats: ") + string.Join("  |  ", details)
+            : string.Empty;
     }
 
     private static void AddDetail(List<string> details, string label, float value, string format, string suffix = "")
@@ -223,34 +244,31 @@ public static class TowerCombinationsGuide
         }
     }
 
-    private static string ToDisplayName(SpecialTowerType towerType)
-    {
-        string name = towerType.ToString();
-        System.Text.StringBuilder result = new System.Text.StringBuilder(name.Length + 8);
-        for (int index = 0; index < name.Length; index++)
-        {
-            if (index > 0 && char.IsUpper(name[index]))
-            {
-                result.Append(' ');
-            }
-            result.Append(name[index]);
-        }
-        return result.ToString();
-    }
-
-    private static Button CreateButton(Transform parent, string label, Vector2 anchorMin, Vector2 anchorMax,
+    private static Button CreateButton(Transform parent, string englishLabel, string chineseLabel,
+        Vector2 anchorMin, Vector2 anchorMax,
         Action onClick, int fontSize)
     {
-        GameObject buttonObject = CreateObject(label, parent);
+        GameObject buttonObject = CreateObject(englishLabel, parent);
         Image image = buttonObject.AddComponent<Image>();
         image.color = AccentColor;
         Button button = buttonObject.AddComponent<Button>();
         button.targetGraphic = image;
         button.onClick.AddListener(() => onClick?.Invoke());
         SetRect(buttonObject.GetComponent<RectTransform>(), anchorMin, anchorMax);
-        CreateText(buttonObject.transform, "Label", label, fontSize, new Color(0.08f, 0.09f, 0.11f),
+        CreateLocalizedText(buttonObject.transform, "Label", englishLabel, chineseLabel, fontSize,
+            new Color(0.08f, 0.09f, 0.11f),
             TextAlignmentOptions.Center, Vector2.zero, Vector2.one);
         return button;
+    }
+
+    private static TextMeshProUGUI CreateLocalizedText(Transform parent, string name, string english,
+        string chinese, int fontSize, Color color, TextAlignmentOptions alignment, Vector2 anchorMin, Vector2 anchorMax)
+    {
+        TextMeshProUGUI text = CreateText(parent, name,
+            DifficultySettings.IsTraditionalChinese ? chinese : english, fontSize, color, alignment, anchorMin, anchorMax);
+        LocalizedText localized = text.gameObject.AddComponent<LocalizedText>();
+        localized.SetContent(english, chinese);
+        return text;
     }
 
     private static TextMeshProUGUI CreateText(Transform parent, string name, string value, int fontSize, Color color,

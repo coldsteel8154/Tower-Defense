@@ -31,9 +31,6 @@ public class GameManager : MonoBehaviour
     public GameObject deathParticlePrefab;
     public bool isImmortal = false;
 
-    private string livesLabel = "Lives:";
-    private string moneyLabel = "Money:";
-
     private void Awake()
     {
         if (instance == null)
@@ -346,17 +343,7 @@ public class GameManager : MonoBehaviour
 
     private void ApplyLocalizedText(TMP_Text text, string englishText, string chineseText)
     {
-        if (text == null) return;
-
-        var localized = text.GetComponent<LocalizedText>();
-        if (localized != null)
-        {
-            localized.SetContent(englishText, chineseText);
-        }
-        else
-        {
-            text.text = DifficultySettings.selectedLanguage == DifficultySettings.Language.TraditionalChinese ? chineseText : englishText;
-        }
+        LocalizedText.SetLocalizedContent(text, englishText, chineseText);
     }
 
     public void Restart()
@@ -374,7 +361,7 @@ public class GameManager : MonoBehaviour
     {
         if (lives != null)
         {
-            lives.text = livesLabel + playerLives;
+            SetLocalizedUiText(lives, "Lives: " + playerLives, "生命：" + playerLives);
         }
     }
 
@@ -382,25 +369,20 @@ public class GameManager : MonoBehaviour
     {
         if (money != null)
         {
-            money.text = moneyLabel + (IsMoneyInfinite ? "∞" : playerMoney.ToString());
+            string amount = IsMoneyInfinite ? "∞" : playerMoney.ToString();
+            SetLocalizedUiText(money, "Money: " + amount, "金幣：" + amount);
         }
     }
 
     private void UpdateLocalizationLabels()
     {
-        if (DifficultySettings.selectedLanguage == DifficultySettings.Language.TraditionalChinese)
-        {
-            livesLabel = "生命:";
-            moneyLabel = "金幣:";
-        }
-        else
-        {
-            livesLabel = "Lives:";
-            moneyLabel = "Money:";
-        }
-
         UpdateLivesUI();
         UpdateMoneyUI();
+    }
+
+    private static void SetLocalizedUiText(TMP_Text text, string english, string chinese)
+    {
+        LocalizedText.SetLocalizedContent(text, english, chinese);
     }
 
     private void OnDisable()
@@ -408,5 +390,3 @@ public class GameManager : MonoBehaviour
         DifficultySettings.OnLanguageChanged -= UpdateLocalizationLabels;
     }
 }
-
-

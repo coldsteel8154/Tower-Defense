@@ -205,34 +205,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &8423400000000000001
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7025671057251057409}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 399d365e786b449887cdfdd04f5a479a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::TowerVisualController
-  visualRoot: {fileID: 8610258585172240439}
-  visualScaleMultiplier: 1
-  idleSpriteKey: idle
-  spriteStates:
-  - key: idle
-    visualScaleMultiplier: 1
-    sprite: {fileID: 1081591482269618428, guid: d4a6f572ceaf3fa4babc797b2b76d488, type: 3}
-  - key: fire
-    visualScaleMultiplier: 1
-    sprite: {fileID: 8555198753205551602, guid: 5c2593e752e1c42438aa678cd62eb312, type: 3}
-  - key: skill_idle
-    visualScaleMultiplier: 1
-    sprite: {fileID: 4913018872882664030, guid: 7c71878b6a07d164db6d4280d74cb247, type: 3}
-  - key: skill_fire
-    visualScaleMultiplier: 1
-    sprite: {fileID: 4659774232454267911, guid: 738aad98f40cd0c41abd67abbdd0fed9, type: 3}
 --- !u!1 &7025671057251057409
 GameObject:
   m_ObjectHideFlags: 0
@@ -241,10 +213,11 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8423400000000000001}
   - component: {fileID: 8489831162154484535}
+  - component: {fileID: 8423400000000000001}
   - component: {fileID: 2249102330654525303}
   - component: {fileID: 8423400000000000010}
+  - component: {fileID: 8423400000000000011}
   m_Layer: 9
   m_Name: Drill Sergeant
   m_TagString: Untagged
@@ -269,6 +242,42 @@ Transform:
   - {fileID: 1153413984044866693}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8423400000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7025671057251057409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 399d365e786b449887cdfdd04f5a479a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TowerVisualController
+  visualRoot: {fileID: 8610258585172240439}
+  visualScaleMultiplier: 1
+  idleSpriteKey: idle
+  spriteStates:
+  - key: idle
+    sprite: {fileID: 1081591482269618428, guid: d4a6f572ceaf3fa4babc797b2b76d488, type: 3}
+    frames: []
+    framesPerSecond: 12
+    visualScaleMultiplier: 1
+  - key: fire
+    sprite: {fileID: 8555198753205551602, guid: 5c2593e752e1c42438aa678cd62eb312, type: 3}
+    frames: []
+    framesPerSecond: 12
+    visualScaleMultiplier: 1
+  - key: skill_idle
+    sprite: {fileID: 21300000, guid: 7c71878b6a07d164db6d4280d74cb247, type: 3}
+    frames: []
+    framesPerSecond: 12
+    visualScaleMultiplier: 1
+  - key: skill_fire
+    sprite: {fileID: 21300000, guid: 738aad98f40cd0c41abd67abbdd0fed9, type: 3}
+    frames: []
+    framesPerSecond: 12
+    visualScaleMultiplier: 1
 --- !u!58 &2249102330654525303
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -315,9 +324,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bd8778b85f8cb9e4f9d672faf7804b38, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tower
+  range: 8
+  damage: 20
+  fireRate: 1
+  turnSpeed: 360
+  cost: 100
+  isSniper: 0
+  tier: 1
+  accumulatedValue: 0
+  componentCount: 1
+  soldierCount: 0
+  assaultCount: 0
+  sniperCount: 0
   specialTowerType: 4
+  towerClass: 0
+  normalSprite: {fileID: 0}
+  fireSprite: {fileID: 0}
+  fireSpriteDuration: 0.15
+  target: {fileID: 0}
+  tier5Evolved: 0
 --- !u!114 &8423400000000000011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,5 +355,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 630731e7f46c4adf8430669d43d32919, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpecialTowerCombatController
+  grenadeSprite: {fileID: 0}
+  landmineSprite: {fileID: 0}
+  reaperMarkPrefab: {fileID: 0}
+  mortarMarkPrefab: {fileID: 0}
+  impactVfxPrefab: {fileID: 0}
+  railgunBeamColor: {r: 0.05, g: 0.45, b: 1, a: 1}

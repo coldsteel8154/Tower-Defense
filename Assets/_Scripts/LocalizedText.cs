@@ -13,15 +13,21 @@ public class LocalizedText : MonoBehaviour
     private TMP_FontAsset defaultFontAsset;
     private Material defaultFontMaterial;
     private static TMP_FontAsset chineseFontAsset;
-    private static Font fallbackChineseOSFont;
+    private static bool fontEngineInitialized;
+    private static bool reportedMissingChineseGlyphs;
+    private static bool reportedMissingChineseFont;
 
     private void Awake()
     {
         tmpText = GetComponent<TMP_Text>();
         if (tmpText != null)
         {
-            defaultFontAsset = tmpText.font != null ? tmpText.font : Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
-            defaultFontMaterial = tmpText.fontSharedMaterial;
+            defaultFontAsset = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
+            if (defaultFontAsset == null)
+            {
+                defaultFontAsset = TMP_Settings.defaultFontAsset;
+            }
+            defaultFontMaterial = defaultFontAsset != null ? defaultFontAsset.material : null;
         }
 
         EnsureChineseFontAsset();
@@ -38,50 +44,90 @@ public class LocalizedText : MonoBehaviour
         DifficultySettings.OnLanguageChanged -= UpdateText;
     }
 
-    private void EnsureChineseFontAsset()
+    private static void EnsureChineseFontAsset()
     {
         if (chineseFontAsset != null)
         {
             return;
         }
 
-        chineseFontAsset = Resources.Load<TMP_FontAsset>("Fonts & Materials/ChineseDynamicFont");
-        if (chineseFontAsset == null)
+        if (!fontEngineInitialized)
         {
-            Font sourceFont = Resources.Load<Font>("Fonts/NotoSansTC-VF");
-            if (sourceFont != null)
+            FontEngineError error = FontEngine.InitializeFontEngine();
+            if (error != FontEngineError.Success)
             {
-                TMP_FontAsset generated = TMP_FontAsset.CreateFontAsset(sourceFont, 90, 9, GlyphRenderMode.SDFAA, 1024, 1024);
-                if (generated != null)
+                if (!reportedMissingChineseFont)
                 {
-                    generated.name = "NotoSansTC_Runtime";
-                    generated.atlasPopulationMode = AtlasPopulationMode.Dynamic;
-                    generated.isMultiAtlasTexturesEnabled = true;
-                    chineseFontAsset = generated;
+                    reportedMissingChineseFont = true;
+                    Debug.LogError("LocalizedText could not initialize TextMesh Pro's font engine: " + error);
                 }
+                return;
+            }
+            fontEngineInitialized = true;
+        }
+
+        Font sourceFont = Resources.Load<Font>("Fonts/NotoSansTC-Regular");
+        if (sourceFont != null)
+        {
+            TMP_FontAsset generated = TMP_FontAsset.CreateFontAsset(
+                sourceFont,
+                90,
+                9,
+                GlyphRenderMode.SDFAA,
+                2048,
+                2048);
+            if (generated != null)
+            {
+                generated.name = "NotoSansTC_Regular_Runtime";
+                generated.atlasPopulationMode = AtlasPopulationMode.Dynamic;
+                generated.isMultiAtlasTexturesEnabled = true;
+                chineseFontAsset = generated;
             }
         }
 
-        if (chineseFontAsset == null && fallbackChineseOSFont == null)
+        if (chineseFontAsset == null)
         {
-            fallbackChineseOSFont = Font.CreateDynamicFontFromOSFont("Microsoft JhengHei", 32);
-            if (fallbackChineseOSFont == null)
+            if (!reportedMissingChineseFont)
             {
-                fallbackChineseOSFont = Font.CreateDynamicFontFromOSFont("Microsoft YaHei", 32);
-            }
-
-            if (fallbackChineseOSFont == null)
-            {
-                Debug.LogWarning("LocalizedText: Could not load a usable Chinese font asset or OS fallback. Some glyphs may still render incorrectly.");
+                reportedMissingChineseFont = true;
+                Debug.LogError(
+                    "LocalizedText could not create a TMP font from Resources/Fonts/NotoSansTC-Regular.ttf. " +
+                    "Chinese text cannot be rendered without this font.");
             }
         }
     }
 
+    public static TMP_FontAsset GetChineseFontAsset()
+    {
+        EnsureChineseFontAsset();
+        return chineseFontAsset;
+    }
+
     public void SetContent(string english, string chinese)
     {
+        if (englishText == english && chineseText == chinese)
+        {
+            return;
+        }
+
         englishText = english;
         chineseText = chinese;
         UpdateText();
+    }
+
+    public static void SetLocalizedContent(TMP_Text text, string english, string chinese)
+    {
+        if (text == null)
+        {
+            return;
+        }
+
+        LocalizedText localized = text.GetComponent<LocalizedText>();
+        if (localized == null)
+        {
+            localized = text.gameObject.AddComponent<LocalizedText>();
+        }
+        localized.SetContent(english, chinese);
     }
 
     public void UpdateText()
@@ -97,28 +143,19 @@ public class LocalizedText : MonoBehaviour
         {
             if (chineseFontAsset != null)
             {
+                if (!string.IsNullOrEmpty(chineseText) &&
+                    !chineseFontAsset.TryAddCharacters(chineseText, out string missingCharacters) &&
+                    !reportedMissingChineseGlyphs)
+                {
+                    reportedMissingChineseGlyphs = true;
+                    Debug.LogError(
+                        "LocalizedText: Regular-weight Noto Sans TC could not add these requested characters: " +
+                        missingCharacters);
+                }
                 tmpText.font = chineseFontAsset;
                 if (chineseFontAsset.material != null)
                 {
                     tmpText.fontSharedMaterial = chineseFontAsset.material;
-                }
-            }
-            else if (fallbackChineseOSFont != null)
-            {
-                TMP_FontAsset generated = TMP_FontAsset.CreateFontAsset(fallbackChineseOSFont, 90, 9, GlyphRenderMode.SDFAA, 1024, 1024);
-                if (generated != null)
-                {
-                    chineseFontAsset = generated;
-                    tmpText.font = chineseFontAsset;
-                    if (chineseFontAsset.material != null)
-                    {
-                        tmpText.fontSharedMaterial = chineseFontAsset.material;
-                    }
-                }
-                else
-                {
-                    tmpText.font = null;
-                    tmpText.fontSharedMaterial = null;
                 }
             }
         }
@@ -127,15 +164,16 @@ public class LocalizedText : MonoBehaviour
             if (defaultFontAsset == null)
             {
                 defaultFontAsset = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
+                if (defaultFontAsset == null)
+                {
+                    defaultFontAsset = TMP_Settings.defaultFontAsset;
+                }
             }
 
             if (defaultFontAsset != null)
             {
                 tmpText.font = defaultFontAsset;
-                if (defaultFontMaterial != null)
-                {
-                    tmpText.fontSharedMaterial = defaultFontMaterial;
-                }
+                tmpText.fontSharedMaterial = defaultFontMaterial != null ? defaultFontMaterial : defaultFontAsset.material;
             }
         }
 

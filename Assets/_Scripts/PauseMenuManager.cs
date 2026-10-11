@@ -627,17 +627,7 @@ public class PauseMenuManager : MonoBehaviour
         {
             string englishText = "Show All Tower Ranges While Placing/Moving: " + (DifficultySettings.showAllTowerRangesWhenPlacing ? "On" : "Off");
             string chineseText = "放置/移動時顯示所有防禦塔範圍：" + (DifficultySettings.showAllTowerRangesWhenPlacing ? "開" : "關");
-            LocalizedText localized = towerRangeToggleText.GetComponent<LocalizedText>();
-            if (localized != null)
-            {
-                localized.SetContent(englishText, chineseText);
-            }
-            else
-            {
-                towerRangeToggleText.text = DifficultySettings.selectedLanguage == DifficultySettings.Language.English
-                    ? englishText
-                    : chineseText;
-            }
+            LocalizedText.SetLocalizedContent(towerRangeToggleText, englishText, chineseText);
         }
     }
 
@@ -653,15 +643,14 @@ public class PauseMenuManager : MonoBehaviour
         }
         UpdateLanguageText();
         UpdateTowerRangeText();
+        UpdateParticleText();
     }
 
     private void UpdateLanguageText()
     {
         if (languageToggleText != null)
         {
-            languageToggleText.text = DifficultySettings.selectedLanguage == DifficultySettings.Language.English 
-                ? "Language: English" 
-                : "語言: 繁體中文";
+            LocalizedText.SetLocalizedContent(languageToggleText, "Language: English", "語言：繁體中文");
         }
     }
 
@@ -720,9 +709,11 @@ public class PauseMenuManager : MonoBehaviour
     {
         if (particleToggleText != null)
         {
-            particleToggleText.text = DifficultySettings.selectedLanguage == DifficultySettings.Language.English
-                ? "Particles: " + DifficultySettings.particleSetting
-                : "粒子特效: " + (DifficultySettings.particleSetting == "All" ? "全部" : (DifficultySettings.particleSetting == "Less" ? "較少" : "最少"));
+            string englishText = "Particles: " + DifficultySettings.particleSetting;
+            string chineseSetting = DifficultySettings.particleSetting == "All"
+                ? "全部"
+                : (DifficultySettings.particleSetting == "Less" ? "較少" : "最少");
+            LocalizedText.SetLocalizedContent(particleToggleText, englishText, "粒子特效：" + chineseSetting);
         }
     }
 }

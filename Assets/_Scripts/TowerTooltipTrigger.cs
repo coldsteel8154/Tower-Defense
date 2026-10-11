@@ -53,22 +53,7 @@ public class TowerTooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointer
                                      $"攻速: {attacksPerSec:F1}/秒\n" +
                                      $"範圍: {stats.range}";
 
-                var localized = txt.GetComponent<LocalizedText>();
-                if (localized != null)
-                {
-                    localized.SetContent(englishText, chineseText);
-                }
-                else
-                {
-                    bool useChinese = DifficultySettings.selectedLanguage == DifficultySettings.Language.TraditionalChinese;
-                    txt.text = useChinese ? chineseText : englishText;
-                    
-                    // Apply Chinese font if needed
-                    if (useChinese)
-                    {
-                        ApplyChineseFontToTooltip(txt);
-                    }
-                }
+                LocalizedText.SetLocalizedContent(txt, englishText, chineseText);
             }
 
             // Position it near the button
@@ -192,61 +177,6 @@ public class TowerTooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointer
         if (prefabNameLower.Contains("assault")) return "突擊";
         if (prefabNameLower.Contains("sniper")) return "狙擊";
         return englishName;
-    }
-
-    private void ApplyChineseFontToTooltip(TMP_Text txt)
-    {
-        if (txt == null) return;
-
-        TMP_FontAsset chineseFontAsset = Resources.Load<TMP_FontAsset>("Fonts & Materials/ChineseDynamicFont");
-        if (chineseFontAsset == null)
-        {
-            Font sourceFont = Resources.Load<Font>("Fonts/NotoSansTC-VF");
-            if (sourceFont != null)
-            {
-                chineseFontAsset = TMP_FontAsset.CreateFontAsset(sourceFont, 90, 9, UnityEngine.TextCore.LowLevel.GlyphRenderMode.SDFAA, 1024, 1024);
-                if (chineseFontAsset != null)
-                {
-                    chineseFontAsset.name = "NotoSansTC_Runtime_Tooltip";
-                    chineseFontAsset.atlasPopulationMode = AtlasPopulationMode.Dynamic;
-                    chineseFontAsset.isMultiAtlasTexturesEnabled = true;
-                }
-            }
-        }
-
-        if (chineseFontAsset != null)
-        {
-            txt.font = chineseFontAsset;
-            if (chineseFontAsset.material != null)
-            {
-                txt.fontSharedMaterial = chineseFontAsset.material;
-            }
-            txt.SetAllDirty();
-            txt.ForceMeshUpdate();
-        }
-        else
-        {
-            Font fallbackChineseOSFont = Font.CreateDynamicFontFromOSFont("Microsoft JhengHei", 32);
-            if (fallbackChineseOSFont == null)
-            {
-                fallbackChineseOSFont = Font.CreateDynamicFontFromOSFont("Microsoft YaHei", 32);
-            }
-
-            if (fallbackChineseOSFont != null)
-            {
-                TMP_FontAsset generatedFont = TMP_FontAsset.CreateFontAsset(fallbackChineseOSFont, 90, 9, GlyphRenderMode.SDFAA, 1024, 1024);
-                if (generatedFont != null)
-                {
-                    txt.font = generatedFont;
-                    if (generatedFont.material != null)
-                    {
-                        txt.fontSharedMaterial = generatedFont.material;
-                    }
-                }
-                txt.SetAllDirty();
-                txt.ForceMeshUpdate();
-            }
-        }
     }
 
     private GameObject CreateTooltipPrefab()

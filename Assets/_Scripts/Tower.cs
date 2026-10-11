@@ -73,7 +73,7 @@ public class Tower : MonoBehaviour
             normalSprite = spriteRenderer.sprite;
         }
 
-        if (GetComponent<Collider2D>() != null && GetComponent<TowerPlacementController>() == null)
+        if (GetComponent<TowerPlacementController>() == null)
         {
             gameObject.AddComponent<TowerPlacementController>();
         }

@@ -29,7 +29,7 @@ public class TowerPlacementController : MonoBehaviour
     {
         tower = GetComponent<Tower>();
         specialCombat = GetComponent<SpecialTowerCombatController>();
-        if (tower == null || GetComponent<Collider2D>() == null)
+        if (tower == null || GetComponentInChildren<Collider2D>(true) == null)
         {
             enabled = false;
         }
@@ -76,6 +76,7 @@ public class TowerPlacementController : MonoBehaviour
                 transform.position = dragPosition;
                 bool validDrop = TowerSynthesisManager.Instance.CanDrop(tower, Input.mousePosition, dragPosition);
                 ApplyDragFeedback(validDrop);
+                TowerSynthesisManager.Instance.UpdateSynthesisCostDisplay(tower, Input.mousePosition, dragPosition);
             }
         }
 
@@ -85,6 +86,7 @@ public class TowerPlacementController : MonoBehaviour
         }
 
         activeDragController = null;
+        TowerSynthesisManager.HideSynthesisCostDisplay();
         float screenDelta = Vector2.Distance(mouseDownPosition, Input.mousePosition);
         if (screenDelta <= ClickDragThreshold)
         {
@@ -133,6 +135,7 @@ public class TowerPlacementController : MonoBehaviour
 
     private void ClearDragFeedback()
     {
+        TowerSynthesisManager.HideSynthesisCostDisplay();
         if (dragVisualRenderer != null)
         {
             dragVisualRenderer.color = originalDragVisualColor;
@@ -168,6 +171,11 @@ public class TowerPlacementController : MonoBehaviour
         foreach (Collider2D overlap in overlaps)
         {
             if (overlap == null)
+            {
+                continue;
+            }
+
+            if (overlap.GetComponentInParent<TowerRange>() != null)
             {
                 continue;
             }
@@ -227,6 +235,8 @@ public static class TowerInfoPanel
     private static RectTransform statusTagRow;
     private static GameObject statusTooltip;
     private static TMP_Text statusTooltipText;
+    private static LocalizedText panelLocalization;
+    private static LocalizedText statusTooltipLocalization;
     private static Tower selectedTower;
     private static int openedFrame = -1;
     private static Tower tooltipTower;
@@ -256,58 +266,88 @@ public static class TowerInfoPanel
         }
 
         Tower tower = selectedTower;
-        StringBuilder content = new StringBuilder(256);
-        string title = tower.specialTowerType != SpecialTowerType.None
-            ? tower.specialTowerType.ToString()
-            : tower.towerClass.ToString();
-        content.Append("<b><size=120%><color=#FFD700>").Append(title).Append("</color></size></b>\n");
-        content.Append("Tier: ").Append(tower.tier).Append(" / 5    Value: $").Append(tower.accumulatedValue).Append('\n');
-        content.Append("Recipe: <color=#4CAF50>So:").Append(tower.soldierCount)
-            .Append("</color> | <color=#FF9800>A:").Append(tower.assaultCount)
-            .Append("</color> | <color=#2196F3>Sn:").Append(tower.sniperCount).Append("</color>\n\n");
-        content.Append("<b>Combat</b>\nDamage: ").Append(tower.damage)
-            .Append("\nAttack speed: ").Append(1f / tower.GetEffectiveAttackInterval()).Append(" /s")
-            .Append("\nInterval: ").Append(tower.GetEffectiveAttackInterval().ToString("0.00"))
-            .Append(" s\nRange: ").Append(tower.range.ToString("0.0")).Append(" f\n");
-
         TowerStatusManager statusManager = tower.GetComponent<TowerStatusManager>();
+        RefreshStatusTagRow(tower, statusManager);
+
+        string englishText = BuildInfoText(tower, statusManager, false);
+        string chineseText = BuildInfoText(tower, statusManager, true);
+        if (panelLocalization == null)
+        {
+            panelLocalization = panelText.GetComponent<LocalizedText>();
+        }
+        if (panelLocalization != null)
+        {
+            if (panelLocalization.englishText != englishText || panelLocalization.chineseText != chineseText)
+            {
+                panelLocalization.SetContent(englishText, chineseText);
+            }
+        }
+        else
+        {
+            LocalizedText.SetLocalizedContent(panelText, englishText, chineseText);
+            panelLocalization = panelText.GetComponent<LocalizedText>();
+        }
+        RefreshTagTooltip();
+    }
+
+    private static string BuildInfoText(Tower tower, TowerStatusManager statusManager, bool chinese)
+    {
+        StringBuilder content = new StringBuilder(384);
+        string title = tower.specialTowerType != SpecialTowerType.None
+            ? DifficultySettings.GetSpecialTowerName(tower.specialTowerType, chinese)
+            : DifficultySettings.GetTowerClassName(tower.towerClass, chinese);
+        content.Append("<b><size=120%><color=#FFD700>").Append(title).Append("</color></size></b>\n");
+        content.Append(chinese ? "階級：" : "Tier: ").Append(tower.tier)
+            .Append(chinese ? " / 5    價值：$" : " / 5    Value: $").Append(tower.accumulatedValue).Append('\n');
+        content.Append(chinese ? "配方：" : "Recipe: ")
+            .Append("<color=#4CAF50>").Append(chinese ? "步兵：" : "So:").Append(tower.soldierCount)
+            .Append("</color> | <color=#FF9800>").Append(chinese ? "突擊兵：" : "A:").Append(tower.assaultCount)
+            .Append("</color> | <color=#2196F3>").Append(chinese ? "狙擊手：" : "Sn:").Append(tower.sniperCount)
+            .Append("</color>\n\n");
+        float interval = tower.GetEffectiveAttackInterval();
+        content.Append(chinese ? "<b>戰鬥</b>\n傷害：" : "<b>Combat</b>\nDamage: ").Append(tower.damage)
+            .Append(chinese ? "\n攻擊速度：" : "\nAttack speed: ")
+            .Append((1f / interval).ToString("0.0")).Append(chinese ? " 次/秒" : " /s")
+            .Append(chinese ? "\n攻擊間隔：" : "\nInterval: ").Append(interval.ToString("0.00"))
+            .Append(chinese ? " 秒\n射程：" : " s\nRange: ").Append(tower.range.ToString("0.0"))
+            .Append(chinese ? " 格\n" : " f\n");
+
         if (statusManager != null && statusManager.ActiveEffects.Count > 0)
         {
-            content.Append("\n<b>Active tags</b>\n");
+            content.Append(chinese ? "\n<b>生效中的狀態</b>\n" : "\n<b>Active tags</b>\n");
             foreach (StatusEffectInstance effect in statusManager.ActiveEffects)
             {
                 if (effect == null)
                 {
                     continue;
                 }
-                content.Append(effect.tagType).Append("  ").Append(effect.description);
+                content.Append(DifficultySettings.GetStatusTagName(effect.tagType, chinese)).Append("  ")
+                    .Append(DifficultySettings.GetStatusEffectDescription(effect, chinese));
                 if (effect.durationRemaining >= float.MaxValue * 0.5f)
                 {
-                    content.Append(" (active)\n");
+                    content.Append(chinese ? "（持續中）\n" : " (active)\n");
                 }
                 else
                 {
-                    content.Append(" (").Append(Mathf.Max(0f, effect.durationRemaining).ToString("0.0"))
-                        .Append(" s)\n");
+                    content.Append(chinese ? "（" : " (")
+                        .Append(Mathf.Max(0f, effect.durationRemaining).ToString("0.0"))
+                        .Append(chinese ? " 秒）\n" : " s)\n");
                 }
             }
         }
-                RefreshStatusTagRow(tower, statusManager);
 
         if (tower.specialTowerType != SpecialTowerType.None)
         {
             GameBalanceSettings.SpecialTowerEvolutionStats skill =
                 GameBalanceSettings.Instance.GetSpecialTowerEvolutionStats(tower.specialTowerType);
-            content.Append("\n<b><color=#FFCC00>Special skill: ").Append(skill.skillName)
-                .Append("</color></b>\n").Append(skill.skillDescription);
+            string skillName =
+                DifficultySettings.GetSpecialTowerSkillName(tower.specialTowerType, skill.skillName, chinese);
+            string skillDescription = DifficultySettings.GetSpecialTowerSkillDescription(
+                tower.specialTowerType, skill.skillDescription, chinese);
+            content.Append(chinese ? "\n<b><color=#FFCC00>特殊技能：" : "\n<b><color=#FFCC00>Special skill: ")
+                .Append(skillName).Append("</color></b>\n").Append(skillDescription);
         }
-
-        string nextText = content.ToString();
-        if (panelText.text != nextText)
-        {
-            panelText.text = nextText;
-        }
-        RefreshTagTooltip();
+        return content.ToString();
     }
 
     private static void RefreshStatusTagRow(Tower tower, TowerStatusManager statusManager)
@@ -407,6 +447,7 @@ public static class TowerInfoPanel
             statusTooltipText.color = Color.white;
             statusTooltipText.alignment = TextAlignmentOptions.TopLeft;
             statusTooltipText.raycastTarget = false;
+            statusTooltipLocalization = textObject.AddComponent<LocalizedText>();
         }
 
         tooltipTower = tower;
@@ -479,16 +520,42 @@ public static class TowerInfoPanel
             StatusTagType.Damage => statusManager.GetDamageMultiplier() - 1f,
             _ => combinedMultiplier - 1f
         };
-        StringBuilder text = new StringBuilder(128);
-        text.Append("Total ").Append(tooltipTagType).Append(" boost: +").Append(totalBonus.ToString("P0")).Append('\n');
+        StringBuilder englishText = new StringBuilder(128);
+        StringBuilder chineseText = new StringBuilder(128);
+        englishText.Append("Total ").Append(tooltipTagType).Append(" boost: +").Append(totalBonus.ToString("P0")).Append('\n');
+        chineseText.Append("總計").Append(DifficultySettings.GetStatusTagName(tooltipTagType, true))
+            .Append("加成：+").Append(totalBonus.ToString("P0")).Append('\n');
         for (int index = 0; index < effects.Count; index++)
         {
             StatusEffectInstance effect = effects[index];
-            text.Append(index + 1).Append(". ").Append(effect.description)
-                .Append(" [").Append(effect.sourceTower).Append("] ")
-                .Append(Mathf.Max(0f, effect.durationRemaining).ToString("0.0")).Append("s\n");
+            float remaining = Mathf.Max(0f, effect.durationRemaining);
+            englishText.Append(index + 1).Append(". ").Append(effect.description)
+                .Append(" [").Append(effect.sourceTower).Append("] ").Append(remaining.ToString("0.0")).Append("s\n");
+            chineseText.Append(index + 1).Append(". ")
+                .Append(DifficultySettings.GetStatusEffectDescription(effect, true))
+                .Append("（").Append(DifficultySettings.GetSpecialTowerName(effect.sourceTower, true)).Append("）")
+                .Append(remaining.ToString("0.0")).Append(" 秒\n");
         }
-        statusTooltipText.text = text.ToString();
+        if (statusTooltipLocalization == null)
+        {
+            statusTooltipLocalization = statusTooltipText.GetComponent<LocalizedText>();
+        }
+        if (statusTooltipLocalization != null)
+        {
+            if (statusTooltipLocalization.englishText != englishText.ToString() ||
+                statusTooltipLocalization.chineseText != chineseText.ToString())
+            {
+                statusTooltipLocalization.SetContent(englishText.ToString(), chineseText.ToString());
+            }
+        }
+        else
+        {
+            LocalizedText.SetLocalizedContent(
+                statusTooltipText,
+                englishText.ToString(),
+                chineseText.ToString());
+            statusTooltipLocalization = statusTooltipText.GetComponent<LocalizedText>();
+        }
     }
 
     public static bool ContainsScreenPoint(Vector2 screenPosition)
@@ -512,32 +579,37 @@ public static class TowerInfoPanel
         }
 
         Canvas canvas = null;
-        Canvas[] canvases = Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include);
+        Canvas[] canvases = Object.FindObjectsByType<Canvas>();
+        int highestSortingOrder = int.MinValue;
         foreach (Canvas candidate in canvases)
         {
-            if (candidate != null && candidate.renderMode == RenderMode.ScreenSpaceOverlay)
+            if (candidate != null && candidate.isActiveAndEnabled && candidate.isRootCanvas &&
+                candidate.renderMode == RenderMode.ScreenSpaceOverlay &&
+                candidate.sortingOrder > highestSortingOrder)
             {
                 canvas = candidate;
-                break;
+                highestSortingOrder = candidate.sortingOrder;
             }
         }
         if (canvas == null)
         {
             foreach (Canvas candidate in canvases)
             {
-                if (candidate != null && candidate.renderMode == RenderMode.ScreenSpaceCamera)
+                if (candidate != null && candidate.isActiveAndEnabled && candidate.isRootCanvas &&
+                    candidate.renderMode == RenderMode.ScreenSpaceCamera && candidate.worldCamera != null &&
+                    candidate.sortingOrder > highestSortingOrder)
                 {
                     canvas = candidate;
-                    break;
+                    highestSortingOrder = candidate.sortingOrder;
                 }
             }
         }
         if (canvas == null)
         {
-            GameObject canvasObject = new GameObject("TowerInfoCanvas");
-            canvas = canvasObject.AddComponent<Canvas>();
+            GameObject canvasObject = new GameObject(
+                "TowerInfoCanvas", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler));
+            canvas = canvasObject.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvasObject.AddComponent<CanvasScaler>();
             canvasObject.AddComponent<GraphicRaycaster>();
         }
         if (canvas.GetComponent<GraphicRaycaster>() == null)
@@ -545,17 +617,17 @@ public static class TowerInfoPanel
             canvas.gameObject.AddComponent<GraphicRaycaster>();
         }
 
-        panel = new GameObject("TowerInfoPanel");
+        panel = new GameObject(
+            "TowerInfoPanel", typeof(RectTransform), typeof(TowerInfoPanelUpdater), typeof(Image));
         panel.transform.SetParent(canvas.transform, false);
-        panel.AddComponent<TowerInfoPanelUpdater>();
-        RectTransform panelRect = panel.AddComponent<RectTransform>();
+        RectTransform panelRect = panel.GetComponent<RectTransform>();
         panelRect.anchorMin = new Vector2(1f, 1f);
         panelRect.anchorMax = new Vector2(1f, 1f);
         panelRect.pivot = new Vector2(1f, 1f);
         panelRect.anchoredPosition = new Vector2(-20f, -20f);
         panelRect.sizeDelta = new Vector2(380f, 420f);
 
-        Image background = panel.AddComponent<Image>();
+        Image background = panel.GetComponent<Image>();
         background.color = new Color(0.08f, 0.1f, 0.14f, 0.96f);
         background.raycastTarget = true;
 
@@ -571,6 +643,7 @@ public static class TowerInfoPanel
         panelText.color = Color.white;
         panelText.alignment = TextAlignmentOptions.TopLeft;
         panelText.raycastTarget = false;
+        panelLocalization = textObject.AddComponent<LocalizedText>();
 
         GameObject tagRowObject = new GameObject("TowerStatusTagRow", typeof(RectTransform), typeof(HorizontalLayoutGroup));
         tagRowObject.transform.SetParent(panel.transform, false);

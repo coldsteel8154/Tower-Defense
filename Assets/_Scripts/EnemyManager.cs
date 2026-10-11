@@ -27,6 +27,9 @@ public class EnemyManager : MonoBehaviour
 
     [Header("UI References")]
     public TMP_Text waveText;
+    private UnityEngine.UI.Text waveDisplayText;
+    private string englishWaveText;
+    private string chineseWaveText;
 
     [Header("BGM Settings")]
     public AudioClip horizonDefendersClip;
@@ -35,6 +38,12 @@ public class EnemyManager : MonoBehaviour
     void Awake()
     {
         main = this;
+        SpawnManager.ResetEnemyList();
+    }
+
+    private void OnEnable()
+    {
+        DifficultySettings.OnLanguageChanged += RefreshWaveTextLanguage;
     }
     
     void Start()
@@ -84,7 +93,7 @@ public class EnemyManager : MonoBehaviour
             waveText = CreateWaveTextUI();
         }
 
-        EnsureWaveTextClickable();
+        InitializeWaveTextDisplay();
         UpdateWaveUI();
 
         // Disable original SpawnManager if it exists so it doesn't conflict!
@@ -108,7 +117,8 @@ public class EnemyManager : MonoBehaviour
         if (DifficultySettings.isTutorial) return;
 
         // Use cached enemy list instead of expensive scene search
-        int enemyCount = SpawnManager.enemy_list != null ? SpawnManager.enemy_list.Count : 0;
+        SpawnManager.RemoveDestroyedEnemies();
+        int enemyCount = SpawnManager.enemy_list.Count;
 
         // Detect wave end
         if (wavedone && enemyCount == 0)
@@ -134,19 +144,18 @@ public class EnemyManager : MonoBehaviour
             if (waveText != null)
             {
                 int secondsLeft = Mathf.CeilToInt(Mathf.Max(0f, autoStartDelay - clearTimer));
-                string englishText = $"Wave {wave} Cleared!\nStarting in {secondsLeft}s — Press [Enter] to start now";
-                string chineseText = $"第 {wave} 波已清空！\n{secondsLeft} 秒後開始 — 按 [Enter] 立即開始";
+                string englishText = $"Wave {wave} Cleared!\nStarting in {secondsLeft}s\nPress [Enter] to start now";
+                string chineseText = $"第 {wave} 波已清空！\n{secondsLeft} 秒後開始\n按 [Enter] 立即開始";
                 
-                LocalizedText localized = waveText.GetComponent<LocalizedText>();
-                if (localized == null)
-                {
-                    localized = waveText.gameObject.AddComponent<LocalizedText>();
-                }
-                localized.SetContent(englishText, chineseText);
+                SetWaveText(englishText, chineseText);
             }
 
             // Immediate start via Enter or click on the countdown text
             if (Input.GetKeyDown(KeyCode.Return))
+            {
+                SkipWaveCountdown();
+            }
+            else if (Input.GetMouseButtonDown(0) && IsWaveTextClick())
             {
                 SkipWaveCountdown();
             }
@@ -179,6 +188,16 @@ public class EnemyManager : MonoBehaviour
     private void OnDisable()
     {
         DifficultySettings.OnVolumeChanged -= OnGlobalVolumeChanged;
+        DifficultySettings.OnLanguageChanged -= RefreshWaveTextLanguage;
+    }
+
+    private void OnDestroy()
+    {
+        if (main == this)
+        {
+            main = null;
+            SpawnManager.ResetEnemyList();
+        }
     }
 
     public void StartNextWaveAfterVictory()
@@ -205,25 +224,165 @@ public class EnemyManager : MonoBehaviour
         SetWave();
     }
 
-    private void EnsureWaveTextClickable()
+    private void InitializeWaveTextDisplay()
     {
         if (waveText == null)
         {
             return;
         }
 
-        Button button = waveText.GetComponent<Button>();
-        if (button == null)
+        LocalizedText localized = waveText.GetComponent<LocalizedText>();
+        if (localized != null)
         {
-            button = waveText.gameObject.AddComponent<Button>();
+            localized.enabled = false;
         }
 
-        button.onClick.RemoveAllListeners();
-        button.onClick.AddListener(SkipWaveCountdown);
-        button.interactable = true;
+        waveText.enabled = false;
+        waveText.raycastTarget = false;
 
-        button.targetGraphic = waveText;
-        waveText.raycastTarget = true;
+        UnityEngine.UI.Graphic[] oldGraphics = waveText.GetComponents<UnityEngine.UI.Graphic>();
+        foreach (UnityEngine.UI.Graphic graphic in oldGraphics)
+        {
+            graphic.raycastTarget = false;
+        }
+
+        Button button = waveText.GetComponent<Button>();
+        if (button != null)
+        {
+            button.onClick.RemoveListener(SkipWaveCountdown);
+            button.interactable = false;
+            button.transition = Selectable.Transition.None;
+            button.targetGraphic = null;
+        }
+
+        Transform parent = waveText.transform.parent;
+        if (parent == null)
+        {
+            Debug.LogError("Wave text must be parented under a Canvas to be displayed.");
+            return;
+        }
+
+        GameObject displayObject = new GameObject(
+            "WaveTextDisplay",
+            typeof(RectTransform),
+            typeof(CanvasRenderer),
+            typeof(UnityEngine.UI.Text));
+        displayObject.transform.SetParent(parent, false);
+
+        RectTransform sourceRect = waveText.rectTransform;
+        RectTransform displayRect = displayObject.GetComponent<RectTransform>();
+        displayRect.anchorMin = sourceRect.anchorMin;
+        displayRect.anchorMax = sourceRect.anchorMax;
+        displayRect.pivot = sourceRect.pivot;
+        displayRect.anchoredPosition3D = sourceRect.anchoredPosition3D;
+        displayRect.sizeDelta = sourceRect.sizeDelta;
+        displayRect.localRotation = sourceRect.localRotation;
+        displayRect.localScale = sourceRect.localScale;
+        displayRect.SetSiblingIndex(sourceRect.GetSiblingIndex() + 1);
+
+        waveDisplayText = displayObject.GetComponent<UnityEngine.UI.Text>();
+        waveDisplayText.font = Resources.Load<Font>("Fonts/NotoSansTC-Regular");
+        if (waveDisplayText.font == null)
+        {
+            Debug.LogError("Could not load Resources/Fonts/NotoSansTC-Regular for the wave label.");
+        }
+        waveDisplayText.fontSize = Mathf.RoundToInt(waveText.fontSize);
+        waveDisplayText.color = waveText.color;
+        waveDisplayText.alignment = TextAnchor.MiddleCenter;
+        waveDisplayText.horizontalOverflow = HorizontalWrapMode.Overflow;
+        waveDisplayText.verticalOverflow = VerticalWrapMode.Overflow;
+        waveDisplayText.raycastTarget = false;
+
+        Outline outline = displayObject.AddComponent<Outline>();
+        outline.effectColor = Color.black;
+        outline.effectDistance = new Vector2(1f, -1f);
+
+        RefreshWaveTextLanguage();
+    }
+
+    private void SetWaveText(string english, string chinese)
+    {
+        englishWaveText = english;
+        chineseWaveText = chinese;
+        RefreshWaveTextLanguage();
+    }
+
+    private void RefreshWaveTextLanguage()
+    {
+        if (waveDisplayText == null)
+        {
+            return;
+        }
+
+        string text = DifficultySettings.IsTraditionalChinese
+            ? chineseWaveText
+            : englishWaveText;
+        if (waveDisplayText.text != text)
+        {
+            waveDisplayText.text = text;
+            UpdateWaveTextHitbox();
+        }
+    }
+
+    private void UpdateWaveTextHitbox()
+    {
+        if (waveDisplayText == null)
+        {
+            return;
+        }
+
+        RectTransform rect = waveDisplayText.rectTransform;
+        float preferredWidth = waveDisplayText.preferredWidth;
+        rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, preferredWidth + 16f);
+        rect.SetSizeWithCurrentAnchors(
+            RectTransform.Axis.Vertical,
+            waveDisplayText.preferredHeight + 8f);
+    }
+
+    private bool IsWaveTextClick()
+    {
+        if (waveDisplayText == null ||
+            (TowerPlacementManager.instance != null && TowerPlacementManager.instance.IsPlacing) ||
+            (TowerRemoveManager.instance != null && TowerRemoveManager.instance.IsRemoveMode))
+        {
+            return false;
+        }
+
+        RectTransform displayRect = waveDisplayText.rectTransform;
+        Canvas canvas = waveDisplayText.GetComponentInParent<Canvas>();
+        Camera eventCamera = canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay
+            ? canvas.worldCamera
+            : null;
+        if (!RectTransformUtility.RectangleContainsScreenPoint(displayRect, Input.mousePosition, eventCamera))
+        {
+            return false;
+        }
+
+        if (UnityEngine.EventSystems.EventSystem.current != null &&
+            UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+        {
+            return false;
+        }
+
+        if (Camera.main != null)
+        {
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Collider2D[] colliders = Physics2D.OverlapPointAll(worldPosition);
+            foreach (Collider2D hit in colliders)
+            {
+                if (hit.GetComponentInParent<TowerRange>() != null)
+                {
+                    continue;
+                }
+
+                if (hit.GetComponentInParent<Tower>() != null)
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     public void SetWaveForce()
@@ -384,15 +543,7 @@ public class EnemyManager : MonoBehaviour
         {
             string englishText = $"Wave: {wave}";
             string chineseText = $"波次：{wave}";
-            
-            // Ensure LocalizedText exists and use it
-            LocalizedText localized = waveText.GetComponent<LocalizedText>();
-            if (localized == null)
-            {
-                localized = waveText.gameObject.AddComponent<LocalizedText>();
-            }
-            
-            localized.SetContent(englishText, chineseText);
+            SetWaveText(englishText, chineseText);
         }
     }
 
@@ -409,12 +560,6 @@ public class EnemyManager : MonoBehaviour
             if (existingText != null)
             {
                 existingText.raycastTarget = false;
-                // Ensure LocalizedText component exists on existing wave text
-                LocalizedText localized = existing.GetComponent<LocalizedText>();
-                if (localized == null)
-                {
-                    localized = existing.gameObject.AddComponent<LocalizedText>();
-                }
                 return existingText;
             }
         }
@@ -430,19 +575,14 @@ public class EnemyManager : MonoBehaviour
         rect.sizeDelta = new Vector2(400f, 100f);
 
         TextMeshProUGUI tmp = go.AddComponent<TextMeshProUGUI>();
-        var localizedText = go.AddComponent<LocalizedText>();
         
-        // Copy font from any existing TMP text in the scene!
-        var existingTmp = Object.FindAnyObjectByType<TextMeshProUGUI>();
-        if (existingTmp != null)
-        {
-            tmp.font = existingTmp.font;
-        }
-
         tmp.fontSize = 32;
         tmp.color = Color.white;
         tmp.alignment = TextAlignmentOptions.Center;
+        tmp.verticalAlignment = VerticalAlignmentOptions.Middle;
         tmp.raycastTarget = false;
+        tmp.textWrappingMode = TextWrappingModes.Normal;
+        tmp.overflowMode = TextOverflowModes.Overflow;
 
         // Outline
         tmp.outlineWidth = 0.2f;
@@ -503,6 +643,3 @@ public class EnemyManager : MonoBehaviour
         }
     }
 }
-
-
-

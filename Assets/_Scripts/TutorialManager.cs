@@ -404,7 +404,7 @@ public class TutorialManager : MonoBehaviour
     {
         if (chineseFontAsset == null)
         {
-            chineseFontAsset = Resources.Load<TMP_FontAsset>("Fonts & Materials/ChineseDynamicFont");
+            chineseFontAsset = LocalizedText.GetChineseFontAsset();
         }
         if (defaultFontAsset == null)
         {
@@ -417,12 +417,13 @@ public class TutorialManager : MonoBehaviour
         if (txt == null) return;
         EnsureFonts();
 
-        if (defaultFontAsset != null)
+        TMP_FontAsset selectedFont = IsChineseLanguage ? chineseFontAsset : defaultFontAsset;
+        if (selectedFont != null)
         {
-            txt.font = defaultFontAsset;
-            if (defaultFontAsset.material != null)
+            txt.font = selectedFont;
+            if (selectedFont.material != null)
             {
-                txt.fontSharedMaterial = defaultFontAsset.material;
+                txt.fontSharedMaterial = selectedFont.material;
             }
         }
     }

@@ -8,6 +8,16 @@ public class SpawnManager : MonoBehaviour
     public static List<GameObject> enemy_list = new();
     private float time_delay = 0;
 
+    public static void ResetEnemyList()
+    {
+        enemy_list.Clear();
+    }
+
+    public static void RemoveDestroyedEnemies()
+    {
+        enemy_list.RemoveAll(enemyObject => enemyObject == null);
+    }
+
     private void FixedUpdate()
     {
         time_delay += Time.fixedDeltaTime;

@@ -140,7 +140,7 @@ public class GameBalanceSettings : ScriptableObject
     public class TowerVisualScaleEntry
     {
         public SpecialTowerType towerType;
-        public float visualScaleMultiplier = 0.25f;
+        public float visualScaleMultiplier = 0.2857f;
     }
 
     [Serializable]

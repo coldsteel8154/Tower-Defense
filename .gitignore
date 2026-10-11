@@ -22,6 +22,7 @@
 *.pdb
 *.mdb
 *.opendb
+*.md
 
 # Unity builds
 *.apk

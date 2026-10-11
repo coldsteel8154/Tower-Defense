@@ -1,6 +1,7 @@
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -21,6 +22,10 @@ public class TowerSynthesisManager : MonoBehaviour
     [SerializeField] private AudioSource uiAudioSource;
     [SerializeField] private AudioClip recycleSound;
     [SerializeField] private List<SpecialTowerPrefabEntry> specialTowerPrefabs = new List<SpecialTowerPrefabEntry>();
+
+    private Canvas synthesisCostCanvas;
+    private RectTransform synthesisCostPanel;
+    private TMP_Text synthesisCostText;
 
     public static TowerSynthesisManager Instance
     {
@@ -56,8 +61,102 @@ public class TowerSynthesisManager : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        if (synthesisCostCanvas != null)
+        {
+            Destroy(synthesisCostCanvas.gameObject);
+        }
+        if (instance == this)
+        {
+            instance = null;
+        }
+    }
+
+    public void UpdateSynthesisCostDisplay(Tower incoming, Vector2 screenPosition, Vector3 worldPosition)
+    {
+        Tower target = FindTowerAt(worldPosition, incoming);
+        if (incoming == null || target == null || GameManager.instance == null ||
+            incoming.tier < 1 || target.tier < 1 || incoming.tier + target.tier > 5)
+        {
+            HideSynthesisCostDisplay();
+            return;
+        }
+
+        int fee = GameBalanceSettings.Instance.CalculateSynthesisFee(incoming.accumulatedValue, target.tier);
+        bool canAfford = CanPurchaseAndSynthesize(incoming, target, 0);
+        EnsureSynthesisCostDisplay();
+        synthesisCostText.text = "+$" + fee;
+        synthesisCostText.color = canAfford
+            ? new Color(0.3f, 1f, 0.45f, 1f)
+            : new Color(1f, 0.3f, 0.3f, 1f);
+
+        Vector2 panelScreenPosition = screenPosition + new Vector2(18f, -22f);
+        panelScreenPosition.x = Mathf.Clamp(panelScreenPosition.x, 0f, Screen.width - synthesisCostPanel.rect.width);
+        panelScreenPosition.y = Mathf.Clamp(panelScreenPosition.y, synthesisCostPanel.rect.height, Screen.height);
+        RectTransform canvasRect = synthesisCostCanvas.transform as RectTransform;
+        if (canvasRect != null &&
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                canvasRect, panelScreenPosition, null, out Vector2 panelLocalPosition))
+        {
+            synthesisCostPanel.anchoredPosition = panelLocalPosition;
+        }
+        synthesisCostPanel.gameObject.SetActive(true);
+    }
+
+    public static void HideSynthesisCostDisplay()
+    {
+        if (instance != null && instance.synthesisCostPanel != null)
+        {
+            instance.synthesisCostPanel.gameObject.SetActive(false);
+        }
+    }
+
+    private void EnsureSynthesisCostDisplay()
+    {
+        if (synthesisCostPanel != null)
+        {
+            return;
+        }
+
+        GameObject canvasObject = new GameObject("SynthesisCostCanvas");
+        synthesisCostCanvas = canvasObject.AddComponent<Canvas>();
+        synthesisCostCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        synthesisCostCanvas.sortingOrder = 10000;
+        canvasObject.AddComponent<CanvasScaler>();
+
+        GameObject panelObject = new GameObject("SynthesisCost");
+        panelObject.transform.SetParent(canvasObject.transform, false);
+        synthesisCostPanel = panelObject.AddComponent<RectTransform>();
+        synthesisCostPanel.sizeDelta = new Vector2(160f, 44f);
+        synthesisCostPanel.pivot = new Vector2(0f, 1f);
+
+        GameObject textObject = new GameObject("Price");
+        textObject.transform.SetParent(panelObject.transform, false);
+        RectTransform textRect = textObject.AddComponent<RectTransform>();
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.offsetMin = new Vector2(5f, 2f);
+        textRect.offsetMax = new Vector2(-5f, -2f);
+        synthesisCostText = textObject.AddComponent<TextMeshProUGUI>();
+        synthesisCostText.font = TMP_Settings.defaultFontAsset != null
+            ? TMP_Settings.defaultFontAsset
+            : Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
+        synthesisCostText.fontSize = 24f;
+        synthesisCostText.enableAutoSizing = true;
+        synthesisCostText.fontSizeMin = 16f;
+        synthesisCostText.fontSizeMax = 24f;
+        synthesisCostText.alignment = TextAlignmentOptions.Midline;
+        synthesisCostText.fontStyle = FontStyles.Bold;
+        synthesisCostText.raycastTarget = false;
+        Outline outline = textObject.AddComponent<Outline>();
+        outline.effectColor = new Color(0f, 0f, 0f, 0.85f);
+        outline.effectDistance = new Vector2(1f, -1f);
+    }
+
     public bool HandleDrop(Tower source, Vector2 screenPosition, Vector3 worldPosition)
     {
+        HideSynthesisCostDisplay();
         if (!CanDrop(source, screenPosition, worldPosition))
         {
             return false;
